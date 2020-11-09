@@ -1,16 +1,14 @@
-""" pre-trained LM-based token revision """
+""" pre-trained LM for sentence evaluation """
 import os
 import logging
 import math
-
-from typing import List, Dict
+from typing import List
 from logging.config import dictConfig
-from itertools import groupby
+from itertools import chain
 
 import torch
 import transformers
 from tqdm import tqdm
-
 
 dictConfig({
     "version": 1,
@@ -27,11 +25,11 @@ __all__ = 'TransformersLM'
 
 
 class Dataset(torch.utils.data.Dataset):
-    """ simple torch.utils.data.Dataset instance to convert into tensors """
+    """ `torch.utils.data.Dataset` """
     float_tensors = ['attention_mask']
 
     def __init__(self, data: List):
-        self.data = data
+        self.data = data  # a list of dictionaries
 
     def __len__(self):
         return len(self.data)
@@ -46,245 +44,219 @@ class Dataset(torch.utils.data.Dataset):
 
 
 class TransformersLM:
-    """ pre-trained Masked LM from huggingface transformers """
+    """ transformers language model based sentence-mining """
 
-    def __init__(self, model: str):
-        LOGGER.info('*** setting up language model ***')
+    def __init__(self, model: str, max_length: int = None):
+        """ transformers language model based sentence-mining
 
+        :param model: a model name corresponding to a model card in `transformers`
+        :param max_length: a model max length if specified, else use model_max_length
+        """
+        LOGGER.info('*** setting up a language model ***')
         # model setup
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(model, cache_dir=CACHE_DIR)
-        self.sp_token_start, self.sp_token_sep, self.sp_token_end = get_special_tokens(self.tokenizer)
         self.config = transformers.AutoConfig.from_pretrained(model, cache_dir=CACHE_DIR)
         self.model = transformers.AutoModelForMaskedLM.from_pretrained(model, config=self.config, cache_dir=CACHE_DIR)
         self.model.eval()
-
+        if max_length:
+            assert self.tokenizer.model_max_length >= max_length
+            self.max_length = max_length
+        else:
+            self.max_length = self.tokenizer.model_max_length
         # gpu
         self.n_gpu = torch.cuda.device_count()
         assert self.n_gpu <= 1
         self.device = 'cuda' if self.n_gpu > 0 else 'cpu'
         self.model.to(self.device)
-        LOGGER.info('running on %i GPUs' % self.n_gpu)
+        LOGGER.info('running on %i GPU' % self.n_gpu)
+        # sentence prefix tokens
+        tokens = self.tokenizer.tokenize('get tokenizer specific prefix')
+        tokens_encode = self.tokenizer.convert_ids_to_tokens(self.tokenizer.encode('get tokenizer specific prefix'))
+        self.sp_token_prefix = tokens_encode[:tokens_encode.index(tokens[0])]
+        self.sp_token_suffix = tokens_encode[tokens_encode.index(tokens[-1]) + 1:]
 
-    def encode_plus_with_mask(self, text: str, token_to_mask: str):
-        """ `encode_plus` with a token mask specified by string
+    def batch_encode_plus_mask(self,
+                               texts: List,
+                               target_tokens: List,
+                               batch_size: int = 2):
+        """ to get batch data_loader with `self.encode_plus_masked` function
+
+        :param texts: a list of texts
+        :param target_tokens: a list of string tokens to be masked
+        :param batch_size:
+        :return: `torch.utils.data.DataLoader` class
+        """
+        assert len(texts) == len(target_tokens), "size mismatch: {} vs {}".format(len(texts), len(target_tokens))
+        data = [self.encode_plus_mask(text, token_to_mask) for text, token_to_mask in zip(texts, target_tokens)]
+        data_loader = torch.utils.data.DataLoader(
+            Dataset(data), num_workers=NUM_WORKER, batch_size=batch_size, shuffle=False, drop_last=False)
+        return data_loader
+
+    def encode_plus_mask(self,
+                         text: str,
+                         token_to_mask: str,
+                         padding: bool = True):
+        """ to get an output from `encode_plus` with a masked token specified by a string
         Note: it can only take single token, and a phrase over multiple tokens will raise error
 
         :param str text: a text to encode
         :param str token_to_mask: a target token to be masked
-        :return encode, mask_position, (masked_token, masked_token_id)
+        :param bool padding: a flag to encode output with/without paddings
+        :return encode
         """
+        assert len(text.replace(' ', '')) != 0, 'found an empty text'
 
-        # tokenize with special symbols
-        token = self.tokenizer.convert_ids_to_tokens(self.tokenizer.encode(text))
+        token_list = self.tokenizer.tokenize(text)
+        assert len(token_list) <= self.max_length,\
+            "a token size exceeds the max_length: {} > {}".format(len(token_list), self.max_length)
 
-        # get first token matched `mask_string`
-        mask_positions = [n for n, t in enumerate(token) if token_to_mask in t]
-        assert len(mask_positions) > 0, '{} not in tokens {}'.format(token_to_mask, token)
+        # get first token in the list which is exact `mask_string`
+        mask_positions = [n for n, t in enumerate(token_list) if token_to_mask in t]
+        assert len(mask_positions) > 0,\
+            'the target token `{}` is not matched any tokens in a given text`{}`'.format(token_to_mask, token_list)
         mask_position = mask_positions[0]
 
-        # mask token and revert to text, `the<mask> is ~` == `the <mask> is ~`
-        masked_token = token[mask_position]
-        token[mask_position] = self.tokenizer.mask_token
-        masked_token_id = self.tokenizer.convert_tokens_to_ids(masked_token)
+        # mask the token and keep the mask position, masked token, masked token id
+        # * note that `the<mask> is ~` == `the <mask> is ~` in the tokenizer module
+        mask_token_id = self.tokenizer.convert_tokens_to_ids(token_list[mask_position])
+        token_list[mask_position] = self.tokenizer.mask_token
+        mask_position += len(self.sp_token_prefix)  # shift for prefix
 
-        # encode sentence
-        encode = self.tokenizer.encode_plus(token)
+        # encode sentence into model input format as a batch with single data
+        encode = self.tokenizer.encode_plus(
+            token_list, max_length=self.max_length, padding='max_length' if padding else False, truncation=padding)
+        encode['mask_position'] = mask_position
+        encode['mask_token_id'] = mask_token_id
+        return encode
 
-        return encode, mask_position, (masked_token, masked_token_id)
+    def get_log_likelihood(self,
+                           texts: (List, str),
+                           target_tokens: (List, str),
+                           batch_size: int = 2,
+                           top_k_predict: int = 10):
+        """ get log likelihood of a masked token within a sentence
 
-    def get_log_likelihood(self, text: str, token_to_mask: str):
-        encode, mask_position, (masked_token, masked_token_id) = self.encode_plus_with_mask(text, token_to_mask)
-        prob_dist = self.predict_probability(encode)
-        prob_of_mask = prob_dist[mask_position]
+        :param texts:
+        :param target_tokens:
+        :param batch_size:
+        :param top_k_predict:
+        :return: log_likelihood, (topk_prediction_values, topk_prediction_indices)
+            log_likelihood, a list of log likelihood, (len(texts))
+            topk_prediction_indices, top k tokens predicted for the masked position, (len(texts)), top_k)
+            topk_prediction_values, probability along with the prediction, (len(texts)), top_k)
+        """
 
-        # log-likelihood
-        likeli = math.log(prob_of_mask[masked_token_id])
-        return likeli
+        assert type(texts) == type(target_tokens), '`texts` and `target_tokens` should be same type'
 
-    def predict_probability(self, encode: Dict):
-        """ get probability distribution for given encoded input features """
-        encode = {k: torch.tensor(v).to(self.device) if type(v) != torch.Tensor else v.to(self.device)
-                  for k, v in encode.items()}
-        logit = self.model(**encode)[0][0]
-        prob_dist = torch.softmax(logit, dim=-1)
-        return prob_dist
+        if type(texts) is list and type(target_tokens) is list:
+            data_loader = self.batch_encode_plus_mask(texts=texts, target_tokens=target_tokens, batch_size=batch_size)
+        else:
+            encode = self.encode_plus_mask(text=texts, token_to_mask=target_tokens, padding=False)
+            data_loader = [{k: torch.tensor([v]) for k, v in encode.items()}]
 
-# def token_probability_batch(self, tokens: list, batch_size: int = 16):
-    #     features = [self.tokenizer.encode_plus(i) for i in tokens]
-    #     data_loader = torch.utils.data.DataLoader(
-    #         Dataset(features), num_workers=NUM_WORKER, batch_size=batch_size, shuffle=False, drop_last=False)
+        log_likelihood, topk_prediction_indices, topk_prediction_values \
+            = self.__prediction_with_data_loader(data_loader, top_k_predict=top_k_predict)
+        topk_prediction_indices = [[
+            self.tokenizer.decode(t) for t in topk]
+            for topk in topk_prediction_indices]
 
+        return log_likelihood, (topk_prediction_values, topk_prediction_indices)
 
+    def batch_encode_plus_token_wise_mask(self, texts: List, batch_size: int = 2):
+        """ to get batch data_loader with `self.encode_plus_token_wise_mask` function
 
+        :param texts: a list of texts
+        :param batch_size:
+        :return: `torch.utils.data.DataLoader` class, partition (partition for each text)
+        """
+        data = [self.encode_plus_token_wise_mask(text, padding=True) for text in texts]
+        length = [len(i) for i in data]
+        partition = [[sum(length[:i]), sum(length[:i+1])] for i in range(len(length))]
+        flatten_data = list(chain(*data))
+        data_loader = torch.utils.data.DataLoader(
+            Dataset(flatten_data), num_workers=NUM_WORKER, batch_size=batch_size, shuffle=False, drop_last=False)
+        return data_loader, partition
 
-    # def predict(self, tokens: list, id_to_mask: int, top_k_predict: int = 10):
-    #     """ token prediction for masked token
-    #
-    #     :param tokens: list of token
-    #     :param id_to_mask: token id to be masked
-    #     :param top_k_predict: top k from prob distribution
-    #     :return:
-    #         predicted_token: list of top k prediction for masked token by the LM
-    #         likelihood: log likelihood for masked token
-    #     """
-    #
-    #     tokens = tokens.copy()
-    #
-    #     # for log-likelihood
-    #     target_token = tokens[id_to_mask]
-    #     target_token_id = self.tokenizer.convert_tokens_to_ids([target_token])[0]
-    #     tokens[id_to_mask] = self.tokenizer.mask_token
-    #
-    #     # add bos symbol
-    #     bos_length = 1
-    #     if self.tokenizer.bos_token is not None:
-    #         tokens = [self.tokenizer.bos_token] + tokens
-    #     elif self.tokenizer.cls_token is not None:
-    #         tokens = [self.tokenizer.cls_token] + tokens
-    #     else:
-    #         bos_length = 0
-    #
-    #     # add eos symbol
-    #     eos_length = 1
-    #     if self.tokenizer.eos_token is not None:
-    #         tokens = tokens + [self.tokenizer.eos_token]
-    #     elif self.tokenizer.sep_token is not None:
-    #         tokens = tokens + [self.tokenizer.sep_token]
-    #     else:
-    #         eos_length = 0
-    #
-    #     indexed_tokens = self.tokenizer.convert_tokens_to_ids(tokens)
-    #
-    #     # https://github.com/huggingface/transformers/pull/2509
-    #     # once it's fixed, you can get rid of this
-    #     if self.model_name == 'xlm-roberta-large':
-    #         indexed_tokens[id_to_mask + bos_length] = 250001
-    #
-    #     if self.model_predict is None:
-    #         self.model_predict = self.__model_predict.from_pretrained(self.model_name, cache_dir=CACHE_DIR).to(self.device)
-    #         self.model_predict.eval()
-    #     indexed_tokens = torch.tensor([indexed_tokens]).to(self.device)
-    #     with torch.no_grad():
-    #         predictions = self.model_predict(indexed_tokens)[0][0][eos_length:-bos_length]
-    #         prob_dist = torch.softmax(predictions, dim=-1)
-    #         prob_dist_masked = prob_dist[id_to_mask]
-    #         values, indices = prob_dist_masked.topk(top_k_predict, dim=-1)
-    #         predicted_token_k = self.ids_to_tokens(indices.cpu().numpy())
-    #
-    #         # log-likelihood
-    #         likeli = math.log(prob_dist_masked[target_token_id])
-    #     return predicted_token_k, likeli
+    def encode_plus_token_wise_mask(self, text: str, padding: bool = True):
+        """ to get a list of outputs from `encode_plus`, where each corresponds to one with a text with 
+        a mask at i ~ [0, n] (n: a size of tokens in the given text) 
 
-    # def tokens_to_ids(self, tokens):
-    #     """ list of ids -> list of tokens """
-    #     return self.tokenizer.convert_tokens_to_ids(tokens)
-    #
-    # def ids_to_tokens(self, ids):
-    #     """ list of ids -> list of tokens """
-    #     return self.tokenizer.convert_ids_to_tokens(ids)
-    #
-    # def tokens_to_string(self, tokens: list):
-    #     """ list of tokens -> string """
-    #     return self.tokenizer.convert_tokens_to_string(tokens)
+        :param str text: a text to encode
+        :param bool padding: a flag to encode output with/without paddings
+        :return encodes_list
+        """
+        assert len(text.replace(' ', '')) != 0, 'found an empty text'
+        token_list = self.tokenizer.tokenize(text)
+        assert len(token_list) <= self.max_length,\
+            "a token size exceeds the max_length: {} > {}".format(len(token_list), self.max_length)
 
-    # def perplexity(self, tokens: list, return_ll: bool = False):
-    #     """ (pseudo) perplexity
-    #
-    #     :param tokens: list of token
-    #     :param return_ll: bool if return token-wise log likelihood
-    #     :return:
-    #     """
-    #
-    #     def get_likelihood(_id):
-    #         _, log_ll = self.predict(tokens, id_to_mask=_id, top_k_predict=1)
-    #         return log_ll
-    #
-    #     log_lls = [get_likelihood(_i) for _i in range(len(tokens))]
-    #     ppl = math.exp(- sum(log_lls) / len(log_lls))
-    #     if return_ll:
-    #         return ppl, log_lls
-    #     else:
-    #         return ppl
+        # get encoded feature for each token masked
+        def encode_with_single_mask_id(mask_position: int):
+            _token_list = token_list.copy()  # can not be encode outputs because of prefix
+            mask_token_id = self.tokenizer.convert_tokens_to_ids(_token_list[mask_position])
+            _token_list[mask_position] = self.tokenizer.mask_token
+            encode = self.tokenizer.encode_plus(
+                _token_list, max_length=self.max_length, padding='max_length' if padding else False, truncation=padding)
+            encode['mask_position'] = mask_position + len(self.sp_token_prefix)
+            encode['mask_token_id'] = mask_token_id
+            return encode
 
-    # def predict_ml(self,
-    #                tokens: list,
-    #                id_to_mask: int = None,
-    #                top_k_predict: int = 10,
-    #                worst_k_token: int = 3):
-    #     """ conditional maximum likelihood-based prediction
-    #
-    #     :param tokens: list of token
-    #     :param id_to_mask: single token prediction
-    #     :param top_k_predict: top k sampling for prediction
-    #     :param worst_k_token: worst k replacement candidate
-    #     :return:
-    #     """
-    #     tokens = tokens.copy()
-    #     original_ppl, log_likeli = self.perplexity(tokens, return_ll=True)
-    #
-    #     def mle_edit_single_token(__id):
-    #
-    #         # skip token
-    #         if log_likeli[__id] is None:
-    #             return tokens, original_ppl
-    #
-    #         tokens_c = tokens.copy()
-    #         pred, likeli = self.predict(tokens, id_to_mask=__id, top_k_predict=top_k_predict)
-    #
-    #         def replace_token(p):
-    #             __t = tokens_c.copy()
-    #             __t[__id] = p
-    #             return __t
-    #
-    #         ppls = [[p, self.perplexity(replace_token(p))] for p in pred]
-    #         ppls = sorted(ppls, key=lambda x: x[1])
-    #         best_ppl = ppls[0][1]
-    #         if best_ppl > original_ppl:
-    #             return tokens_c, original_ppl
-    #         else:
-    #             tokens_c[__id] = ppls[0][0]
-    #             return tokens_c, best_ppl
-    #
-    #     if id_to_mask:
-    #         # single estimation
-    #         return mle_edit_single_token(id_to_mask)
-    #     else:
-    #         # run estimation over all token and pick the best edition
-    #         if worst_k_token:  # pick worst k token as replace candidate to keep memory usage low
-    #             candidate = sorted(enumerate(log_likeli), key=lambda x: (x[1] is None, x[1]))[:worst_k_token]
-    #             token_ppl = [mle_edit_single_token(_i) for _i, _ in candidate]
-    #         else:
-    #             token_ppl = [mle_edit_single_token(_i) for _i in range(len(tokens))]
-    #         token_ppl = sorted(token_ppl, key=lambda x: x[1])
-    #         _best_token = token_ppl[0][0]
-    #         _best_ppl = token_ppl[0][1]
-    #         if _best_ppl > original_ppl:
-    #             return tokens, original_ppl
-    #         else:
-    #             return _best_token, _best_ppl
-    #
+        encodes_list = [encode_with_single_mask_id(i) for i in range(len(token_list))]
+        return encodes_list
 
-# if __name__ == '__main__':
-    # example_sentence = "COVID-19 case numbers are rising rapidly across the whole of the UK and in other countries." \
-    #                    "We must act now to control the spread of the virus. The single most important action we can" \
-    #                    "all take, in fighting coronavirus, is to stay at home, to protect the NHS and save lives."
-    # mask_id = 0
-    # lm = TransformersLM('roberta-base')
-    #
-    # print("sample sentence: {}".format(example_sentence))
-    # ex_tokens = lm.tokenize(example_sentence)
-    # print("tokens: {}".format(ex_tokens))
-    # print()
-    # tmp_ppl = lm.perplexity(tmp)
-    # print('*** perplexity ***')
-    # print('- string    :', _test)
-    # print('- perplexity:', tmp_ppl)
-    # print('\n*** editing test ***')
-    # __pred_tokens, __ppl = lm.predict_ml(tmp.copy(),
-    #                                      top_k_predict=5,
-    #                                      worst_k_token=3,
-    #                                      skip_kanji=True,
-    #                                      skip_roman=True)
-    # __str = lm.tokens_to_string(__pred_tokens)
-    # print('- output    :', __str)
-    # print('- perplexity:', __ppl)
+    def get_pseudo_perplexity(self, texts: (List, str), batch_size: int = 2):
+        """ to compute a pseudo perplexity (mask each token and use log likelihood for each prediction for the mask)
+
+        :param texts:
+        :param batch_size:
+        :return:
+        """
+        if type(texts) is list:
+            data_loader, partition = self.batch_encode_plus_token_wise_mask(texts, batch_size=batch_size)
+        else:
+            encode_list = self.encode_plus_token_wise_mask(texts)
+            data_loader = [{k: torch.tensor([v]) for k, v in encode.items()} for encode in encode_list]
+            partition = [[0, len(data_loader)]]
+
+        list_ppl = []
+        loglikelihood, _, _ = self.__prediction_with_data_loader(data_loader)
+        for start, end in partition:
+            sentence_loglikeli = loglikelihood[start:end]
+            list_ppl += [math.exp(- sum(sentence_loglikeli) / len(sentence_loglikeli))]
+
+        return list_ppl
+
+    def __prediction_with_data_loader(self, data_loader, top_k_predict: int = None):
+        """ to run a prediction on a masked token with MLM
+
+        :param data_loader:
+        :param top_k_predict:
+        :return:
+        """
+        topk_prediction_indices = []
+        topk_prediction_values = []
+        log_likelihood = []
+        with torch.no_grad():
+            for encode in tqdm(data_loader):
+                mask_position = encode.pop('mask_position').cpu().detach().int().tolist()
+                mask_token_id = encode.pop('mask_token_id').cpu().detach().int().tolist()
+
+                # get probability/prediction for batch features
+                encode = {k: v.to(self.device) for k, v in encode.items()}
+                logit = self.model(**encode)[0]
+                prob = torch.softmax(logit, -1)
+
+                # compute likelihood of masked positions given the masked tokens
+                log_likelihood += [
+                    math.log(float(prob[n][m_p][m_i].cpu())) for n, (m_p, m_i)
+                    in enumerate(zip(mask_position, mask_token_id))]
+
+                # top-k prediction
+                if top_k_predict:
+                    top_k = [
+                        [i.cpu().tolist() for i in prob[n][m_p].topk(top_k_predict)]
+                        for n, m_p in enumerate(mask_position)]
+                    topk_prediction_values += list(list(zip(*top_k))[0])
+                    topk_prediction_indices += list(list(zip(*top_k))[1])
+
+        return log_likelihood, topk_prediction_indices, topk_prediction_values

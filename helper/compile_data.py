@@ -2,7 +2,6 @@
 import re
 import json
 import string
-
 from glob import glob
 from itertools import chain
 

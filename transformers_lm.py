@@ -3,19 +3,14 @@ import os
 import logging
 import math
 from typing import List
-from logging.config import dictConfig
 from itertools import chain
 
 import torch
 import transformers
 from tqdm import tqdm
 
-dictConfig({
-    "version": 1,
-    "formatters": {'f': {'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'}},
-    "handlers": {'h': {'class': 'logging.StreamHandler', 'formatter': 'f', 'level': logging.DEBUG}},
-    "root": {'handlers': ['h'], 'level': logging.DEBUG}})
 LOGGER = logging.getLogger()
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 CACHE_DIR = os.getenv("CACHE_DIR", './cache')
 NUM_WORKER = os.getenv("NUM_WORKER", 1)
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # to turn off warning
@@ -78,7 +73,7 @@ class TransformersLM:
     def batch_encode_plus_mask(self,
                                texts: List,
                                target_tokens: List,
-                               batch_size: int = 2):
+                               batch_size: int = None):
         """ to get batch data_loader with `self.encode_plus_masked` function
 
         :param texts: a list of texts
@@ -86,6 +81,7 @@ class TransformersLM:
         :param batch_size:
         :return: `torch.utils.data.DataLoader` class
         """
+        batch_size = len(texts) if batch_size is None else batch_size
         assert len(texts) == len(target_tokens), "size mismatch: {} vs {}".format(len(texts), len(target_tokens))
         data = [self.encode_plus_mask(text, token_to_mask) for text, token_to_mask in zip(texts, target_tokens)]
         data_loader = torch.utils.data.DataLoader(
@@ -132,7 +128,7 @@ class TransformersLM:
     def get_log_likelihood(self,
                            texts: (List, str),
                            target_tokens: (List, str),
-                           batch_size: int = 2,
+                           batch_size: int = None,
                            top_k_predict: int = 10):
         """ get log likelihood of a masked token within a sentence
 
@@ -162,13 +158,14 @@ class TransformersLM:
 
         return log_likelihood, (topk_prediction_values, topk_prediction_indices)
 
-    def batch_encode_plus_token_wise_mask(self, texts: List, batch_size: int = 2):
+    def batch_encode_plus_token_wise_mask(self, texts: List, batch_size: int = None):
         """ to get batch data_loader with `self.encode_plus_token_wise_mask` function
 
         :param texts: a list of texts
         :param batch_size:
         :return: `torch.utils.data.DataLoader` class, partition (partition for each text)
         """
+        batch_size = len(texts) if batch_size is None else batch_size
         data = [self.encode_plus_token_wise_mask(text, padding=True) for text in texts]
         length = [len(i) for i in data]
         partition = [[sum(length[:i]), sum(length[:i+1])] for i in range(len(length))]
@@ -204,7 +201,7 @@ class TransformersLM:
         encodes_list = [encode_with_single_mask_id(i) for i in range(len(token_list))]
         return encodes_list
 
-    def get_pseudo_perplexity(self, texts: (List, str), batch_size: int = 2):
+    def get_pseudo_perplexity(self, texts: (List, str), batch_size: int = None):
         """ to compute a pseudo perplexity (mask each token and use log likelihood for each prediction for the mask)
 
         :param texts:

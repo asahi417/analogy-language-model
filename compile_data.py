@@ -38,7 +38,7 @@ def process_single_entry_sat(single_entry: str):
     target = (lines[0].split(' ')[0].lower(), lines[0].split(' ')[1].lower())
     answer_id = ALPHABET_LIST.index(lines[-1])
     choice_list = [(i.split(' ')[0], i.split(' ')[1]) for i in lines[1:-1]]
-    return {"target": target, "answer": answer_id, "choice": choice_list, "prefix": prefix}
+    return {"stem": target, "answer": answer_id, "choice": choice_list, "prefix": prefix}
 
 
 def process_single_entry(single_entry: str, level: str):
@@ -47,7 +47,7 @@ def process_single_entry(single_entry: str, level: str):
     target = (lines[0].split(' ')[1].lower(), lines[0].split(' ')[-1].lower())
     answer_id = ALPHABET_LIST.index(lines[-1])
     choice_list = [(i.split(' ')[1], i.split(' ')[-1]) for i in lines[1:-1]]
-    return {"target": target, "answer": answer_id, "choice": choice_list, "prefix": level}
+    return {"stem": target, "answer": answer_id, "choice": choice_list, "prefix": level}
 
 
 def format_data(txt_dir):

@@ -1,16 +1,11 @@
 """ UnitTest for TextRank """
 import unittest
 import logging
-from logging.config import dictConfig
 
-from lm_util import TransformersLM
+from transformers_lm import TransformersLM
 
-dictConfig({
-    "version": 1,
-    "formatters": {'f': {'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'}},
-    "handlers": {'h': {'class': 'logging.StreamHandler', 'formatter': 'f', 'level': logging.DEBUG}},
-    "root": {'handlers': ['h'], 'level': logging.DEBUG}})
 LOGGER = logging.getLogger()
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 MODEL = TransformersLM('roberta-base', max_length=128)
 TEST = [
     "COVID-19 case numbers are rising rapidly across the whole of the UK and in other countries.",

@@ -37,14 +37,14 @@ class TestTransformersLM(unittest.TestCase):
                 assert t == masked_token
 
     def test_get_log_likelihood(self):
-        log_likelihood, (topk_prediction_values, topk_prediction_indices) = MODEL.get_log_likelihood(TEST, TARGET)
+        log_likelihood, (topk_prediction_values, topk_prediction_indices) = MODEL.get_nll(TEST, TARGET)
         LOGGER.info(log_likelihood)
         LOGGER.info(topk_prediction_values)
         LOGGER.info(topk_prediction_indices)
         assert len(log_likelihood) == 2
         assert len(topk_prediction_indices) == 2
         assert len(topk_prediction_values) == 2
-        log_likelihood, (topk_prediction_values, topk_prediction_indices) = MODEL.get_log_likelihood(TEST[0], TARGET[0])
+        log_likelihood, (topk_prediction_values, topk_prediction_indices) = MODEL.get_nll(TEST[0], TARGET[0])
         LOGGER.info(log_likelihood)
         LOGGER.info(topk_prediction_values)
         LOGGER.info(topk_prediction_indices)
@@ -68,6 +68,20 @@ class TestTransformersLM(unittest.TestCase):
 
                 # check if masking is working
                 assert MODEL.tokenizer.mask_token == MODEL.tokenizer.decode(input_ids[mask_position])
+
+        # the case where the target token is split into subwords
+        encode = MODEL.encode_plus_mask('shrubs are divided into subwords ', 'shrubs')
+        input_ids = encode['input_ids']
+        mask_position = encode['mask_position']
+        mask_token_id = encode['mask_token_id']
+
+        # masking position consistency
+        assert 'shr' == MODEL.tokenizer.decode(mask_token_id)
+
+        # check if masking is working
+        assert MODEL.tokenizer.mask_token == MODEL.tokenizer.decode(input_ids[mask_position])
+
+        print(encode)
 
 
 if __name__ == "__main__":

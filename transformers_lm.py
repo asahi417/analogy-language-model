@@ -11,8 +11,6 @@ from tqdm import tqdm
 
 LOGGER = logging.getLogger()
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
-CACHE_DIR = os.getenv("CACHE_DIR", './cache')
-NUM_WORKER = os.getenv("NUM_WORKER", 1)
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # to turn off warning
 
 
@@ -41,17 +39,22 @@ class Dataset(torch.utils.data.Dataset):
 class TransformersLM:
     """ transformers language model based sentence-mining """
 
-    def __init__(self, model: str, max_length: int = None):
+    def __init__(self,
+                 model: str,
+                 max_length: int = None,
+                 cache_dir: str = './cache',
+                 num_worker: int = 4):
         """ transformers language model based sentence-mining
 
         :param model: a model name corresponding to a model card in `transformers`
         :param max_length: a model max length if specified, else use model_max_length
         """
         LOGGER.info('*** setting up a language model ***')
+        self.num_worker = num_worker
         # model setup
-        self.tokenizer = transformers.AutoTokenizer.from_pretrained(model, cache_dir=CACHE_DIR)
-        self.config = transformers.AutoConfig.from_pretrained(model, cache_dir=CACHE_DIR)
-        self.model = transformers.AutoModelForMaskedLM.from_pretrained(model, config=self.config, cache_dir=CACHE_DIR)
+        self.tokenizer = transformers.AutoTokenizer.from_pretrained(model, cache_dir=cache_dir)
+        self.config = transformers.AutoConfig.from_pretrained(model, cache_dir=cache_dir)
+        self.model = transformers.AutoModelForMaskedLM.from_pretrained(model, config=self.config, cache_dir=cache_dir)
         self.model.eval()
         if max_length:
             assert self.tokenizer.model_max_length >= max_length
@@ -85,19 +88,21 @@ class TransformersLM:
         assert len(texts) == len(target_tokens), "size mismatch: {} vs {}".format(len(texts), len(target_tokens))
         data = [self.encode_plus_mask(text, token_to_mask) for text, token_to_mask in zip(texts, target_tokens)]
         data_loader = torch.utils.data.DataLoader(
-            Dataset(data), num_workers=NUM_WORKER, batch_size=batch_size, shuffle=False, drop_last=False)
+            Dataset(data), num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False)
         return data_loader
 
     def encode_plus_mask(self,
                          text: str,
                          token_to_mask: str,
-                         padding: bool = True):
+                         padding: bool = True,
+                         longest_subword_search: bool = True):
         """ to get an output from `encode_plus` with a masked token specified by a string
         Note: it can only take single token, and a phrase over multiple tokens will raise error
 
         :param str text: a text to encode
         :param str token_to_mask: a target token to be masked
-        :param bool padding: a flag to encode output with/without paddings
+        :param bool padding: a flag to encode output with/without padding
+        :param bool longest_subword_search: a flag to enable subword serach if token_to_mask is not in the tokens
         :return encode
         """
         assert len(text.replace(' ', '')) != 0, 'found an empty text'
@@ -108,9 +113,15 @@ class TransformersLM:
 
         # get first token in the list which is exact `mask_string`
         mask_positions = [n for n, t in enumerate(token_list) if token_to_mask in t]
-        assert len(mask_positions) > 0,\
-            'the target token `{}` is not matched any tokens in a given text`{}`'.format(token_to_mask, token_list)
-        mask_position = mask_positions[0]
+        if len(mask_positions) > 0:
+            mask_position = mask_positions[0]
+        elif not longest_subword_search:
+            raise ValueError('`{}` is not found in tokens `{}`'.format(token_to_mask, token_list))
+        else:
+            # search by the shortest subword that has overlap with the original token to be masked
+            subword_to_mask = sorted([i for i in token_list if i in token_to_mask], key=lambda x: len(x))[-1]
+            mask_position = token_list.index(subword_to_mask)
+            # LOGGER.info('`{}` is not found in tokens `{}`'.format(token_to_mask, token_list))
 
         # mask the token and keep the mask position, masked token, masked token id
         # * note that `the<mask> is ~` == `the <mask> is ~` in the tokenizer module
@@ -125,19 +136,19 @@ class TransformersLM:
         encode['mask_token_id'] = mask_token_id
         return encode
 
-    def get_log_likelihood(self,
-                           texts: (List, str),
-                           target_tokens: (List, str),
-                           batch_size: int = None,
-                           top_k_predict: int = 10):
-        """ get log likelihood of a masked token within a sentence
+    def get_nll(self,
+                texts: (List, str),
+                target_tokens: (List, str),
+                batch_size: int = None,
+                top_k_predict: int = 10):
+        """ get negative log likelihood of a masked token within a sentence
 
         :param texts:
         :param target_tokens:
         :param batch_size:
         :param top_k_predict:
-        :return: log_likelihood, (topk_prediction_values, topk_prediction_indices)
-            log_likelihood, a list of log likelihood, (len(texts))
+        :return: negative_log_likelihood, (topk_prediction_values, topk_prediction_indices)
+            log_likelihood, a list of negative log likelihood, (len(texts))
             topk_prediction_indices, top k tokens predicted for the masked position, (len(texts)), top_k)
             topk_prediction_values, probability along with the prediction, (len(texts)), top_k)
         """
@@ -155,8 +166,8 @@ class TransformersLM:
         topk_prediction_indices = [[
             self.tokenizer.decode(t) for t in topk]
             for topk in topk_prediction_indices]
-
-        return log_likelihood, (topk_prediction_values, topk_prediction_indices)
+        negative_log_likelihood = [-1 * i for i in log_likelihood]
+        return negative_log_likelihood, (topk_prediction_values, topk_prediction_indices)
 
     def batch_encode_plus_token_wise_mask(self, texts: List, batch_size: int = None):
         """ to get batch data_loader with `self.encode_plus_token_wise_mask` function
@@ -171,7 +182,7 @@ class TransformersLM:
         partition = [[sum(length[:i]), sum(length[:i+1])] for i in range(len(length))]
         flatten_data = list(chain(*data))
         data_loader = torch.utils.data.DataLoader(
-            Dataset(flatten_data), num_workers=NUM_WORKER, batch_size=batch_size, shuffle=False, drop_last=False)
+            Dataset(flatten_data), num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False)
         return data_loader, partition
 
     def encode_plus_token_wise_mask(self, text: str, padding: bool = True):

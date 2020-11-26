@@ -1,11 +1,12 @@
-""" UnitTest for transformers_lm.py """
+""" UnitTest """
 import unittest
 import logging
-
-from transformers_lm import TransformersLM
-
-LOGGER = logging.getLogger()
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
+
+from src.lm import TransformersLM
+from src.prompting_relation import prompting_relation
+from src.data import get_dataset
+
 MODEL = TransformersLM('roberta-base', max_length=128)
 TEST = [
     "COVID-19 case numbers are rising rapidly across the whole of the UK and in other countries.",
@@ -14,8 +15,24 @@ TEST = [
 TARGET = ['UK', 'Biden']
 
 
-class TestTransformersLM(unittest.TestCase):
-    """Test TransformersLM"""
+class Test(unittest.TestCase):
+    """Test"""
+
+    def test_prompting(self):
+        sample = {
+            "stem": ["arid", "dry"],
+            "answer": 0,
+            "choice": [
+                ["glacial", "cold"], ["coastal", "tidal"], ["damp", "muddy"], ["snowbound", "polar"],
+                ["shallow", "deep"]],
+            "prefix": "190 FROM REAL SATs"}
+        prompt = prompting_relation(
+            subject_stem=sample['stem'][0],
+            object_stem=sample['stem'][1],
+            subject_analogy=sample['choice'][0][1],
+            object_analogy=sample['choice'][0][1])
+        logging.info(prompt)
+
     def test_pseudo_perplexity(self):
         ppl = MODEL.get_pseudo_perplexity(TEST)
         assert len(ppl) == len(TEST)
@@ -38,16 +55,16 @@ class TestTransformersLM(unittest.TestCase):
 
     def test_get_log_likelihood(self):
         log_likelihood, (topk_prediction_values, topk_prediction_indices) = MODEL.get_nll(TEST, TARGET)
-        LOGGER.info(log_likelihood)
-        LOGGER.info(topk_prediction_values)
-        LOGGER.info(topk_prediction_indices)
+        logging.info(log_likelihood)
+        logging.info(topk_prediction_values)
+        logging.info(topk_prediction_indices)
         assert len(log_likelihood) == 2
         assert len(topk_prediction_indices) == 2
         assert len(topk_prediction_values) == 2
         log_likelihood, (topk_prediction_values, topk_prediction_indices) = MODEL.get_nll(TEST[0], TARGET[0])
-        LOGGER.info(log_likelihood)
-        LOGGER.info(topk_prediction_values)
-        LOGGER.info(topk_prediction_indices)
+        logging.info(log_likelihood)
+        logging.info(topk_prediction_values)
+        logging.info(topk_prediction_indices)
         assert len(log_likelihood) == 1
         assert len(topk_prediction_indices) == 1
         assert len(topk_prediction_values) == 1
@@ -64,7 +81,7 @@ class TestTransformersLM(unittest.TestCase):
                 mask_token_id = encode['mask_token_id']
 
                 # masking position consistency
-                assert TARGET[i] in MODEL.tokenizer.decode(mask_token_id)
+                assert MODEL.tokenizer.decode(mask_token_id).replace(' ', '') in TARGET[i]
 
                 # check if masking is working
                 assert MODEL.tokenizer.mask_token == MODEL.tokenizer.decode(input_ids[mask_position])
@@ -76,12 +93,14 @@ class TestTransformersLM(unittest.TestCase):
         mask_token_id = encode['mask_token_id']
 
         # masking position consistency
-        assert 'shr' == MODEL.tokenizer.decode(mask_token_id)
+        assert MODEL.tokenizer.decode(mask_token_id) in 'shrubs'
 
         # check if masking is working
         assert MODEL.tokenizer.mask_token == MODEL.tokenizer.decode(input_ids[mask_position])
 
-        print(encode)
+    def test_dataset(self):
+        tmp = get_dataset(path_to_data='./data/u2.jsonl')
+        logging.info(tmp[:2])
 
 
 if __name__ == "__main__":

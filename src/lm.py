@@ -4,13 +4,13 @@ import logging
 import math
 from typing import List
 from itertools import chain
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
 import torch
 import transformers
 from tqdm import tqdm
 
-LOGGER = logging.getLogger()
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
+
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # to turn off warning
 
 
@@ -49,7 +49,7 @@ class TransformersLM:
         :param model: a model name corresponding to a model card in `transformers`
         :param max_length: a model max length if specified, else use model_max_length
         """
-        LOGGER.info('*** setting up a language model ***')
+        logging.info('*** setting up a language model ***')
         self.num_worker = num_worker
         # model setup
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(model, cache_dir=cache_dir)
@@ -66,7 +66,7 @@ class TransformersLM:
         assert self.n_gpu <= 1
         self.device = 'cuda' if self.n_gpu > 0 else 'cpu'
         self.model.to(self.device)
-        LOGGER.info('running on %i GPU' % self.n_gpu)
+        logging.info('running on %i GPU' % self.n_gpu)
         # sentence prefix tokens
         tokens = self.tokenizer.tokenize('get tokenizer specific prefix')
         tokens_encode = self.tokenizer.convert_ids_to_tokens(self.tokenizer.encode('get tokenizer specific prefix'))
@@ -86,7 +86,7 @@ class TransformersLM:
         """
         batch_size = len(texts) if batch_size is None else batch_size
         assert len(texts) == len(target_tokens), "size mismatch: {} vs {}".format(len(texts), len(target_tokens))
-        data = [self.encode_plus_mask(text, token_to_mask) for text, token_to_mask in zip(texts, target_tokens)]
+        data = list(map(lambda x: self.encode_plus_mask(*x), zip(texts, target_tokens)))
         data_loader = torch.utils.data.DataLoader(
             Dataset(data), num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False)
         return data_loader
@@ -112,16 +112,16 @@ class TransformersLM:
             "a token size exceeds the max_length: {} > {}".format(len(token_list), self.max_length)
 
         # get first token in the list which is exact `mask_string`
-        mask_positions = [n for n, t in enumerate(token_list) if token_to_mask in t]
+        # mask_positions = [n for n, t in enumerate(token_list) if token_to_mask in t]
+        mask_positions = list(filter(lambda x: token_to_mask in x[1], enumerate(token_list)))
         if len(mask_positions) > 0:
-            mask_position = mask_positions[0]
+            mask_position = mask_positions[0][0]
         elif not longest_subword_search:
             raise ValueError('`{}` is not found in tokens `{}`'.format(token_to_mask, token_list))
         else:
             # search by the shortest subword that has overlap with the original token to be masked
-            subword_to_mask = sorted([i for i in token_list if i in token_to_mask], key=lambda x: len(x))[-1]
-            mask_position = token_list.index(subword_to_mask)
-            # LOGGER.info('`{}` is not found in tokens `{}`'.format(token_to_mask, token_list))
+            subword = sorted(filter(lambda x: x in token_to_mask, token_list), key=lambda x: len(x), reverse=True)[0]
+            mask_position = token_list.index(subword)
 
         # mask the token and keep the mask position, masked token, masked token id
         # * note that `the<mask> is ~` == `the <mask> is ~` in the tokenizer module
@@ -163,10 +163,11 @@ class TransformersLM:
 
         log_likelihood, topk_prediction_indices, topk_prediction_values \
             = self.__prediction_with_data_loader(data_loader, top_k_predict=top_k_predict)
-        topk_prediction_indices = [[
-            self.tokenizer.decode(t) for t in topk]
-            for topk in topk_prediction_indices]
-        negative_log_likelihood = [-1 * i for i in log_likelihood]
+        topk_prediction_indices = list(map(
+            lambda x: list(map(lambda y: self.tokenizer.decode(y), x)),
+            topk_prediction_indices
+        ))
+        negative_log_likelihood = list(map(lambda x: -1 * x, log_likelihood))
         return negative_log_likelihood, (topk_prediction_values, topk_prediction_indices)
 
     def batch_encode_plus_token_wise_mask(self, texts: List, batch_size: int = None):
@@ -177,9 +178,9 @@ class TransformersLM:
         :return: `torch.utils.data.DataLoader` class, partition (partition for each text)
         """
         batch_size = len(texts) if batch_size is None else batch_size
-        data = [self.encode_plus_token_wise_mask(text, padding=True) for text in texts]
-        length = [len(i) for i in data]
-        partition = [[sum(length[:i]), sum(length[:i+1])] for i in range(len(length))]
+        data = list(map(lambda x: self.encode_plus_token_wise_mask(x, padding=True), texts))
+        length = list(map(lambda x: len(x), data))
+        partition = list(map(lambda x: [sum(length[:x]), sum(length[:x+1])], range(len(length))))
         flatten_data = list(chain(*data))
         data_loader = torch.utils.data.DataLoader(
             Dataset(flatten_data), num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False)
@@ -261,9 +262,16 @@ class TransformersLM:
 
                 # top-k prediction
                 if top_k_predict:
-                    top_k = [
-                        [i.cpu().tolist() for i in prob[n][m_p].topk(top_k_predict)]
-                        for n, m_p in enumerate(mask_position)]
+                    # top_k = [
+                    #     [i.cpu().tolist() for i in prob[n][m_p].topk(top_k_predict)]
+                    #     for n, m_p in enumerate(mask_position)]
+                    # print(top_k)
+                    top_k = list(map(
+                        lambda x: list(map(
+                            lambda y: y.cpu().tolist(),
+                            prob[x[0]][x[1]].topk(top_k_predict))),
+                        enumerate(mask_position)
+                    ))
                     topk_prediction_values += list(list(zip(*top_k))[0])
                     topk_prediction_indices += list(list(zip(*top_k))[1])
 

@@ -5,8 +5,8 @@ import logging
 import json
 from itertools import chain
 
-from transformers_lm import TransformersLM
-from prompting_relation import get_prompt_dataset
+from src.lm import TransformersLM
+from src.prompting_relation import get_prompt_dataset
 
 
 LOGGER = logging.getLogger()

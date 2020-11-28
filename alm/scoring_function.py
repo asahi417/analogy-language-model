@@ -1,5 +1,6 @@
 import logging
 from typing import List
+from time import time
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
 from .lm import TransformersLM
@@ -94,7 +95,7 @@ class RelationScorer:
         :param export_dir: directory to export the result
         :return:
         """
-
+        start = time()
         # sanity check
         assert ((template_types and len(template_types) == 1) and not permutation_positive) == \
                (aggregation_positive == 'none'), 'permutation/aggregation mismatch (pos)'
@@ -124,35 +125,29 @@ class RelationScorer:
         batch_data, batch_id = get_structure(list_nested_sentence, batch_size)
 
         # run model prediction over flatten data
-        print(config.flatten_score)
         if config.flatten_score is None:
             logging.info('run inference: {}'.format(scoring_method))
             if scoring_method == 'ppl':
                 flatten_score = self.lm.get_pseudo_perplexity(batch_data, batch_size=batch_size)
-                print(flatten_score)
             else:
                 raise ValueError('unknown method: {}'.format(scoring_method))
         else:
             flatten_score = config.flatten_score
 
-        print(flatten_score)
         # restore the nested structure
         logging.info('restore batch structure')
         score = restore_structure(list_nested_sentence, flatten_score, batch_id)
 
         logit_pn = list(map(lambda o: list(map(lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])), o)), score))
         logit = list(map(lambda o: list(map(lambda s: (aggregator_neg(s[1]) - aggregator_pos(s[0])), o)), score))
-        prediction = list(map(lambda x: x.index(max(x)), logit))
+        pred = list(map(lambda x: x.index(max(x)), logit))
 
         # compute accuracy
-        assert len(prediction) == len(list_answer)
-        accuracy = sum(map(lambda x: int(x[0] == x[1]), zip(prediction, list_answer))) / len(list_answer)
-        logging.info('### ACCURACY: {} ###'.format(accuracy))
+        assert len(pred) == len(list_answer)
+        accuracy = sum(map(lambda x: int(x[0] == x[1]), zip(pred, list_answer))) / len(list_answer)
+        logging.info('accuracy: {}'.format(accuracy))
 
         # save
-        config.save(
-            accuracy=accuracy,
-            flatten_score=flatten_score,
-            logit_pn=logit_pn, logit=logit, prediction=prediction
-        )
+        config.save(accuracy=accuracy, flatten_score=flatten_score, logit_pn=logit_pn, logit=logit, prediction=pred)
+        logging.info('experiment completed: {} sec in total'.format(time()-start))
 

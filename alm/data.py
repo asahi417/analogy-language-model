@@ -20,7 +20,7 @@ def get_dataset_prompt(path_to_data: str,
                        template_types: List = None,
                        permutation_positive: bool = False,
                        permutation_negative: bool = False,
-                       subset: bool = False):
+                       debug: bool = False):
     """ get prompted SAT-type dataset
 
     :param path_to_data:
@@ -70,7 +70,7 @@ def get_dataset_prompt(path_to_data: str,
         return dictionary['answer'], prompts, dictionary['stem'], dictionary['choice']
 
     data = list(map(lambda x: single_entry(x), get_dataset(path_to_data)))
-    if subset:
+    if debug:
         data = data[:2]
     list_answer = list(list(zip(*data))[0])
     list_nested_sentence = list(list(zip(*data))[1])

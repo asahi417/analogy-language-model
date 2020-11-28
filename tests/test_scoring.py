@@ -15,7 +15,7 @@ class Test(unittest.TestCase):
         # temps = ['is-to-what']
         scorer = RelationScorer()
         # scorer.analogy_test(data, template_types=temps)
-        scorer.analogy_test(data, template_types=temps, aggregation_positive='max')
+        scorer.analogy_test(data, debug=True, template_types=temps, aggregation_positive='max')
 
 
 if __name__ == "__main__":

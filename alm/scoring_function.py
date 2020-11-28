@@ -81,7 +81,8 @@ class RelationScorer:
                      permutation_negative: bool = False,
                      aggregation_positive: str = 'mean',
                      aggregation_negative: str = 'none',
-                     export_dir: str = './results'):
+                     export_dir: str = './results',
+                     debug: bool = False):
         """ relation scoring test on analogy dataset
 
         :param path_to_data:
@@ -117,7 +118,7 @@ class RelationScorer:
         # fetch data
         logging.info('fetch data and templating: {}'.format(path_to_data))
         list_answer, list_nested_sentence, list_stem, list_choice = get_dataset_prompt(
-            path_to_data, template_types, subset=True,
+            path_to_data, template_types, debug=debug,
             permutation_negative=permutation_negative, permutation_positive=permutation_positive)
 
         # create batch

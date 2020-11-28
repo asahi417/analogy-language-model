@@ -11,7 +11,7 @@ import transformers
 from tqdm import tqdm
 
 
-os.environ["TOKENIZERS_PARALLELISM"] = "false"  # to turn off warning
+os.environ["TOKENIZERS_PARALLELISM"] = "false"  # to turn off warning message
 
 
 __all__ = 'TransformersLM'
@@ -43,7 +43,7 @@ class TransformersLM:
                  model: str,
                  max_length: int = None,
                  cache_dir: str = './cache',
-                 num_worker: int = 4):
+                 num_worker: int = 1):
         """ transformers language model based sentence-mining
 
         :param model: a model name corresponding to a model card in `transformers`
@@ -87,6 +87,8 @@ class TransformersLM:
         batch_size = len(texts) if batch_size is None else batch_size
         assert len(texts) == len(target_tokens), "size mismatch: {} vs {}".format(len(texts), len(target_tokens))
         data = list(map(lambda x: self.encode_plus_mask(*x), zip(texts, target_tokens)))
+        if self.num_worker == 1:
+            os.environ["OMP_NUM_THREADS"] = "1"  # to turn off warning message
         data_loader = torch.utils.data.DataLoader(
             Dataset(data), num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False)
         return data_loader
@@ -256,16 +258,13 @@ class TransformersLM:
                 prob = torch.softmax(logit, -1)
 
                 # compute likelihood of masked positions given the masked tokens
-                log_likelihood += [
-                    math.log(float(prob[n][m_p][m_i].cpu())) for n, (m_p, m_i)
-                    in enumerate(zip(mask_position, mask_token_id))]
+                log_likelihood += list(map(
+                    lambda x: math.log(float(prob[x[0]][x[1][0]][x[1][1]].cpu())),
+                    enumerate(zip(mask_position, mask_token_id))
+                ))
 
                 # top-k prediction
                 if top_k_predict:
-                    # top_k = [
-                    #     [i.cpu().tolist() for i in prob[n][m_p].topk(top_k_predict)]
-                    #     for n, m_p in enumerate(mask_position)]
-                    # print(top_k)
                     top_k = list(map(
                         lambda x: list(map(
                             lambda y: y.cpu().tolist(),

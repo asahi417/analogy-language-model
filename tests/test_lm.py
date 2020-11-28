@@ -1,11 +1,9 @@
-""" UnitTest """
+""" UnitTest for LM modules """
 import unittest
 import logging
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
-from src.lm import TransformersLM
-from src.prompting_relation import prompting_relation
-from src.data import get_dataset
+from alm import TransformersLM
 
 MODEL = TransformersLM('roberta-base', max_length=128)
 TEST = [
@@ -17,21 +15,6 @@ TARGET = ['UK', 'Biden']
 
 class Test(unittest.TestCase):
     """Test"""
-
-    def test_prompting(self):
-        sample = {
-            "stem": ["arid", "dry"],
-            "answer": 0,
-            "choice": [
-                ["glacial", "cold"], ["coastal", "tidal"], ["damp", "muddy"], ["snowbound", "polar"],
-                ["shallow", "deep"]],
-            "prefix": "190 FROM REAL SATs"}
-        prompt = prompting_relation(
-            subject_stem=sample['stem'][0],
-            object_stem=sample['stem'][1],
-            subject_analogy=sample['choice'][0][1],
-            object_analogy=sample['choice'][0][1])
-        logging.info(prompt)
 
     def test_pseudo_perplexity(self):
         ppl = MODEL.get_pseudo_perplexity(TEST)
@@ -97,10 +80,6 @@ class Test(unittest.TestCase):
 
         # check if masking is working
         assert MODEL.tokenizer.mask_token == MODEL.tokenizer.decode(input_ids[mask_position])
-
-    def test_dataset(self):
-        tmp = get_dataset(path_to_data='./data/u2.jsonl')
-        logging.info(tmp[:2])
 
 
 if __name__ == "__main__":

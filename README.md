@@ -1,3 +1,8 @@
 # Pretrained Language Model based Analogy Probing
+Analogy probing via pretrained language models.
 
-Data can be downloaded [here](https://drive.google.com/file/d/1hO60Y5aymMSMDzmT_eq78P3YyWp7t8xU/view?usp=sharing).
+
+## Get started
+```shell script
+pip install git+https://github.com/asahi417/alm
+```

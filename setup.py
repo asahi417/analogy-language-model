@@ -18,7 +18,7 @@ setup(
     include_package_data=True,
     test_suite='tests',
     install_requires=[
-        "transformers",
+        "transformers==3.4.0",
         "torch",
         "tqdm"
     ]

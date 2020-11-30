@@ -52,7 +52,6 @@ class ConfigManager:
                 _file = cond_config[0][0].replace('config.json', 'flatten_score.pkl')
                 with open(_file, "rb") as fp:  # Unpickling
                     self.flatten_score = pickle.load(fp)
-                print(self.flatten_score)
                 logging.info('load flatten_score from {}'.format(_file))
 
             # create new experiment directory

@@ -32,6 +32,8 @@ class ConfigManager:
         logging.info('*** setting up a config manager ***\n' +
                      '\n'.join(list(map(lambda x: '{} : {}'.format(x[0], x[1]), self.config.items()))))
         self.flatten_score = None
+        cache_dir = os.path.join(export_dir, 'flatten_scores')
+        export_dir = os.path.join(export_dir, 'outputs')
         if not os.path.exists(export_dir):
             self.export_dir = os.path.join(export_dir, get_random_string())
         else:
@@ -40,30 +42,33 @@ class ConfigManager:
             same_config = list(filter(lambda x: x[1] == self.config, ex_configs.items()))
             if len(same_config) != 0:
                 raise ValueError('found same configuration in the directory: {}'.format(same_config[0][0]))
-
-            # load model prediction if the model config is at least same, enabling to skip model inference in case
-            cond = ['model', 'max_length', 'path_to_data', 'permutation_positive', 'permutation_negative',
-                    'template_types', 'scoring_method']
-            cond_config = list(filter(
-                lambda x: ([x[1][i] for i in cond] == [self.config[i] for i in cond]) and os.path.exists(
-                    x[0].replace('config.json', 'flatten_score.pkl')),
-                ex_configs.items()))
-            if len(cond_config) != 0:
-                _file = cond_config[0][0].replace('config.json', 'flatten_score.pkl')
-                with open(_file, "rb") as fp:  # Unpickling
-                    self.flatten_score = pickle.load(fp)
-                logging.info('load flatten_score from {}'.format(_file))
-
             # create new experiment directory
             ex = list(map(lambda x: x.replace('/config.json', '').split('/')[-1], ex_configs.keys()))
             self.export_dir = os.path.join(export_dir, get_random_string(exclude=ex))
 
+        # load model prediction if the model config is at least same, enabling to skip model inference in case
+        cond = ['model', 'max_length', 'path_to_data', 'template_types', 'scoring_method']
+        self.config_cache = {k: v for k, v in self.config.items() if k in cond}
+        if not os.path.exists(cache_dir):
+            self.cache_dir = os.path.join(cache_dir, get_random_string())
+        else:
+            ex_configs = {i: safe_open(i) for i in glob('{}/*/config.json'.format(cache_dir))}
+            same_config = list(filter(lambda x: x[1] == self.config_cache, ex_configs.items()))
+            if len(same_config) != 0:
+                _file = same_config[0][0].replace('config.json', 'flatten_score.pkl')
+                with open(_file, "rb") as fp:  # Unpickling
+                    self.flatten_score = pickle.load(fp)
+                logging.info('load flatten_score from {}'.format(_file))
+
     def save(self, accuracy: float, flatten_score: List, logit_pn: List, logit: List, prediction: List):
         """ export data """
         os.makedirs(self.export_dir, exist_ok=True)
+        os.makedirs(self.cache_dir, exist_ok=True )
         if self.flatten_score is None:
-            with open('{}/flatten_score.pkl'.format(self.export_dir), "wb") as fp:
+            with open('{}/flatten_score.pkl'.format(self.cache_dir), "wb") as fp:
                 pickle.dump(flatten_score, fp)
+            with open('{}/config.json'.format(self.cache_dir), 'w') as f:
+                json.dump(self.config_cache, f)
         with open('{}/accuracy.json'.format(self.export_dir), 'w') as f:
             json.dump({"accuracy": accuracy}, f)
         with open('{}/config.json'.format(self.export_dir), 'w') as f:

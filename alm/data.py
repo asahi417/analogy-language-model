@@ -18,9 +18,8 @@ def get_dataset(path_to_data: str):
 
 def get_dataset_prompt(path_to_data: str,
                        template_types: List = None,
-                       permutation_positive: bool = False,
-                       permutation_negative: bool = False,
-                       debug: bool = False):
+                       permutation_positive: bool = True,
+                       permutation_negative: bool = True):
     """ get prompted SAT-type dataset
 
     :param path_to_data:
@@ -36,7 +35,8 @@ def get_dataset_prompt(path_to_data: str,
 
     def sampling_permutation(a, b, c, d):
         all_permutations = list(permutations([a, b, c, d]))
-        positive = [(a, b, c, d), (b, a, d, c), (c, d, a, b), (d, c, b, a)]
+        positive = [(a, b, c, d), (b, a, d, c), (c, d, a, b), (d, c, b, a),
+                    (a, d, c, b), (d, a, b, c), (c, b, a, d), (b, c, d, a)]
         negative = list(filter(lambda x: x not in positive, all_permutations))
         if not permutation_positive:
             positive = [(a, b, c, d)]
@@ -70,8 +70,6 @@ def get_dataset_prompt(path_to_data: str,
         return dictionary['answer'], prompts, dictionary['stem'], dictionary['choice']
 
     data = list(map(lambda x: single_entry(x), get_dataset(path_to_data)))
-    if debug:
-        data = data[:2]
     list_answer = list(list(zip(*data))[0])
     list_nested_sentence = list(list(zip(*data))[1])
     list_stem = list(list(zip(*data))[2])

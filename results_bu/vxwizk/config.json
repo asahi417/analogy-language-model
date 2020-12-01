@@ -1,0 +1,1 @@
+{"model": "roberta-large", "max_length": 512, "path_to_data": "./data/sat_package_v3.jsonl", "scoring_method": "ppl", "template_types": ["is-to-as"], "permutation_positive": false, "permutation_negative": false, "aggregation_positive": "none", "aggregation_negative": "none"}

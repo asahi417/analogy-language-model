@@ -117,9 +117,8 @@ class RelationScorer:
 
         # fetch data
         logging.info('fetch data and templating: {}'.format(path_to_data))
-        list_answer, list_nested_sentence, list_stem, list_choice = get_dataset_prompt(
-            path_to_data, template_types, debug=debug,
-            permutation_negative=permutation_negative, permutation_positive=permutation_positive)
+        # get data with all permutation regardless of the configuration
+        list_answer, list_nested_sentence, list_stem, list_choice = get_dataset_prompt(path_to_data, template_types)
 
         # create batch
         logging.info('creating batch (data size: {})'.format(len(list_answer)))
@@ -139,8 +138,11 @@ class RelationScorer:
         logging.info('restore batch structure')
         score = restore_structure(list_nested_sentence, flatten_score, batch_id)
 
-        logit_pn = list(map(lambda o: list(map(lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])), o)), score))
-        logit = list(map(lambda o: list(map(lambda s: (aggregator_neg(s[1]) - aggregator_pos(s[0])), o)), score))
+        if permutation_negative:
+            logit_pn = list(map(lambda o: list(map(lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])), o)), score))
+        else:
+            logit_pn = list(map(lambda o: list(map(lambda s: (aggregator_pos(s[0]), 0), o)), score))
+        logit = list(map(lambda o: list(map(lambda s: s[1] - s[0], o)), logit_pn))
         pred = list(map(lambda x: x.index(max(x)), logit))
 
         # compute accuracy

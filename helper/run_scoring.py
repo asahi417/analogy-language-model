@@ -2,7 +2,10 @@ import alm
 scorer = alm.RelationScorer(model='roberta-large')
 
 path_to_data = './data/sat_package_v3.jsonl'
-template_types = ['is-to-what']
+# template_types = ['is-to-what']
+# template_types = ['is-to-as']
+template_types = ['rel-same']
+# template_types = ['what-is-to']
 batch_size = 16
 
 

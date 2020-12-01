@@ -8,7 +8,7 @@ target = 'sat_package_v3'
 for i in glob('results_partial/*/config.json'):
     with open(i) as f:
         config = json.load(f)
-    print(config)
+    print(i, config)
     path_to_data = config.pop('path_to_data')
     if '{}-'.format(target) in path_to_data:
         num = int(path_to_data.split('{}-'.format(target))[-1].replace('.jsonl', ''))

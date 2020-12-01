@@ -49,21 +49,20 @@ class ConfigManager:
         # load model prediction if the model config is at least same, enabling to skip model inference in case
         cond = ['model', 'max_length', 'path_to_data', 'template_types', 'scoring_method']
         self.config_cache = {k: v for k, v in self.config.items() if k in cond}
-        if not os.path.exists(cache_dir):
-            self.cache_dir = os.path.join(cache_dir, get_random_string())
-        else:
-            ex_configs = {i: safe_open(i) for i in glob('{}/*/config.json'.format(cache_dir))}
-            same_config = list(filter(lambda x: x[1] == self.config_cache, ex_configs.items()))
-            if len(same_config) != 0:
-                _file = same_config[0][0].replace('config.json', 'flatten_score.pkl')
-                with open(_file, "rb") as fp:  # Unpickling
-                    self.flatten_score = pickle.load(fp)
-                logging.info('load flatten_score from {}'.format(_file))
+        self.cache_dir = os.path.join(cache_dir, get_random_string())
+        ex_configs = {i: safe_open(i) for i in glob('{}/*/config.json'.format(cache_dir))}
+        same_config = list(filter(lambda x: x[1] == self.config_cache, ex_configs.items()))
+        if len(same_config) != 0:
+            _file = same_config[0][0].replace('config.json', 'flatten_score.pkl')
+            with open(_file, "rb") as fp:  # Unpickling
+                self.flatten_score = pickle.load(fp)
+            logging.info('load flatten_score from {}'.format(_file))
+            self.cache_dir = same_config[0][0].replace('config.json', '')
 
     def save(self, accuracy: float, flatten_score: List, logit_pn: List, logit: List, prediction: List):
         """ export data """
         os.makedirs(self.export_dir, exist_ok=True)
-        os.makedirs(self.cache_dir, exist_ok=True )
+        os.makedirs(self.cache_dir, exist_ok=True)
         if self.flatten_score is None:
             with open('{}/flatten_score.pkl'.format(self.cache_dir), "wb") as fp:
                 pickle.dump(flatten_score, fp)

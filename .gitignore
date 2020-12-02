@@ -1,6 +1,4 @@
 cache
-results/*/*.json
-results/*/*.pkl
-
-results_bu
+results/flatten_scores
+results/outputs
 helper

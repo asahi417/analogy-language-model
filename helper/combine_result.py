@@ -5,7 +5,7 @@ from glob import glob
 
 partial_config = {}
 target = 'sat_package_v3'
-for i in glob('results_partial/*/config.json'):
+for i in glob('results/flatten_scores/*/config.json'):
     with open(i) as f:
         config = json.load(f)
     print(i, config)
@@ -42,27 +42,22 @@ for k, v in partial_config.items():
 
     print(path, path_n)
 
-
-    new_checkpoint = 'flatten_{}_{}'.format(target, '_'.join(config['template_types']))
-    if config['permutation_positive']:
-        new_checkpoint += '_pos'
-    if config['permutation_negative']:
-        new_checkpoint += '_neg'
-    new_checkpoint += '_' + '-'.join([i.replace('results_partial/', '') for i in path])
+    new_checkpoint = '{}_{}'.format(target, '_'.join(config['template_types']))
+    # new_checkpoint += '_' + '-'.join([i.replace('results_partial/', '') for i in path])
     print(new_checkpoint)
     print(config)
     config['path_to_data'] = './data/sat_package_v3.jsonl'
-    for o in ["aggregation_positive", "aggregation_negative"]:
-        config[o] = 'n/a'
+    # for o in ["aggregation_positive", "aggregation_negative"]:
+    #     config[o] = 'n/a'
     flatten_score_concat = []
     for p in path:
         with open(os.path.join(p, 'flatten_score.pkl'), "rb") as fp:  # Unpickling
             flatten_score_concat += pickle.load(fp)
 
-    os.makedirs(os.path.join('results', new_checkpoint), exist_ok=True)
-    with open(os.path.join('results', new_checkpoint, 'flatten_score.pkl'), "wb") as fp:
+    os.makedirs(os.path.join('results/flatten_scores', new_checkpoint), exist_ok=True)
+    with open(os.path.join('results/flatten_scores', new_checkpoint, 'flatten_score.pkl'), "wb") as fp:
         pickle.dump(flatten_score_concat, fp)
-    with open(os.path.join('results', new_checkpoint, 'config.json'), 'w') as f:
+    with open(os.path.join('results/flatten_scores', new_checkpoint, 'config.json'), 'w') as f:
         json.dump(config, f)
 
     for i in path:

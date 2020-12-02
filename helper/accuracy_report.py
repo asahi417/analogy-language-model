@@ -10,9 +10,7 @@ index = [
     'aggregation_positive', 'aggregation_negative']
 df = pd.DataFrame(index=index + ['accuracy'])
 
-for i in glob('results/*'):
-    if 'flatten' in i:
-        continue
+for i in glob('results/outputs/*'):
     with open(os.path.join(i, 'accuracy.json'), 'r') as f:
         accuracy = json.load(f)
     with open(os.path.join(i, 'config.json'), 'r') as f:

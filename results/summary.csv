@@ -1,0 +1,17 @@
+,model,max_length,scoring_method,template_types,permutation_positive,permutation_negative,aggregation_positive,aggregation_negative,accuracy
+0,roberta-large,512,ppl,what-is-to,False,False,none,none,47.45
+1,roberta-large,512,ppl,what-is-to,False,True,none,max,10.58
+2,roberta-large,512,ppl,what-is-to,False,True,none,mean,16.06
+3,roberta-large,512,ppl,what-is-to,False,True,none,min,25.18
+4,roberta-large,512,ppl,what-is-to,True,False,max,none,43.8
+5,roberta-large,512,ppl,what-is-to,True,False,mean,none,44.89
+6,roberta-large,512,ppl,what-is-to,True,False,min,none,48.91
+7,roberta-large,512,ppl,what-is-to,True,True,max,max,16.79
+8,roberta-large,512,ppl,what-is-to,True,True,max,mean,30.66
+9,roberta-large,512,ppl,what-is-to,True,True,max,min,39.42
+10,roberta-large,512,ppl,what-is-to,True,True,mean,max,10.58
+11,roberta-large,512,ppl,what-is-to,True,True,mean,mean,22.99
+12,roberta-large,512,ppl,what-is-to,True,True,mean,min,35.4
+13,roberta-large,512,ppl,what-is-to,True,True,min,max,9.12
+14,roberta-large,512,ppl,what-is-to,True,True,min,mean,12.41
+15,roberta-large,512,ppl,what-is-to,True,True,min,min,22.63

@@ -1,1 +1,0 @@
-{"model": "roberta-large", "max_length": 512, "scoring_method": "ppl", "template_types": ["is-to-what"], "path_to_data": "./data/sat_package_v3.jsonl"}

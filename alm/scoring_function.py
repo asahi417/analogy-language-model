@@ -7,8 +7,12 @@ from .lm import TransformersLM
 from .data import get_dataset_prompt
 from .config_manager import ConfigManager
 
-AGGREGATOR = {'mean': lambda x: sum(x)/len(x), 'max': lambda x: max(x), 'min': lambda x: min(x),
-              'none': lambda x: x[0] if len(x) > 0 else 0}
+AGGREGATOR = {
+    'mean': lambda x: sum(x)/len(x), 'max': lambda x: max(x), 'min': lambda x: min(x),
+    'p_1': lambda x: x[1], 'p_2': lambda x: x[2], 'p_3': lambda x: x[3],
+    'p_4': lambda x: x[4], 'p_5': lambda x: x[5], 'p_6': lambda x: x[6], 'p_7': lambda x: x[7],
+    'none': lambda x: x[0] if len(x) > 0 else 0
+}
 
 
 def get_structure(nested_list, batch_size):
@@ -81,8 +85,7 @@ class RelationScorer:
                      permutation_negative: bool = False,
                      aggregation_positive: str = 'mean',
                      aggregation_negative: str = 'none',
-                     export_dir: str = './results',
-                     debug: bool = False):
+                     export_dir: str = './results'):
         """ relation scoring test on analogy dataset
 
         :param path_to_data:

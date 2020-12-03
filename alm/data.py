@@ -35,8 +35,6 @@ def get_dataset_prompt(path_to_data: str,
 
     def sampling_permutation(a, b, c, d):
         all_permutations = list(permutations([a, b, c, d]))
-        # positive = [(a, b, c, d), (b, a, d, c), (c, d, a, b), (d, c, b, a),
-        #             (a, d, c, b), (d, a, b, c), (c, b, a, d), (b, c, d, a)]
         positive = [(a, b, c, d), (b, a, d, c), (c, d, a, b), (d, c, b, a),
                     (a, c, b, d), (c, a, d, b), (b, d, a, c), (d, b, c, a)]
 

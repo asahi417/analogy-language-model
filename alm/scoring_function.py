@@ -108,7 +108,7 @@ class RelationScorer:
 
     def __init__(self,
                  model: str = 'roberta-base',
-                 max_length: int = None,
+                 max_length: int = 32,  # the template is usually a short sentence
                  cache_dir: str = './cache',
                  num_worker: int = 1,
                  embedding_mode: bool = False):

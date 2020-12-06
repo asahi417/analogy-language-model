@@ -39,46 +39,6 @@ def get_structure(nested_list, batch_size, positive: bool = True):
     return batch_data, batch_id
 
 
-# def get_structure(nested_list, batch_size):
-#     """ create batch while keeping the nested structure """
-#     batch_data_pos = []
-#     batch_id_pos = []
-#     batch_data_neg = []
-#     batch_id_neg = []
-#     tmp_data_placeholder_neg = []
-#     tmp_id_placeholder_neg = []
-#     tmp_id_placeholder_pos = []
-#     tmp_data_placeholder_pos = []
-#     for n_q, single_q in enumerate(nested_list):
-#         for n_o, single_option in enumerate(single_q):
-#             # positive
-#             for n_perm, single_permutation in enumerate(single_option[0]):
-#                 tmp_data_placeholder_pos.append(single_permutation)
-#                 tmp_id_placeholder_pos.append([n_q, n_o, n_perm])
-#                 if len(tmp_id_placeholder_pos) == batch_size:
-#                     batch_data_pos += tmp_data_placeholder_pos
-#                     batch_id_pos.append(tmp_id_placeholder_pos)
-#                     tmp_data_placeholder_pos = []
-#                     tmp_id_placeholder_pos = []
-#             # negative
-#             for n_perm, single_permutation in enumerate(single_option[1]):
-#                 tmp_data_placeholder_neg.append(single_permutation)
-#                 tmp_id_placeholder_neg.append([n_q, n_o, n_perm])
-#                 if len(tmp_id_placeholder_neg) == batch_size:
-#                     batch_data_neg += tmp_data_placeholder_neg
-#                     batch_id_neg.append(tmp_id_placeholder_neg)
-#                     tmp_data_placeholder_neg = []
-#                     tmp_id_placeholder_neg = []
-#
-#     if len(tmp_data_placeholder_pos) != 0:
-#         batch_data_pos += tmp_data_placeholder_pos
-#         batch_id_pos.append(tmp_id_placeholder_pos)
-#     if len(tmp_data_placeholder_neg) != 0:
-#         batch_data_neg += tmp_data_placeholder_neg
-#         batch_id_neg.append(tmp_id_placeholder_neg)
-#     return (batch_data_pos, batch_data_neg), (batch_id_pos, batch_id_neg)
-
-
 def restore_structure(nested_list, list_score_pos, batch_id_pos, list_score_neg=None, batch_id_neg=None):
     """ restore the nested structure from a flatten list """
     list_placeholder = list(map(

@@ -55,15 +55,16 @@ class ConfigManager:
         if len(same_config) != 0:
             self.cache_dir = same_config[0][0].replace('config.json', '')
 
-            _file = same_config[0][0].replace('config.json', 'flatten_score_positive.pkl')
+            _file = os.path.join(self.cache_dir, 'flatten_score_positive.pkl')
             with open(_file, "rb") as fp:  # Unpickling
                 self.flatten_score_positive = pickle.load(fp)
             logging.info('load flatten_score_positive from {}'.format(_file))
 
-            _file = same_config[0][0].replace('config.json', 'flatten_score_negative.pkl')
-            with open(_file, "rb") as fp:  # Unpickling
-                self.flatten_score_negative = pickle.load(fp)
-            logging.info('load flatten_score_negative from {}'.format(_file))
+            _file = os.path.join(self.cache_dir, 'flatten_score_negative.pkl')
+            if os.path.exists(_file):
+                with open(_file, "rb") as fp:  # Unpickling
+                    self.flatten_score_negative = pickle.load(fp)
+                logging.info('load flatten_score_negative from {}'.format(_file))
         else:
             self.cache_dir = os.path.join(cache_dir, get_random_string())
 

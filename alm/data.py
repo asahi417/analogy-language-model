@@ -18,13 +18,11 @@ def get_dataset(path_to_data: str):
 
 def get_dataset_prompt(path_to_data: str,
                        template_types: List = None,
-                       permutation_positive: bool = True,
                        permutation_negative: bool = True):
     """ get prompted SAT-type dataset
 
     :param path_to_data:
     :param template_types: a list of templates for prompting
-    :param permutation_positive: if utilize positive permutation
     :param permutation_negative: if utilize negative permutation
     :return: a list of (answer: int, prompts: list, stem: list, choice: list)
     """
@@ -37,11 +35,9 @@ def get_dataset_prompt(path_to_data: str,
         all_permutations = list(permutations([a, b, c, d]))
         positive = [(a, b, c, d), (b, a, d, c), (c, d, a, b), (d, c, b, a),
                     (a, c, b, d), (c, a, d, b), (b, d, a, c), (d, b, c, a)]
-
-        negative = list(filter(lambda x: x not in positive, all_permutations))
-        if not permutation_positive:
-            positive = [(a, b, c, d)]
-        if not permutation_negative:
+        if permutation_negative:
+            negative = list(filter(lambda x: x not in positive, all_permutations))
+        else:
             negative = []
         return positive, negative
 

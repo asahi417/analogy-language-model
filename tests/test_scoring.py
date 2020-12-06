@@ -10,24 +10,32 @@ class Test(unittest.TestCase):
     """Test"""
 
     def test(self):
-        data = './data/sample.jsonl'
-        temps = ['is-to-what', 'is-to-as']
-        # temps = ['is-to-what']
-        scorer = RelationScorer()
-        # scorer.analogy_test(data, template_types=temps)
-        scorer.analogy_test(data, template_types=temps, aggregation_positive='max')
+        scorer = RelationScorer(model='roberta-base')
 
-    # def test_2(self):
-    #     scorer = RelationScorer(model='roberta-large')
-    #
-    #     batch_size = 16
-    #     template_types = ['rel-same']
-    #
-    #     path_to_data = './data/sat_package_v3-0.jsonl'
-    #     scorer.analogy_test(
-    #         path_to_data=path_to_data, template_types=template_types, batch_size=batch_size,
-    #         permutation_positive=False, aggregation_positive='none',
-    #         permutation_negative=True, aggregation_negative='mean')
+        batch_size = 4
+        template_types = ['rel-same']
+
+        path_to_data = './data/sample.jsonl'
+        scorer.analogy_test(
+            path_to_data=path_to_data, template_types=template_types, batch_size=batch_size,
+            aggregation_positive='mean',
+            permutation_negative=True,
+            aggregation_negative='mean')
+
+    def test_2(self):
+        scorer = RelationScorer(model='roberta-base')
+
+        batch_size = 4
+        template_types = ['rel-same']
+
+        path_to_data = './data/sample.jsonl'
+        scorer.analogy_test(
+            path_to_data=path_to_data, template_types=template_types, batch_size=batch_size,
+            aggregation_positive='mean',
+            permutation_negative=True,
+            aggregation_negative='mean',
+            skip_scoring_prediction=True
+        )
 
 
 if __name__ == "__main__":

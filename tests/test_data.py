@@ -23,14 +23,7 @@ class Test(unittest.TestCase):
             logging.info("positive ({}): \n{}".format(len(pos_list), pos_list))
             logging.info("negative ({}): \n{}".format(len(neg_list), neg_list))
 
-        logging.info('\nno option')
-        list_answer, list_nested_sentence, list_stem, list_choice = get_dataset_prompt(
-            path_to_data='./data/u2.jsonl',
-            template_types=['is-to-what']
-        )
-        show(list_nested_sentence)
-
-        logging.info('add template')
+        logging.info('add template + positive')
         list_answer, list_nested_sentence, list_stem, list_choice = get_dataset_prompt(
             path_to_data='./data/u2.jsonl',
             template_types=['is-to-what', 'is-to-as']
@@ -45,18 +38,9 @@ class Test(unittest.TestCase):
         )
         show(list_nested_sentence)
 
-        logging.info('add template + positive')
-        list_answer, list_nested_sentence, list_stem, list_choice = get_dataset_prompt(
-            path_to_data='./data/u2.jsonl',
-            permutation_positive=True,
-            template_types=['is-to-what', 'is-to-as']
-        )
-        show(list_nested_sentence)
-
         logging.info('add template + positive + negative')
         list_answer, list_nested_sentence, list_stem, list_choice = get_dataset_prompt(
             path_to_data='./data/u2.jsonl',
-            permutation_positive=True,
             permutation_negative=True,
             template_types=['is-to-what', 'is-to-as']
         )

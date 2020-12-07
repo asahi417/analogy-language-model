@@ -113,14 +113,15 @@ class TransformersLM:
                 break
         return [len(token_before), i]
 
-    def input_ids_to_labels(self, input_ids, label_position: List = None):
+    def input_ids_to_labels(self, input_ids, label_position: List = None, label_id: List = None):
         """ replace pad_token_id by token which is ignored when loss computation """
-        if label_position is None:
+        if label_position is None and label_id is None:
             return list(map(lambda x: PAD_TOKEN_LABEL_ID if x == self.tokenizer.pad_token_id else x, input_ids))
-        return list(map(
-            lambda x: PAD_TOKEN_LABEL_ID if x[1] == self.tokenizer.pad_token_id or x[0] not in label_position else x[1],
-            enumerate(input_ids)
-        ))
+        assert len(label_position) == len(label_id)
+        label = [PAD_TOKEN_LABEL_ID] * len(input_ids)
+        for p, i in zip(label_position, label_id):
+            label[p] = i
+        return label
 
     def encode_plus_mask(self,
                          text: str,
@@ -169,22 +170,30 @@ class TransformersLM:
                 else:
                     assert all(i in token_to_mask for i in token_to_label), 'invalid token_to_label'
                 label_position = []
+                label_id = []
                 for (s, e), token_m in zip(mask_positions, token_to_mask):
                     if token_m in token_to_label:
                         label_position += list(range(s, e))
+                    label_id += list(map(lambda x: self.tokenizer.convert_tokens_to_ids(x), token_list[s:e]))
                     token_list[s:e] = [self.tokenizer.mask_token] * (e - s)
                 # encode sentence into model input format as a batch with single data
                 encode = self.tokenizer.encode_plus(token_list, **param)
-                encode['labels'] = self.input_ids_to_labels(encode['input_ids'], label_position=label_position)
+                encode['labels'] = self.input_ids_to_labels(encode['input_ids'],
+                                                            label_position=label_position,
+                                                            label_id=label_id)
                 return [encode]
 
             else:  # token-wise mask
                 def encode_with_single_mask_id(mask_position: int):
                     _token_list = token_list.copy()  # can not be encode outputs because of prefix
+                    masked_token_id = self.tokenizer.convert_tokens_to_ids(_token_list[mask_position])
                     _token_list[mask_position] = self.tokenizer.mask_token
                     _encode = self.tokenizer.encode_plus(_token_list, **param)
                     _encode['labels'] = self.input_ids_to_labels(
-                        _encode['input_ids'], label_position=[mask_position + len(self.sp_token_prefix)])
+                        _encode['input_ids'],
+                        label_position=[mask_position + len(self.sp_token_prefix)],
+                        label_id=[masked_token_id]
+                    )
                     return _encode
 
                 return [encode_with_single_mask_id(i) for i in range(len(token_list))]
@@ -260,10 +269,6 @@ class TransformersLM:
                 prediction_scores = output['logits']
                 loss = loss_fct(prediction_scores.view(-1, self.config.vocab_size), labels.view(-1))
                 loss = torch.sum(loss.view(len(prediction_scores), -1), -1)
-                # print(list(map(
-                #     lambda x: sum(map(lambda y: y != PAD_TOKEN_LABEL_ID, x[1])),
-                #     zip(loss.cpu().tolist(), labels.cpu().tolist())
-                # )))
                 nll += list(map(
                     lambda x: x[0]/sum(map(lambda y: y != PAD_TOKEN_LABEL_ID, x[1])),
                     zip(loss.cpu().tolist(), labels.cpu().tolist())

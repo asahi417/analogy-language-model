@@ -21,10 +21,10 @@ def test(model):
 class Test(unittest.TestCase):
     """Test"""
 
-    def test_lm(self):
-        logging.info('test LM (gpt2)')
-        model = TransformersLM('gpt2', max_length=32)
-        test(model)
+    # def test_lm(self):
+    #     logging.info('test LM (gpt2)')
+    #     model = TransformersLM('gpt2', max_length=32)
+    #     test(model)
 
     def test_mlm(self):
         logging.info('test MLM (albert-base-v1)')

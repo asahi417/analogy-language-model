@@ -268,8 +268,6 @@ class TransformersLM:
                     lambda x: x[0]/sum(map(lambda y: y != PAD_TOKEN_LABEL_ID, x[1])),
                     zip(loss.cpu().tolist(), labels.cpu().tolist())
                 ))
-        print(nll)
-
         return nll
 
     def get_embedding(self, texts: List, tokens_to_embed: List, batch_size: int = None):

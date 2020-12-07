@@ -179,6 +179,7 @@ class RelationScorer:
         score = restore_structure(list_nested_sentence, score_pos, batch_id_pos, score_neg, batch_id_neg)
         logit_pn = list(map(lambda o: list(map(lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])), o)), score))
         logit = list(map(lambda o: list(map(lambda s: s[1] - s[0], o)), logit_pn))
+        # logit = list(map(lambda o: list(map(lambda s: - s[1] + s[0], o)), logit_pn))
         pred = list(map(lambda x: x.index(max(x)), logit))
 
         # compute accuracy

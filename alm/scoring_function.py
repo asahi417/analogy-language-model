@@ -3,6 +3,7 @@ from typing import List
 from time import time
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
+import torch
 from . import TransformersLM
 from .data import get_dataset_prompt
 from .config_manager import ConfigManager
@@ -89,6 +90,10 @@ class RelationScorer:
             embedding_mode=embedding_mode)
         self.model_name = model
 
+    def release_cache(self):
+        if self.lm.device == "cuda":
+            torch.cuda.empty_cache()
+
     def analogy_test(self,
                      path_to_data: str,
                      batch_size: int = 4,
@@ -98,7 +103,8 @@ class RelationScorer:
                      aggregation_positive: str = 'mean',
                      aggregation_negative: str = 'none',
                      skip_scoring_prediction: bool = False,
-                     export_dir: str = './results'):
+                     export_dir: str = './results',
+                     no_inference: bool = False):
         """ relation scoring test on analogy dataset
 
         :param path_to_data:
@@ -109,6 +115,7 @@ class RelationScorer:
         :param aggregation_positive: aggregation method for positive permutations (`mean`, `max`, `min`)
         :param aggregation_negative: aggregation method for negative permutations (`mean`, `max`, `min`)
         :param skip_scoring_prediction:
+        :param no_inference: use only cached score
         :param export_dir: directory to export the result
         :return:
         """
@@ -150,6 +157,7 @@ class RelationScorer:
                 logging.info(' * load score')
                 return cached_score
             logging.info(' * run inference')
+            assert not no_inference, 'no cache found'
             if scoring_method == 'ppl':
                 return self.lm.get_perplexity(batch_data, batch_size=batch_size)
             else:
@@ -177,8 +185,6 @@ class RelationScorer:
         assert len(pred) == len(list_answer)
         accuracy = sum(map(lambda x: int(x[0] == x[1]), zip(pred, list_answer))) / len(list_answer)
         logging.info('accuracy: {}'.format(accuracy))
-
-        # save
         config.save(accuracy=accuracy, logit_pn=logit_pn, logit=logit, prediction=pred)
         logging.info('experiment completed: {} sec in total'.format(time()-start))
 

@@ -231,9 +231,9 @@ class TransformersLM:
         assert type(texts) is list, 'type error'
         assert not self.embedding_mode
         data_loader, partition = self.batch_encode_plus_mask(texts, batch_size=batch_size)
-        loglikelihood = self.__get_ll(data_loader)
+        nll = self.__get_nll(data_loader)
         # for pseudo likelihood aggregation
-        return list(map(lambda x: math.exp(- sum(loglikelihood[x[0]:x[1]]) / (x[1] - x[0])), partition))
+        return list(map(lambda x: math.exp(sum(nll[x[0]:x[1]]) / (x[1] - x[0])), partition))
 
     def get_nll(self, texts: List, tokens_to_mask: List, batch_size: int = None):
         """ to compute negative log likelihood of a masked token
@@ -246,13 +246,12 @@ class TransformersLM:
         assert type(texts) is list and type(tokens_to_mask) is list, 'type error'
         assert not self.embedding_mode or self.is_causal
         data_loader, _ = self.batch_encode_plus_mask(texts, batch_token_to_mask=tokens_to_mask, batch_size=batch_size)
-        log_likelihood = self.__get_ll(data_loader)
-        return list(map(lambda x: -1 * x, log_likelihood))
+        return self.__get_nll(data_loader)
 
-    def __get_ll(self, data_loader):
-        """ get log likelihood with a dataloader """
+    def __get_nll(self, data_loader):
+        """ get negative log likelihood with a dataloader """
         loss_fct = nn.CrossEntropyLoss(reduction='none')
-        log_likelihood = []
+        nll = []
         with torch.no_grad():
             for encode in tqdm(data_loader):
                 encode = {k: v.to(self.device) for k, v in encode.items()}
@@ -260,13 +259,18 @@ class TransformersLM:
                 output = self.model(**encode, return_dict=True)
                 prediction_scores = output['logits']
                 loss = loss_fct(prediction_scores.view(-1, self.config.vocab_size), labels.view(-1))
-                loss = loss.view(len(prediction_scores), -1)
                 loss = torch.sum(loss.view(len(prediction_scores), -1), -1)
-                log_likelihood += list(map(
+                # print(list(map(
+                #     lambda x: sum(map(lambda y: y != PAD_TOKEN_LABEL_ID, x[1])),
+                #     zip(loss.cpu().tolist(), labels.cpu().tolist())
+                # )))
+                nll += list(map(
                     lambda x: x[0]/sum(map(lambda y: y != PAD_TOKEN_LABEL_ID, x[1])),
                     zip(loss.cpu().tolist(), labels.cpu().tolist())
                 ))
-        return log_likelihood
+        print(nll)
+
+        return nll
 
     def get_embedding(self, texts: List, tokens_to_embed: List, batch_size: int = None):
         """ get embedding

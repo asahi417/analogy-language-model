@@ -78,16 +78,6 @@
 {"stem": ["pebble", "stone"], "answer": 0, "choice": [["minnow", "fish"], ["car", "truck"], ["tiger", "lion"], ["dictionary", "book"]], "prefix": "grade6"}
 {"stem": ["newspaper", "inform"], "answer": 3, "choice": [["television", "watch"], ["book", "communicate"], ["movie", "persuade"], ["game", "entertain"]], "prefix": "grade6"}
 {"stem": ["bus", "automobile"], "answer": 1, "choice": [["building", "house"], ["tiger", "animal"], ["letter", "alphabet"], ["bath", "shower"]], "prefix": "grade6"}
-{"stem": ["engine", "car"], "answer": 0, "choice": [["lens", "microscope"], ["day", "night"], ["picture", "frame"], ["club", "member"]], "prefix": "grade6"}
-{"stem": ["butcher", "meat"], "answer": 3, "choice": [["maid", "chores"], ["teacher", "knowledge"], ["librarian", "books"], ["baker", "bread"]], "prefix": "grade6"}
-{"stem": ["obscene", "inappropriate"], "answer": 3, "choice": [["impossible", "easy"], ["polite", "rude"], ["tall", "honest"], ["spotless", "clean"]], "prefix": "grade6"}
-{"stem": ["positive", "negative"], "answer": 0, "choice": [["clean", "filthy"], ["angry", "upset"], ["friendly", "popular"], ["challenging", "interesting"]], "prefix": "grade6"}
-{"stem": ["cigarette", "unhealthy"], "answer": 0, "choice": [["sin", "immoral"], ["baby", "wise"], ["husband", "rich"], ["nation", "peaceful"]], "prefix": "grade6"}
-{"stem": ["helmet", "head"], "answer": 0, "choice": [["mask", "face"], ["belt", "train"], ["ring", "wrist"], ["slipper", "ankle"]], "prefix": "grade6"}
-{"stem": ["sewing", "craft"], "answer": 2, "choice": [["salt", "food"], ["fate", "science"], ["gasoline", "fuel"], ["sunrise", "art"]], "prefix": "grade6"}
-{"stem": ["accident", "unintended"], "answer": 2, "choice": [["idea", "true"], ["law", "perfect"], ["villain", "evil"], ["castle", "unknown"]], "prefix": "grade6"}
-{"stem": ["trivial", "importance"], "answer": 3, "choice": [["prestigious", "honor"], ["written", "rhyme"], ["invisible", "sight"], ["familiar", "novelty"]], "prefix": "grade6"}
-{"stem": ["expert", "skilled"], "answer": 3, "choice": [["athlete", "thin"], ["student", "intelligent"], ["spy", "friendly"], ["fanatic", "enthusiastic"]], "prefix": "grade6"}
 {"stem": ["corrupt", "morals"], "answer": 3, "choice": [["talented", "skill"], ["rude", "intelligence"], ["fortunate", "money"], ["ruthless", "mercy"]], "prefix": "grade7"}
 {"stem": ["democracy", "government"], "answer": 2, "choice": [["master", "slave"], ["storm", "blizzard"], ["sonnet", "poem"], ["tribe", "family"]], "prefix": "grade7"}
 {"stem": ["cowardly", "brave"], "answer": 1, "choice": [["numerous", "many"], ["foolish", "wise"], ["awful", "dreadful"], ["anxious", "nervous"]], "prefix": "grade7"}

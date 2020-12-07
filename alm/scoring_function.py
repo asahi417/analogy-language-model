@@ -104,7 +104,8 @@ class RelationScorer:
                      aggregation_negative: str = 'none',
                      skip_scoring_prediction: bool = False,
                      export_dir: str = './results',
-                     no_inference: bool = False):
+                     no_inference: bool = False,
+                     debug = False):
         """ relation scoring test on analogy dataset
 
         :param path_to_data:
@@ -170,6 +171,12 @@ class RelationScorer:
         score_neg = prediction(batch_data_neg, config.flatten_score_negative)
 
         config.cache_scores(flatten_score_positive=score_pos, flatten_score_negative=score_neg)
+        # print(len(score_pos))
+        # print(len(batch_data_pos))
+        # print(len(batch_id_pos))
+        # print(score_neg)
+        # print(batch_id_neg)
+        # input()
 
         if skip_scoring_prediction:
             return
@@ -179,13 +186,13 @@ class RelationScorer:
         score = restore_structure(list_nested_sentence, score_pos, batch_id_pos, score_neg, batch_id_neg)
         logit_pn = list(map(lambda o: list(map(lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])), o)), score))
         logit = list(map(lambda o: list(map(lambda s: s[1] - s[0], o)), logit_pn))
-        # logit = list(map(lambda o: list(map(lambda s: - s[1] + s[0], o)), logit_pn))
         pred = list(map(lambda x: x.index(max(x)), logit))
-
         # compute accuracy
         assert len(pred) == len(list_answer)
         accuracy = sum(map(lambda x: int(x[0] == x[1]), zip(pred, list_answer))) / len(list_answer)
         logging.info('accuracy: {}'.format(accuracy))
+        if debug:
+            return
         config.save(accuracy=accuracy, logit_pn=logit_pn, logit=logit, prediction=pred)
         logging.info('experiment completed: {} sec in total'.format(time()-start))
 

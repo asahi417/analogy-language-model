@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.0.0'
+VERSION = '0.0.1'
 NAME = 'alm'
 IS_RELEASED = False
 

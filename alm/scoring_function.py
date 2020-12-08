@@ -171,13 +171,7 @@ class RelationScorer:
         score_neg = prediction(batch_data_neg, config.flatten_score_negative)
 
         config.cache_scores(flatten_score_positive=score_pos, flatten_score_negative=score_neg)
-        # print(len(score_pos))
-        # print(len(batch_data_pos))
-        # print(len(batch_id_pos))
-        # print(score_neg)
-        # print(batch_id_neg)
-        # input()
-
+        assert len(score_pos) == len(batch_data_pos), 'inconsistent score and data'
         if skip_scoring_prediction:
             return
 

@@ -26,7 +26,7 @@ def safe_open(_file):
 class ConfigManager:
     """ configuration manager for `scoring_function.RelationScorer` """
 
-    def __init__(self, export_dir: str, **kwargs):
+    def __init__(self, export_dir: str, overwrite: bool = True, **kwargs):
         """ configuration manager for `scoring_function.RelationScorer` """
         self.config = kwargs
         logging.info('*** setting up a config manager ***\n' +
@@ -41,11 +41,15 @@ class ConfigManager:
             ex_configs = {i: safe_open(i) for i in glob('{}/*/config.json'.format(export_dir))}
             # check duplication
             same_config = list(filter(lambda x: x[1] == self.config, ex_configs.items()))
-            if len(same_config) != 0:
+            if len(same_config) != 0 and not overwrite:
                 raise ValueError('found same configuration in the directory: {}'.format(same_config[0][0]))
-            # create new experiment directory
-            ex = list(map(lambda x: x.replace('/config.json', '').split('/')[-1], ex_configs.keys()))
-            self.export_dir = os.path.join(export_dir, get_random_string(exclude=ex))
+            elif len(same_config) != 0 and overwrite:
+                logging.info("found same configuration and will be overwritten: {}".format(same_config[0][0]))
+                self.export_dir = same_config[0][0]
+            else:
+                # create new experiment directory
+                ex = list(map(lambda x: x.replace('/config.json', '').split('/')[-1], ex_configs.keys()))
+                self.export_dir = os.path.join(export_dir, get_random_string(exclude=ex))
 
         # load model prediction if the model config is at least same, enabling to skip model inference in case
         cond = ['model', 'max_length', 'path_to_data', 'template_types', 'scoring_method']

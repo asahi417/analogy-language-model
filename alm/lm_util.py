@@ -116,11 +116,14 @@ class TransformersLM:
     def input_ids_to_labels(self, input_ids, label_position: List = None, label_id: List = None):
         """ replace pad_token_id by token which is ignored when loss computation """
         if label_position is None and label_id is None:
-            return list(map(lambda x: PAD_TOKEN_LABEL_ID if x == self.tokenizer.pad_token_id else x, input_ids))
-        assert len(label_position) == len(label_id)
-        label = [PAD_TOKEN_LABEL_ID] * len(input_ids)
-        for p, i in zip(label_position, label_id):
-            label[p] = i
+            label = list(map(lambda x: PAD_TOKEN_LABEL_ID if x == self.tokenizer.pad_token_id else x, input_ids))
+        else:
+            assert len(label_position) == len(label_id)
+            label = [PAD_TOKEN_LABEL_ID] * len(input_ids)
+            for p, i in zip(label_position, label_id):
+                label[p] = i
+        if self.is_causal:  # shift the label sequence for causal inference
+            label = label[1:] + [PAD_TOKEN_LABEL_ID]
         return label
 
     def encode_plus_mask(self,

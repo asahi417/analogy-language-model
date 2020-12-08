@@ -21,19 +21,19 @@ def test(model):
 class Test(unittest.TestCase):
     """Test"""
 
-    # def test_lm(self):
-    #     logging.info('test LM (gpt2)')
-    #     model = TransformersLM('gpt2', max_length=32)
-    #     test(model)
-
-    def test_mlm(self):
-        logging.info('test MLM (albert-base-v1)')
-        model = TransformersLM('albert-base-v1', max_length=32)
+    def test_lm(self):
+        logging.info('test LM (gpt2)')
+        model = TransformersLM('gpt2', max_length=32)
         test(model)
 
-        log_likelihood = model.get_nll(TEST, TARGET)
-        logging.info('`get_nll`: {}'.format(log_likelihood))
-        assert len(log_likelihood) == len(TEST)
+    # def test_mlm(self):
+    #     logging.info('test MLM (albert-base-v1)')
+    #     model = TransformersLM('albert-base-v1', max_length=32)
+    #     test(model)
+    #
+    #     log_likelihood = model.get_nll(TEST, TARGET)
+    #     logging.info('`get_nll`: {}'.format(log_likelihood))
+    #     assert len(log_likelihood) == len(TEST)
 
 
 if __name__ == "__main__":

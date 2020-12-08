@@ -158,7 +158,7 @@ class RelationScorer:
                 logging.info(' * load score')
                 return cached_score
             logging.info(' * run inference')
-            assert not no_inference, 'no cache found'
+            assert not no_inference and not debug, 'no cache found'
             if scoring_method == 'ppl':
                 return self.lm.get_perplexity(batch_data, batch_size=batch_size)
             else:

@@ -4,7 +4,9 @@ TEMPLATES = {
     'is-to-what': "<subj-a> is to <obj-a> what <subj-b> is to <obj-b>",
     'is-to-as': "<subj-a> is to <obj-a> as <subj-b> is to <obj-b>",
     'rel-same': 'The relation between <subj-a> and <obj-a> is the same as the relation between <subj-b> and <obj-b>',
-    'what-is-to': 'what <subj-a> is to <obj-a>, <subj-b> is to <obj-b>'
+    'what-is-to': 'what <subj-a> is to <obj-a>, <subj-b> is to <obj-b>',
+    'she-to-as': 'She explained to him that <subj-a> is to <obj-a> as <subj-b> is to <obj-b>.',
+    'as-what-same': 'As I explained earlier, what <A> is to <B> is essentially the same as what <C> is to <D>.'
 }
 
 __all__ = ('prompting_relation', 'TEMPLATES')

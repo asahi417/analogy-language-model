@@ -45,7 +45,7 @@ class ConfigManager:
                 raise ValueError('found same configuration in the directory: {}'.format(same_config[0][0]))
             elif len(same_config) != 0 and overwrite:
                 logging.info("found same configuration and will be overwritten: {}".format(same_config[0][0]))
-                self.export_dir = same_config[0][0]
+                self.export_dir = same_config[0][0].replace('/config.json', '')
             else:
                 # create new experiment directory
                 ex = list(map(lambda x: x.replace('/config.json', '').split('/')[-1], ex_configs.keys()))
@@ -87,7 +87,8 @@ class ConfigManager:
 
     def save(self, accuracy: float, logit_pn: List, logit: List, prediction: List):
         """ export data """
-        os.makedirs(self.export_dir, exist_ok=True)
+        if not os.path.exists(self.export_dir):
+            os.makedirs(self.export_dir, exist_ok=True)
         with open('{}/accuracy.json'.format(self.export_dir), 'w') as f:
             json.dump({"accuracy": accuracy}, f)
         with open('{}/config.json'.format(self.export_dir), 'w') as f:

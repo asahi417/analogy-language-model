@@ -11,9 +11,10 @@ from .config_manager import ConfigManager
 
 AGGREGATOR = {
     'mean': lambda x: sum(x)/len(x), 'max': lambda x: max(x), 'min': lambda x: min(x),
-    'p_1': lambda x: x[1], 'p_2': lambda x: x[2], 'p_3': lambda x: x[3],
+    'p_0': lambda x: x[0], 'p_1': lambda x: x[1], 'p_2': lambda x: x[2], 'p_3': lambda x: x[3],
     'p_4': lambda x: x[4], 'p_5': lambda x: x[5], 'p_6': lambda x: x[6], 'p_7': lambda x: x[7],
-    'p_0': lambda x: x[0], 'none': lambda x: 0
+    'p_8': lambda x: x[8], 'p_9': lambda x: x[9], 'p_10': lambda x: x[10], 'p_11': lambda x: x[11],
+    'none': lambda x: 0
 }
 
 
@@ -126,7 +127,7 @@ class RelationScorer:
                                                       tokens_to_mask=tokens_to_mask,
                                                       tokens_to_condition=tokens_to_condition)
                     score_list.append(_score)
-                return score_list
+                return list(zip(*score_list))
             else:
                 raise ValueError('unknown method: {}'.format(scoring_method))
 
@@ -140,18 +141,15 @@ class RelationScorer:
 
         # scoring method depending post aggregation
         if scoring_method == 'pmi':
+
             # we use same aggregation method for both positive/negative permutations
             pmi_aggregation = scoring_method_config.pop('aggregation')
             assert len(scoring_method_config) == 0, 'unknown config: {}'.format(scoring_method_config)
             logging.info("PMI aggregator: {}".format(pmi_aggregation))
-            if type(pmi_aggregation) is int:
-                def aggregator(_x):
-                    return list(map(lambda x: x[pmi_aggregation], _x))
-            else:
-                aggregator = AGGREGATOR[pmi_aggregation]
+            aggregator = AGGREGATOR[pmi_aggregation]
             score_pos = list(map(lambda x: aggregator(x), score_pos))
             if score_neg:
-                score_neg = list(map(lambda x: a(x), score_pos))
+                score_neg = list(map(lambda x: aggregator(x), score_neg))
         else:
             assert scoring_method_config is None, 'method {} has no configuration'.format(scoring_method)
 

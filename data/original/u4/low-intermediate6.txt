@@ -1,0 +1,57 @@
+1) TORCH : ILLUMINATEA) stove : bake
+B) vacuum : clean 
+C) car : run
+D) phone : write
+b
+
+2) JEWEL : SHINYA) demon : evil
+B) trick : magic
+C) cat : lazy
+D) mother : helpless
+a
+
+3) WEDDING : CEREMONYA) animal : dog
+B) saint : nun
+C) mountain : volcanoD) president : leader
+d
+
+4) GALLERY : ART
+A) library : books 
+B) kitchen : food 
+C) butcher : meat 
+D) mailbox : letters
+a
+
+5) VIOLINIST : ORCHESTRAA) referee : team
+B) employee : company 
+C) judge : jury
+D) friend : family
+b
+
+6) FOOT : INCHESA) bathtub : gallonsB) meter : miles 
+C) pound : ounces 
+D) fork : spoons
+c
+
+7) BRIGHT : DULLA) obvious : clear
+B) guilty : wrong
+C) secret : hidden
+D) ordinary : unusual
+d
+
+8) APATHETIC : MOTIVATIONA) brilliant : ideas
+B) active : technology 
+C) employed : money 
+D) lonesome : company
+d
+
+9) LOATHE : DISLIKEA) praise : enjoy 
+B) watch : observeC) worship : admire 
+D) burn : scorch
+c
+
+10) ROOT : PLANTA) blade : knife
+B) pot : pan
+C) microphone : radio 
+D) television : satellite
+a

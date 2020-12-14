@@ -1,480 +1,148 @@
-{"stem": ["sect", "religion"], "answer": 1, "choice": [["fresco", "painting"], ["foreground", "landscape"], ["benefactor", "fortune"], ["mandate", "ruler"], ["diet", "nutrient"]], "prefix": "high-advanced"}
-{"stem": ["decanter", "pour"], "answer": 0, "choice": [["monument", "venerate"], ["criminal", "deviate"], ["nunnery", "convert"], ["pharmacy", "proscribe"], ["stiletto", "walk"]], "prefix": "high-advanced"}
-{"stem": ["unprecedented", "forerunners"], "answer": 4, "choice": [["unnecessary", "prerequisites"], ["nauseating", "medicine"], ["bloodthirsty", "anemia"], ["holistic", "proof"], ["adulterated", "purity"]], "prefix": "high-advanced"}
-{"stem": ["erudite", "uneducated"], "answer": 1, "choice": [["fiery", "flagrant"], ["fervid", "dispassionate"], ["loquacious", "talkative"], ["gullible", "naive"], ["dissonant", "discordant"]], "prefix": "high-advanced"}
-{"stem": ["truism", "obvious"], "answer": 2, "choice": [["waiver", "safe"], ["president", "tyrannical"], ["daredevil", "audacious"], ["novel", "ingenuous"], ["pedant", "imaginative"]], "prefix": "high-advanced"}
-{"stem": ["laconic", "concise"], "answer": 1, "choice": [["obdurate", "cooperative"], ["ephemeral", "fleeting"], ["malleable", "unchanging"], ["vindictive", "forgiving"], ["equivocal", "certain"]], "prefix": "high-advanced"}
-{"stem": ["lie", "prevaricate"], "answer": 2, "choice": [["betray", "trust"], ["philander", "donate"], ["waver", "falter"], ["deride", "praise"], ["corroborate", "doubt"]], "prefix": "high-advanced"}
-{"stem": ["concession", "placate"], "answer": 2, "choice": [["woman", "engender"], ["gun", "bolster"], ["catalyst", "precipitate"], ["workout", "enervate"], ["lawyer", "mitigate"]], "prefix": "high-advanced"}
-{"stem": ["powerless", "efficacy"], "answer": 4, "choice": [["turbulent", "violence"], ["anomalous", "irregularity"], ["homogenous", "similarity"], ["effluent", "water"], ["explicit", "ambiguity"]], "prefix": "high-advanced"}
-{"stem": ["rivulet", "small"], "answer": 4, "choice": [["dissertation", "plagiarized"], ["bird", "fledgling"], ["bankruptcy", "indebted"], ["hooligan", "athletic"], ["citadel", "fortified"]], "prefix": "high-advanced"}
-{"stem": ["wretched", "cheerful"], "answer": 1, "choice": [["territorial", "terrestrial"], ["innocuous", "dangerous"], ["floundering", "struggling"], ["redacted", "censored"], ["solitary", "confined"]], "prefix": "high-advanced"}
-{"stem": ["level", "hierarchy"], "answer": 0, "choice": [["installment", "serial"], ["halo", "messiah"], ["vinaigrette", "salad"], ["courtroom", "drama"], ["misnomer", "definition"]], "prefix": "high-advanced"}
-{"stem": ["peccadillo", "sin"], "answer": 0, "choice": [["masquerade", "party"], ["peasant", "serf"], ["sarcophagus", "funeral"], ["letdown", "devastation"], ["hex", "wizard"]], "prefix": "high-advanced"}
-{"stem": ["tyro", "inexperienced"], "answer": 3, "choice": [["headmaster", "principled"], ["scapegoat", "blameworthy"], ["forgery", "valuable"], ["sycophant", "servile"], ["risk", "worthwhile"]], "prefix": "high-advanced"}
-{"stem": ["blandishment", "coax"], "answer": 3, "choice": [["directory", "telephone"], ["pavilion", "promenade"], ["surplus", "squander"], ["eulogy", "praise"], ["controversy", "placate"]], "prefix": "high-advanced"}
-{"stem": ["pragmatism", "philosophy"], "answer": 1, "choice": [["elevation", "pinnacle"], ["envy", "sin"], ["electricity", "outlet"], ["cacophony", "opera"], ["chemistry", "element"]], "prefix": "high-advanced"}
-{"stem": ["vitriol", "spiteful"], "answer": 1, "choice": [["hindsight", "perfect"], ["alabaster", "white"], ["buoyancy", "light"], ["equilibrium", "just"], ["jubilation", "biblical"]], "prefix": "high-advanced"}
-{"stem": ["invective", "blame"], "answer": 4, "choice": [["homage", "copy"], ["grandeur", "admire"], ["duplicity", "increase"], ["depravity", "corrupt"], ["masonry", "construct"]], "prefix": "high-advanced"}
-{"stem": ["vernacular", "regional"], "answer": 2, "choice": [["leaf", "autumnal"], ["senator", "dissentious"], ["fluctuation", "irregular"], ["budget", "austere"], ["autopsy", "fatal"]], "prefix": "high-advanced"}
-{"stem": ["virulent", "poisonous"], "answer": 1, "choice": [["autonomous", "free"], ["disparate", "distinct"], ["botanical", "flowery"], ["dormant", "tired"], ["unique", "eccentric"]], "prefix": "high-advanced"}
-{"stem": ["grenadier", "army"], "answer": 3, "choice": [["inkling", "pen"], ["wheelchair", "paraplegic"], ["couch", "lethargy"], ["count", "nobility"], ["insurrection", "government"]], "prefix": "high-advanced"}
-{"stem": ["fake", "authenticity"], "answer": 0, "choice": [["latent", "manifestation"], ["impenetrable", "defense"], ["lacteal", "milk"], ["preponderant", "thought"], ["retrograde", "direction"]], "prefix": "high-advanced"}
-{"stem": ["nefarious", "virtuous"], "answer": 2, "choice": [["stringent", "solid"], ["subliminal", "secret"], ["reticent", "talkative"], ["jocular", "humorous"], ["haggard", "old"]], "prefix": "high-advanced"}
-{"stem": ["castigate", "criticize"], "answer": 1, "choice": [["dishevel", "destroy"], ["brutalize", "bully"], ["legalize", "filibuster"], ["predict", "forecast"], ["kill", "massacre"]], "prefix": "high-advanced"}
-{"stem": ["playful", "banter"], "answer": 0, "choice": [["symbolic", "metaphor"], ["filthy", "lucre"], ["questionable", "interrogation"], ["maternal", "parenthood"], ["cancerous", "growth"]], "prefix": "high-advanced"}
-{"stem": ["embargo", "commerce"], "answer": 4, "choice": [["treaty", "war"], ["sunscreen", "radiation"], ["chauffeur", "travel"], ["muscle", "motion"], ["vaccination", "infection"]], "prefix": "high-advanced"}
-{"stem": ["pathogen", "harmful"], "answer": 2, "choice": [["patron", "sexist"], ["record", "tarnished"], ["saint", "benevolent"], ["tumor", "benign"], ["madman", "angry"]], "prefix": "high-advanced"}
-{"stem": ["conceited", "bumptious"], "answer": 3, "choice": [["rural", "suburban"], ["tangible", "corporeal"], ["dubious", "suspicious"], ["devoted", "zealous"], ["elementary", "young"]], "prefix": "high-advanced"}
-{"stem": ["clause", "sentence"], "answer": 4, "choice": [["termite", "wood"], ["alcoholic", "tavern"], ["drug", "stimulant"], ["garnish", "parsley"], ["lens", "projector"]], "prefix": "high-advanced"}
-{"stem": ["renegade", "allegiance"], "answer": 0, "choice": [["atheist", "faith"], ["turncoat", "clothing"], ["bigamist", "wives"], ["monk", "contemplation"], ["torpedo", "explosion"]], "prefix": "high-advanced"}
-{"stem": ["sanguine", "sickly"], "answer": 2, "choice": [["hazardous", "dangerous"], ["preventable", "foreseeable"], ["altruistic", "egoistic"], ["avaricious", "greedy"], ["feeble", "fruitless"]], "prefix": "high-advanced"}
-{"stem": ["tripod", "camera"], "answer": 4, "choice": [["frame", "painting"], ["television", "screen"], ["roof", "edifice"], ["butcher", "meat"], ["easel", "canvas"]], "prefix": "high-advanced"}
-{"stem": ["cello", "played"], "answer": 1, "choice": [["tractor", "pulled"], ["bomb", "detonated"], ["scientist", "discovered"], ["city", "populated"], ["restaurant", "eaten"]], "prefix": "high-advanced"}
-{"stem": ["demented", "lucidity"], "answer": 0, "choice": [["boorish", "propriety"], ["prodigal", "sons"], ["acrobatic", "flexibility"], ["sanguine", "blood"], ["realistic", "optimism"]], "prefix": "high-advanced"}
-{"stem": ["defendant", "plaintiff"], "answer": 2, "choice": [["predator", "ecosystem"], ["talent", "prodigy"], ["victim", "assailant"], ["juror", "prosecutor"], ["builder", "architect"]], "prefix": "high-advanced"}
-{"stem": ["mud", "opaque"], "answer": 2, "choice": [["usury", "interested"], ["jewelry", "ostentatious"], ["socialism", "destructive"], ["torture", "cruel"], ["ham", "kosher"]], "prefix": "high-advanced"}
-{"stem": ["assuage", "mollify"], "answer": 2, "choice": [["abstain", "indulge"], ["hypothesize", "prove"], ["desiccate", "dehydrate"], ["curse", "ghostwrite"], ["condemn", "neglect"]], "prefix": "high-advanced"}
-{"stem": ["memorable", "unforgettable"], "answer": 1, "choice": [["capricious", "restrained"], ["pleasing", "breathtaking"], ["offensive", "stereotypical"], ["objectified", "purchased"], ["insignificant", "irrelevant"]], "prefix": "high-advanced"}
-{"stem": ["antipathy", "approval"], "answer": 2, "choice": [["asphyxiation", "choking"], ["crochet", "knitting"], ["incredulity", "faith"], ["infection", "contamination"], ["excrement", "waste"]], "prefix": "high-advanced"}
-{"stem": ["bailiff", "courthouse"], "answer": 4, "choice": [["tournament", "stadium"], ["priest", "synagogue"], ["ambulance", "paramedic"], ["greyhound", "racetrack"], ["majordomo", "estate"]], "prefix": "high-advanced"}
-{"stem": ["pan", "saute"], "answer": 3, "choice": [["measurement", "weigh"], ["cheese", "grate"], ["newspaper", "edit"], ["pestle", "grind"], ["informant", "educate"]], "prefix": "high-advanced"}
-{"stem": ["kindling", "combustible"], "answer": 0, "choice": [["lava", "molten"], ["bleach", "white"], ["faith", "blind"], ["patriotism", "militaristic"], ["obesity", "large"]], "prefix": "high-advanced"}
-{"stem": ["print", "lithograph"], "answer": 4, "choice": [["koala", "marsupial"], ["raindrop", "torrent"], ["accordion", "polka"], ["ballet", "tango"], ["pathogen", "virus"]], "prefix": "high-advanced"}
-{"stem": ["dermal", "skin"], "answer": 1, "choice": [["idyllic", "dreams"], ["aquatic", "water"], ["political", "democracy"], ["scientific", "medicine"], ["diverse", "cultures"]], "prefix": "high-advanced"}
-{"stem": ["atrocious", "bad"], "answer": 2, "choice": [["beneficent", "upset"], ["magnanimous", "generous"], ["mellifluous", "smooth"], ["common", "banal"], ["aggressive", "bellicose"]], "prefix": "high-advanced"}
-{"stem": ["exaggeration", "caricature"], "answer": 4, "choice": [["legitimacy", "scam"], ["Satanism", "prophet"], ["blitheness", "funeral"], ["authenticity", "imitation"], ["brevity", "epigram"]], "prefix": "high-advanced"}
-{"stem": ["tenable", "indefensible"], "answer": 3, "choice": [["unique", "unprecedented"], ["dire", "pressing"], ["bleak", "desolate"], ["theoretical", "concrete"], ["recondite", "scholarly"]], "prefix": "high-advanced"}
-{"stem": ["inchoate", "experience"], "answer": 3, "choice": [["vivacious", "health"], ["ignorant", "belief"], ["feminine", "hormones"], ["irreverent", "respect"], ["prudish", "desire"]], "prefix": "high-advanced"}
-{"stem": ["branch", "bureaucracy"], "answer": 1, "choice": [["picnic", "basket"], ["denouement", "plot"], ["album", "photograph"], ["abbey", "cathedral"], ["impresario", "hostess"]], "prefix": "high-advanced"}
-{"stem": ["stock", "inventory"], "answer": 4, "choice": [["celebrity", "questionnaire"], ["antique", "appraisal"], ["negotiation", "bazaar"], ["trial", "interrogation"], ["population", "census"]], "prefix": "high-advanced"}
-{"stem": ["estimate", "approximate"], "answer": 0, "choice": [["narcissist", "egocentric"], ["canoe", "rapid"], ["businessman", "perspicacious"], ["child", "legitimate"], ["heiress", "coddled"]], "prefix": "high-advanced"}
-{"stem": ["heart", "cardiac"], "answer": 2, "choice": [["teenager", "neonatal"], ["piano", "Italian"], ["tree", "arboreal"], ["syringe", "medical"], ["electricity", "static"]], "prefix": "high-advanced"}
-{"stem": ["inevitable", "preventable"], "answer": 2, "choice": [["humorous", "amusing"], ["unintelligible", "illegible"], ["plausible", "impossible"], ["declasse", "rude"], ["racist", "prejudiced"]], "prefix": "high-advanced"}
-{"stem": ["disingenuous", "charlatan"], "answer": 4, "choice": [["padded", "resume"], ["hardwood", "floor"], ["cooperative", "rival"], ["somnambulant", "nightmare"], ["indigent", "mendicant"]], "prefix": "high-advanced"}
-{"stem": ["authenticity", "fraudulent"], "answer": 0, "choice": [["simplicity", "complex"], ["importance", "instrumental"], ["worth", "priceless"], ["thirst", "parched"], ["meaning", "purposeful"]], "prefix": "high-advanced"}
-{"stem": ["polish", "shiny"], "answer": 1, "choice": [["procure", "valuable"], ["insulate", "warm"], ["reject", "commonplace"], ["sand", "rough"], ["varnish", "colorless"]], "prefix": "high-advanced"}
-{"stem": ["flatter", "rebuff"], "answer": 4, "choice": [["stigmatize", "criticize"], ["implicate", "involve"], ["horrify", "concern"], ["abstain", "refrain"], ["entice", "repulse"]], "prefix": "high-advanced"}
-{"stem": ["bombastic", "turgid"], "answer": 0, "choice": [["whimsical", "capricious"], ["maligned", "beneficent"], ["experienced", "inchoate"], ["robust", "disillusioned"], ["intelligent", "ingenuous"]], "prefix": "high-advanced"}
-{"stem": ["lecher", "salacious"], "answer": 0, "choice": [["conjecture", "supposed"], ["anomaly", "explicable"], ["mosaic", "ruined"], ["pastry", "bitter"], ["rabbi", "foreign"]], "prefix": "high-advanced"}
-{"stem": ["eccentric", "codger"], "answer": 1, "choice": [["evil", "courtesan"], ["admirable", "hero"], ["generous", "pedant"], ["powerful", "supplicant"], ["spicy", "marinade"]], "prefix": "high-advanced"}
-{"stem": ["legerdemain", "deception"], "answer": 4, "choice": [["ornament", "tree"], ["lemonade", "glass"], ["television", "screen"], ["demolition", "implosion"], ["alcoholism", "addiction"]], "prefix": "high-advanced"}
-{"stem": ["clean", "immaculate"], "answer": 1, "choice": [["cheap", "inexpensive"], ["unadorned", "austere"], ["conscious", "asleep"], ["mysterious", "enigmatic"], ["isolated", "desolate"]], "prefix": "high-advanced"}
-{"stem": ["dilettante", "dabble"], "answer": 0, "choice": [["heretic", "blaspheme"], ["teetotaler", "imbibe"], ["sycophant", "dominate"], ["dowager", "remarry"], ["charlatan", "divulge"]], "prefix": "high-advanced"}
-{"stem": ["hallucinogen", "drug"], "answer": 1, "choice": [["dance", "polka"], ["nightmare", "dream"], ["stocking", "skirt"], ["banjo", "guitar"], ["aircraft", "helicopter"]], "prefix": "high-advanced"}
-{"stem": ["subterfuge", "deceive"], "answer": 3, "choice": [["smoke", "burn"], ["allegory", "recant"], ["pedant", "walk"], ["cloak", "conceal"], ["prosecutor", "judge"]], "prefix": "high-advanced"}
-{"stem": ["abiding", "ephemeral"], "answer": 0, "choice": [["mawkish", "stoic"], ["spineless", "timorous"], ["frightened", "petrified"], ["listless", "jejune"], ["speechless", "deaf"]], "prefix": "high-advanced"}
-{"stem": ["expulsion", "school"], "answer": 0, "choice": [["ostracism", "society"], ["reluctance", "hesitation"], ["rebuttal", "debate"], ["gravity", "orbit"], ["exeunt", "drama"]], "prefix": "high-advanced"}
-{"stem": ["martinet", "discipline"], "answer": 1, "choice": [["libertine", "freedom"], ["fundamentalist", "religion"], ["ballerina", "nutrition"], ["cynic", "optimism"], ["sculptor", "clay"]], "prefix": "high-advanced"}
-{"stem": ["abolition", "slavery"], "answer": 1, "choice": [["choreography", "dance"], ["anarchism", "government"], ["vegetarianism", "food"], ["capitalism", "money"], ["conservation", "trees"]], "prefix": "high-advanced"}
-{"stem": ["obdurate", "stubborn"], "answer": 4, "choice": [["ironic", "metallic"], ["happy", "felicitous"], ["improbable", "impossible"], ["aforementioned", "appropriate"], ["lethargic", "sluggish"]], "prefix": "high-advanced"}
-{"stem": ["defame", "venerate"], "answer": 1, "choice": [["elucidate", "clarify"], ["dismay", "embolden"], ["defend", "barricade"], ["daze", "confuse"], ["haggle", "negotiate"]], "prefix": "high-advanced"}
-{"stem": ["control", "irrepressible"], "answer": 0, "choice": [["penetrate", "impermeable"], ["mend", "replaceable"], ["sell", "profitable"], ["damage", "decimated"], ["see", "visible"]], "prefix": "high-advanced"}
-{"stem": ["farce", "ridiculous"], "answer": 0, "choice": [["swallow", "migratory"], ["child", "incorrigible"], ["skewer", "poignant"], ["intersection", "perpendicular"], ["porcupine", "avian"]], "prefix": "high-advanced"}
-{"stem": ["asphyxia", "air"], "answer": 2, "choice": [["cancer", "tumors"], ["obesity", "fat"], ["anemia", "iron"], ["anorexia", "disorder"], ["depression", "anxiety"]], "prefix": "high-advanced"}
-{"stem": ["indulge", "epicurean"], "answer": 1, "choice": [["complain", "ravenous"], ["revenge", "vindictive"], ["retract", "revocable"], ["startle", "frightening"], ["appreciate", "deprecatory"]], "prefix": "high-advanced"}
-{"stem": ["immune", "susceptible"], "answer": 0, "choice": [["corpulent", "thin"], ["audacious", "bold"], ["loquacious", "babbling"], ["laudable", "praiseworthy"], ["oblivious", "distracted"]], "prefix": "high-advanced"}
-{"stem": ["demulcent", "unguent"], "answer": 0, "choice": [["concertina", "instrument"], ["oratorio", "rhetoric"], ["denizen", "denomination"], ["artisan", "freemason"], ["paroxysm", "hysteria"]], "prefix": "high-advanced"}
-{"stem": ["abominable", "disagreeable"], "answer": 4, "choice": [["lovable", "annoying"], ["dry", "desiccated"], ["dismal", "lugubrious"], ["penultimate", "final"], ["precipitous", "steep"]], "prefix": "high-advanced"}
-{"stem": ["uncommon", "outlier"], "answer": 3, "choice": [["tentative", "agenda"], ["literary", "synopsis"], ["parsimonious", "spendthrift"], ["lethal", "overdose"], ["saccharine", "diabetic"]], "prefix": "high-advanced"}
-{"stem": ["beseech", "request"], "answer": 3, "choice": [["elucidate", "clarify"], ["excite", "pique"], ["search", "discover"], ["scrutinize", "observe"], ["truncate", "shorten"]], "prefix": "high-advanced"}
-{"stem": ["musician", "music"], "answer": 1, "choice": [["shower", "water"], ["chef", "food"], ["machine", "snow"], ["child", "art"]], "prefix": "high-beginning"}
-{"stem": ["whale", "ocean"], "answer": 2, "choice": [["car", "garage"], ["snake", "ocean"], ["tiger", "jungle"], ["chair", "table"]], "prefix": "high-beginning"}
-{"stem": ["terrified", "scared"], "answer": 2, "choice": [["quiet", "secret"], ["sweet", "rich"], ["obsessed", "interested"], ["funny", "serious"]], "prefix": "high-beginning"}
-{"stem": ["sad", "happiness"], "answer": 0, "choice": [["weak", "strength"], ["sweet", "flavor"], ["fast", "time"], ["pretty", "beauty\\"]], "prefix": "high-beginning"}
-{"stem": ["tongue", "taste"], "answer": 3, "choice": [["boat", "swim"], ["bed", "sit"], ["bag", "buy"], ["nose", "smell"]], "prefix": "high-beginning"}
-{"stem": ["chair", "sit"], "answer": 0, "choice": [["cup", "drink"], ["bottle", "break"], ["book", "read"], ["eye", "listen"]], "prefix": "high-beginning"}
-{"stem": ["wrench", "tool"], "answer": 3, "choice": [["cow", "milk"], ["radio", "sound"], ["tree", "forest"], ["carrot", "vegetable"]], "prefix": "high-beginning"}
-{"stem": ["tiny", "little"], "answer": 0, "choice": [["huge", "big"], ["long", "tall"], ["small", "loud"], ["neat", "messy"]], "prefix": "high-beginning"}
-{"stem": ["poor", "money"], "answer": 0, "choice": [["tired", "energy"], ["angry", "emotion"], ["hot", "ice"], ["hungry", "water"]], "prefix": "high-beginning"}
-{"stem": ["safe", "dangerous"], "answer": 0, "choice": [["silent", "noisy"], ["upset", "late"], ["wise", "smart"], ["fast", "quick"]], "prefix": "high-beginning"}
-{"stem": ["great", "good"], "answer": 2, "choice": [["fun", "cool"], ["strange", "weird"], ["hot", "warm"], ["dull", "sharp"]], "prefix": "high-beginning"}
-{"stem": ["beautiful", "pretty"], "answer": 0, "choice": [["terrible", "bad"], ["brave", "valiant"], ["new", "old"], ["tall", "skinny"]], "prefix": "high-beginning"}
-{"stem": ["ring", "finger"], "answer": 0, "choice": [["necklace", "neck"], ["bracelet", "diamond"], ["sock", "hand"], ["glove", "foot"]], "prefix": "high-beginning"}
-{"stem": ["correct", "right"], "answer": 3, "choice": [["crazy", "smart"], ["weak", "fun"], ["strong", "hard"], ["cheap", "inexpensive"]], "prefix": "high-beginning"}
-{"stem": ["shoe", "foot"], "answer": 2, "choice": [["boot", "hand"], ["glove", "wrist"], ["hat", "head"], ["sock", "leg"]], "prefix": "high-beginning"}
-{"stem": ["puppy", "dog"], "answer": 0, "choice": [["kitten", "cat"], ["bear", "cub"], ["fish", "minnow"], ["cow", "calf"]], "prefix": "high-beginning"}
-{"stem": ["rock", "hard"], "answer": 0, "choice": [["water", "wet"], ["table", "wooden"], ["mom", "nice"], ["sound", "loud"]], "prefix": "high-beginning"}
-{"stem": ["sick", "health"], "answer": 2, "choice": [["sad", "emotion"], ["tall", "intelligence"], ["scared", "courage"], ["smart", "energy"]], "prefix": "high-beginning"}
-{"stem": ["hammer", "hit"], "answer": 0, "choice": [["knife", "cut"], ["table", "eat"], ["pen", "build"], ["wheel", "race"]], "prefix": "high-beginning"}
-{"stem": ["shield", "protect"], "answer": 1, "choice": [["computer", "talk"], ["vehicle", "transport"], ["pencil", "make"], ["song", "sing"]], "prefix": "high-beginning"}
-{"stem": ["wall", "room"], "answer": 2, "choice": [["lettuce", "sandwich"], ["dog", "cat"], ["wheel", "car"], ["song", "dance"]], "prefix": "high-beginning"}
-{"stem": ["match", "fire"], "answer": 1, "choice": [["bag", "wallet"], ["key", "car"], ["gas", "machine"], ["cookie", "mouth"]], "prefix": "high-beginning"}
-{"stem": ["candy", "sweet"], "answer": 3, "choice": [["water", "cold"], ["time", "fast"], ["money", "clean"], ["fire", "hot"]], "prefix": "high-beginning"}
-{"stem": ["huge", "big"], "answer": 1, "choice": [["nice", "good"], ["tiny", "small"], ["funny", "happy"], ["old", "new"]], "prefix": "high-beginning"}
-{"stem": ["teacher", "educate"], "answer": 0, "choice": [["doctor", "heal"], ["farmer", "talk"], ["engine", "oil"], ["dog", "sit"]], "prefix": "high-beginning"}
-{"stem": ["ugly", "beauty"], "answer": 0, "choice": [["serious", "humor"], ["old", "age"], ["hot", "heat"], ["sweet", "strength"]], "prefix": "high-beginning"}
-{"stem": ["hilarious", "funny"], "answer": 3, "choice": [["right", "wrong"], ["hard", "boring"], ["nice", "crazy"], ["great", "good"]], "prefix": "high-beginning"}
-{"stem": ["play", "work"], "answer": 0, "choice": [["laugh", "cry"], ["eat", "talk"], ["run", "walk"], ["see", "hear"]], "prefix": "high-beginning"}
-{"stem": ["eyes", "see"], "answer": 1, "choice": [["hands", "cry"], ["ears", "hear"], ["feet", "talk"], ["teeth", "think"]], "prefix": "high-beginning"}
-{"stem": ["ham", "meat"], "answer": 2, "choice": [["air", "water"], ["tennis", "school"], ["juice", "drink"], ["math", "number"]], "prefix": "high-beginning"}
-{"stem": ["bird", "fly"], "answer": 2, "choice": [["horse", "ride"], ["tree", "run"], ["fish", "swim"], ["arm", "dance"]], "prefix": "high-beginning"}
-{"stem": ["organized", "neat"], "answer": 3, "choice": [["ugly", "pretty"], ["fun", "good"], ["disgusting", "sour"], ["transparent", "clear"]], "prefix": "high-beginning"}
-{"stem": ["shark", "fish"], "answer": 1, "choice": [["sausage", "vegetable"], ["tulip", "flower"], ["aunt", "uncle"], ["mouse", "rat"]], "prefix": "high-beginning"}
-{"stem": ["branch", "tree"], "answer": 1, "choice": [["lemon", "fruit"], ["leg", "chair"], ["plant", "flower"], ["road", "car"]], "prefix": "high-beginning"}
-{"stem": ["dead", "life"], "answer": 1, "choice": [["cold", "temperature"], ["perfect", "error"], ["loud", "noise"], ["yellow", "color"]], "prefix": "high-beginning"}
-{"stem": ["shovel", "dig"], "answer": 1, "choice": [["bus", "run"], ["pencil", "write"], ["hat", "protect"], ["fork", "take"]], "prefix": "high-beginning"}
-{"stem": ["pilot", "airplane"], "answer": 1, "choice": [["driver", "ship"], ["conductor", "train"], ["bicycle", "car"], ["passenger", "bus"]], "prefix": "high-beginning"}
-{"stem": ["near", "far"], "answer": 1, "choice": [["gray", "black"], ["right", "wrong"], ["cold", "freezing"], ["good", "fun"]], "prefix": "high-beginning"}
-{"stem": ["chess", "game"], "answer": 3, "choice": [["checkers", "basketball"], ["kid", "child"], ["man", "woman"], ["tennis", "sport"]], "prefix": "high-beginning"}
-{"stem": ["win", "lose"], "answer": 1, "choice": [["play", "learn"], ["buy", "sell"], ["see", "hear"], ["like", "love"]], "prefix": "high-beginning"}
-{"stem": ["robin", "bird"], "answer": 0, "choice": [["pear", "fruit"], ["cucumber", "onion"], ["cow", "calf"], ["lamp", "table"]], "prefix": "high-beginning"}
-{"stem": ["bees", "hive"], "answer": 1, "choice": [["cows", "city"], ["birds", "nest"], ["snakes", "house"], ["bears", "hotel"]], "prefix": "high-beginning"}
-{"stem": ["giant", "large"], "answer": 2, "choice": [["scary", "bad"], ["new", "expensive"], ["great", "good"], ["funny", "annoying"]], "prefix": "high-beginning"}
-{"stem": ["hard", "soft"], "answer": 2, "choice": [["fast", "quick"], ["smooth", "straight"], ["heavy", "light"], ["healthy", "good"]], "prefix": "high-beginning"}
-{"stem": ["map", "guide"], "answer": 3, "choice": [["apartment", "locate"], ["bag", "open"], ["bed", "read"], ["towel", "dry"]], "prefix": "high-beginning"}
-{"stem": ["apple", "heathy"], "answer": 3, "choice": [["teacher", "good"], ["bed", "comfortable"], ["car", "fast"], ["rock", "hard"]], "prefix": "high-beginning"}
-{"stem": ["salesman", "sell"], "answer": 1, "choice": [["teacher", "learn"], ["mechanic", "repair"], ["lawyer", "free"], ["desk", "hard"]], "prefix": "high-beginning"}
-{"stem": ["rare", "common"], "answer": 2, "choice": [["shiny", "bright"], ["fake", "phony"], ["old", "new"], ["thin", "skinny"]], "prefix": "high-beginning"}
-{"stem": ["carrot", "vegetable"], "answer": 1, "choice": [["animal", "horse"], ["flute", "instrument"], ["fruit", "apple"], ["book", "novel"]], "prefix": "high-beginning"}
-{"stem": ["side", "square"], "answer": 0, "choice": [["finger", "hand"], ["hat", "suit"], ["bird", "tree"], ["pencil", "paper"]], "prefix": "high-beginning"}
-{"stem": ["furious", "angry"], "answer": 3, "choice": [["sad", "happy"], ["cold", "cool"], ["crazy", "entertaining"], ["terrified", "afraid"]], "prefix": "high-beginning"}
-{"stem": ["fin", "fish"], "answer": 0, "choice": [["string", "guitar"], ["nose", "bird"], ["tail", "human"], ["pickle", "sandwich"]], "prefix": "high-beginning"}
-{"stem": ["blanket", "soft"], "answer": 3, "choice": [["money", "rich"], ["teacher", "good"], ["apple", "ripe"], ["circle", "round"]], "prefix": "high-beginning"}
-{"stem": ["rich", "poor"], "answer": 0, "choice": [["young", "old"], ["smart", "tired"], ["tall", "angry"], ["fun", "nice"]], "prefix": "high-beginning"}
-{"stem": ["obese", "overweight"], "answer": 2, "choice": [["guilty", "wrong"], ["funny", "clever"], ["hideous", "ugly"], ["rude", ""]], "prefix": "high-beginning"}
-{"stem": ["disorganized", "order"], "answer": 2, "choice": [["intelligent", "belief"], ["heavy", "power"], ["insignificant", "importance"], ["delicious", "flavor"]], "prefix": "high-beginning"}
-{"stem": ["brush", "paint"], "answer": 0, "choice": [["straw", "drink"], ["eraser", "write"], ["table", "sit"], ["key", "turn"]], "prefix": "high-beginning"}
-{"stem": ["mountain", "tall"], "answer": 3, "choice": [["game", "fun"], ["ring", "expensive"], ["car", "fast"], ["rainbow", "colorful"]], "prefix": "high-beginning"}
-{"stem": ["hockey", "sport"], "answer": 3, "choice": [["bus", "car"], ["rice", "hunger"], ["fight", "war"], ["chemistry", "science"]], "prefix": "high-beginning"}
-{"stem": ["teeth", "chew"], "answer": 3, "choice": [["clouds", "fly"], ["hands", "run"], ["cats", "scratch"], ["legs", "walk"]], "prefix": "high-beginning"}
-{"stem": ["fork", "eat"], "answer": 2, "choice": [["calculator", "think"], ["phone", "touch"], ["flashlight", "see"], ["computer", "drink"]], "prefix": "high-beginning"}
-{"stem": ["ecstatic", "happy"], "answer": 0, "choice": [["depressed", "sad"], ["thick", "thin"], ["terrible", "easy"], ["amazing", "poor"]], "prefix": "high-beginning"}
-{"stem": ["steak", "meat"], "answer": 3, "choice": [["nature", "wood"], ["water", "food"], ["transportation", "street"], ["anger", "emotion"]], "prefix": "high-beginning"}
-{"stem": ["nice", "mean"], "answer": 2, "choice": [["bad", "happy"], ["crazy", "funny"], ["sad", "happy"], ["healthy", "fun"]], "prefix": "high-beginning"}
-{"stem": ["exhausted", "tired"], "answer": 3, "choice": [["ready", "lazy"], ["excited", "boring"], ["sweet", "mean"], ["starving", "hungry"]], "prefix": "high-beginning"}
-{"stem": ["shy", "confidence"], "answer": 2, "choice": [["smart", "sense"], ["hard", "difficulty"], ["cowardly", "bravery"], ["young", "manners"]], "prefix": "high-beginning"}
-{"stem": ["artist", "paintbrush"], "answer": 3, "choice": [["lawyer", "computer"], ["dentist", "teeth"], ["teacher", "apple"], ["magician", "wand"]], "prefix": "high-beginning"}
-{"stem": ["letter", "word"], "answer": 2, "choice": [["brick", "house"], ["hat", "suit"], ["toe", "foot"], ["phone", "room"]], "prefix": "high-beginning"}
-{"stem": ["dog", "pet"], "answer": 2, "choice": [["fire", "water"], ["cup", "drink"], ["drill", "tool"], ["car", "bus"]], "prefix": "high-beginning"}
-{"stem": ["tuxedo", "formal"], "answer": 3, "choice": [["car", "fast"], ["king", "smart"], ["ring", "plain"], ["diamond", "hard"]], "prefix": "high-beginning"}
-{"stem": ["pot", "cook"], "answer": 1, "choice": [["camera", "take"], ["broom", "sweep"], ["rock", "play"], ["piano", "sing"]], "prefix": "high-beginning"}
-{"stem": ["cushion", "sofa"], "answer": 0, "choice": [["faucet", "sink"], ["toilet", "kitchen"], ["necklace", "dress"], ["dollar", "wallet"]], "prefix": "high-beginning"}
-{"stem": ["jazz", "music"], "answer": 0, "choice": [["silver", "metal"], ["window", "glass"], ["water", "pool"], ["juice", "fruit"]], "prefix": "high-beginning"}
-{"stem": ["ancient", "old"], "answer": 1, "choice": [["crazy", "unhealthy"], ["delicious", "tasty"], ["smart", "intelligent"], ["rusty", "old"]], "prefix": "high-beginning"}
-{"stem": ["boulder", "heavy"], "answer": 3, "choice": [["ring", "beautiful"], ["steak", "good"], ["beach", "sunny"], ["mountain", "tall"]], "prefix": "high-beginning"}
-{"stem": ["mircroscope", "examine"], "answer": 0, "choice": [["letter", "communicate"], ["sweater", "knit"], ["ball", "hit"], ["game", "score"]], "prefix": "high-beginning"}
-{"stem": ["ice", "slippery"], "answer": 2, "choice": [["basketball", "fun"], ["cake", "delicious"], ["paper", "thin"], ["chalk", "white"]], "prefix": "high-beginning"}
-{"stem": ["depressed", "sad"], "answer": 3, "choice": [["peaceful", "bored"], ["sweet", "strong"], ["ready", "anxious"], ["elated", "happy"]], "prefix": "high-beginning"}
-{"stem": ["speakers", "stereo"], "answer": 2, "choice": [["arms", "legs"], ["feet", "toes"], ["wings", "airplane"], ["clouds", "sky"]], "prefix": "high-beginning"}
-{"stem": ["needle", "sew"], "answer": 0, "choice": [["movie", "entertain"], ["pencil", "study"], ["wheel", "move"], ["plate", "drink"]], "prefix": "high-beginning"}
-{"stem": ["joy", "emotion"], "answer": 2, "choice": [["food", "beverage"], ["air", "water"], ["pain", "feeling"], ["money", "product"]], "prefix": "high-beginning"}
-{"stem": ["dangerous", "safe"], "answer": 1, "choice": [["hard", "nice"], ["easy", "difficult"], ["strong", "thin"], ["organized", "orderly"]], "prefix": "high-beginning"}
-{"stem": ["lazy", "ambition"], "answer": 0, "choice": [["bald", "hair"], ["strong", "confidence"], ["thirsty", "food"], ["rich", "wealth"]], "prefix": "high-beginning"}
-{"stem": ["potato", "vegetable"], "answer": 1, "choice": [["fish", "shark"], ["peach", "fruit"], ["bus", "car"], ["play", "actress"]], "prefix": "high-beginning"}
-{"stem": ["scale", "weight"], "answer": 0, "choice": [["thermometer", "temperature"], ["ruler", "time"], ["compass", "location"], ["calculator", "money"]], "prefix": "high-beginning"}
-{"stem": ["ball", "round"], "answer": 2, "choice": [["dog", "friendly"], ["computer", "expensive"], ["feather", "light"], ["car", "blue"]], "prefix": "high-beginning"}
-{"stem": ["strange", "normal"], "answer": 3, "choice": [["scared", "angry"], ["unhappy", "sad"], ["nervous", "young"], ["new", "old"]], "prefix": "high-beginning"}
-{"stem": ["ignorant", "knowledge"], "answer": 0, "choice": [["scared", "courage"], ["old", "health"], ["nice", "power"], ["crazy", "happiness"]], "prefix": "high-beginning"}
-{"stem": ["brilliant", "intelligent"], "answer": 0, "choice": [["devastated", "disappointed"], ["talented", "skilled"], ["bored", "intrigued"], ["motivated", "dedicated"]], "prefix": "high-beginning"}
-{"stem": ["string", "guitar"], "answer": 1, "choice": [["shoe", "pants"], ["wheel", "bicycle"], ["candle", "table"], ["picture", "wall"]], "prefix": "high-beginning"}
-{"stem": ["razor", "shave"], "answer": 1, "choice": [["hair", "comb"], ["knife", "cut"], ["boat", "drive"], ["fork", "drink"]], "prefix": "high-beginning"}
-{"stem": ["dry", "moisture"], "answer": 1, "choice": [["light", "height"], ["cold", "warmth"], ["healthy", "meat"], ["happy", "weakness"]], "prefix": "high-beginning"}
-{"stem": ["theft", "crime"], "answer": 0, "choice": [["winter", "season"], ["glass", "window"], ["chicken", "beverage"], ["air", "cloud"]], "prefix": "high-beginning"}
-{"stem": ["milk", "white"], "answer": 3, "choice": [["traffic", "heavy"], ["science", "boring"], ["candy", "good"], ["honey", "sticky"]], "prefix": "high-beginning"}
-{"stem": ["full", "empty"], "answer": 0, "choice": [["boring", "exciting"], ["sweet", "tasty"], ["loud", "intense"], ["new", "young"]], "prefix": "high-beginning"}
-{"stem": ["pen", "write"], "answer": 0, "choice": [["shovel", "dig"], ["spoon", "drink"], ["bath", "shower"], ["door", "open"]], "prefix": "high-beginning"}
-{"stem": ["mattress", "bed"], "answer": 0, "choice": [["drain", "sink"], ["chair", "table"], ["television", "computer"], ["lamp", "light"]], "prefix": "high-beginning"}
-{"stem": ["clock", "time"], "answer": 1, "choice": [["building", "height"], ["ruler", "length"], ["pool", "depth"], ["sun", "light"]], "prefix": "high-beginning"}
-{"stem": ["saturday", "weekend"], "answer": 3, "choice": [["November", "December"], ["Wednesday", "night"], ["today", "afternoon"], ["January", "winter"]], "prefix": "high-beginning"}
-{"stem": ["war", "peace"], "answer": 2, "choice": [["weather", "clouds"], ["math", "fun"], ["joy", "sadness"], ["socks", "warmth"]], "prefix": "high-beginning"}
-{"stem": ["combatant", "fighter"], "answer": 0, "choice": [["queen", "monarch"], ["palace", "hut"], ["horse", "carriage"], ["knife", "sword"]], "prefix": "high-intermediate"}
-{"stem": ["infantile", "immature"], "answer": 0, "choice": [["outstanding", "impressive"], ["plain", "ordinary"], ["absurd", "hilarious"], ["unwise", "clever"]], "prefix": "high-intermediate"}
-{"stem": ["convict", "guilty"], "answer": 1, "choice": [["clock", "digital"], ["rainforest", "lush"], ["film", "lengthy"], ["parachute", "heavy"]], "prefix": "high-intermediate"}
-{"stem": ["rifle", "gun"], "answer": 0, "choice": [["van", "automobile"], ["sin", "blessing"], ["memory", "prediction"], ["trombone", "orchestra"]], "prefix": "high-intermediate"}
-{"stem": ["infinite", "limited"], "answer": 0, "choice": [["valid", "illegitimate"], ["restored", "renewed"], ["destroyed", "ruined"], ["beloved", "admired"]], "prefix": "high-intermediate"}
-{"stem": ["perish", "die"], "answer": 1, "choice": [["ignore", "oversee"], ["fabricate", "lie"], ["inspire", "insult"], ["clarify", "muddle"]], "prefix": "high-intermediate"}
-{"stem": ["unskilled", "expertise"], "answer": 1, "choice": [["vivacious", "intensity"], ["apathetic", "knowledge"], ["tacky", "taste"], ["retired", "enjoyment"]], "prefix": "high-intermediate"}
-{"stem": ["ballad", "song"], "answer": 3, "choice": [["burial", "death"], ["party", "politician"], ["meal", "restaurant"], ["mammal", "animal"]], "prefix": "high-intermediate"}
-{"stem": ["clarify", "obscure"], "answer": 2, "choice": [["guard", "protect"], ["instruct", "educate"], ["acquire", "dispose"], ["hike", "climb"]], "prefix": "high-intermediate"}
-{"stem": ["bun", "hamburger"], "answer": 1, "choice": [["ketchup", "hotdog"], ["windshield", "car"], ["theater", "script"], ["laugh", "joke"]], "prefix": "high-intermediate"}
-{"stem": ["charity", "aid"], "answer": 2, "choice": [["dictionary", "words"], ["fortune", "money"], ["counselor", "advice"], ["translator", "language"]], "prefix": "high-intermediate"}
-{"stem": ["traitor", "treasonous"], "answer": 3, "choice": [["reporter", "biased"], ["hero", "fictional"], ["alligator", "angry"], ["crime", "illegal"]], "prefix": "high-intermediate"}
-{"stem": ["remember", "predict"], "answer": 1, "choice": [["hear", "listen"], ["scrutinize", "ignore"], ["repeat", "copy"], ["interrogate", "question"]], "prefix": "high-intermediate"}
-{"stem": ["doughnut", "pastry"], "answer": 0, "choice": [["passport", "document"], ["stamp", "currency"], ["symphony", "opera"], ["volcano", "lava"]], "prefix": "high-intermediate"}
-{"stem": ["examination", "diagnosis"], "answer": 2, "choice": [["evaluation", "title"], ["inference", "consequences"], ["search", "rescue"], ["minute", "hour"]], "prefix": "high-intermediate"}
-{"stem": ["flamboyant", "elaborate"], "answer": 2, "choice": [["kind", "benevolent"], ["autocratic", "democratic"], ["ludicrous", "absurd"], ["desirable", "necessary"]], "prefix": "high-intermediate"}
-{"stem": ["taboo", "acceptance"], "answer": 2, "choice": [["factual", "opinion"], ["inspirational", "reality"], ["unpopular", "support"], ["independent", "structure"]], "prefix": "high-intermediate"}
-{"stem": ["confirm", "deny"], "answer": 2, "choice": [["use", "employ"], ["define", "prove"], ["dispense", "collect"], ["entertain", "amuse"]], "prefix": "high-intermediate"}
-{"stem": ["salutation", "letter"], "answer": 1, "choice": [["courtship", "marriage"], ["summit", "mountain"], ["book", "character"], ["composition", "notebook"]], "prefix": "high-intermediate"}
-{"stem": ["referee", "officiate"], "answer": 0, "choice": [["sentry", "guard"], ["grandmother", "age"], ["detective", "accuse"], ["wizard", "curse"]], "prefix": "high-intermediate"}
-{"stem": ["professor", "scholarly"], "answer": 2, "choice": [["friend", "imaginary"], ["mystery", "obvious"], ["sorcerer", "magical"], ["father", "maternal"]], "prefix": "high-intermediate"}
-{"stem": ["beneficial", "detrimental"], "answer": 0, "choice": [["allowed", "forbidden"], ["noteworthy", "important"], ["original", "unique"], ["faithful", "dedicated"]], "prefix": "high-intermediate"}
-{"stem": ["bunch", "bananas"], "answer": 2, "choice": [["street", "neighborhoods"], ["vine", "oranges"], ["herd", "cows"], ["club", "wolves"]], "prefix": "high-intermediate"}
-{"stem": ["granite", "stone"], "answer": 3, "choice": [["action", "event"], ["opera", "song"], ["culture", "history"], ["bleach", "chemical"]], "prefix": "high-intermediate"}
-{"stem": ["hyperactive", "energetic"], "answer": 3, "choice": [["fabulous", "drab"], ["superficial", "genuine"], ["wealthy", "greedy"], ["gullible", "trusting"]], "prefix": "high-intermediate"}
-{"stem": ["witness", "testimony"], "answer": 3, "choice": [["spouse", "marriage"], ["judge", "laws"], ["waterfall", "rivers"], ["generator", "electricity"]], "prefix": "high-intermediate"}
-{"stem": ["platter", "serve"], "answer": 1, "choice": [["fork", "dice"], ["spice", "flavor"], ["nose", "scent"], ["oven", "boil"]], "prefix": "high-intermediate"}
-{"stem": ["superstition", "irrational"], "answer": 2, "choice": [["opinion", "factual"], ["purse", "expensive"], ["reward", "motivational"], ["invention", "successful"]], "prefix": "high-intermediate"}
-{"stem": ["airplane", "hangar"], "answer": 0, "choice": [["car", "garage"], ["bus", "stop"], ["boat", "lake"], ["ship", "ocean"]], "prefix": "high-intermediate"}
-{"stem": ["illiterate", "read"], "answer": 0, "choice": [["immobile", "move"], ["excited", "cheer"], ["bored", "concentrate"], ["correct", "falsify"]], "prefix": "high-intermediate"}
-{"stem": ["honor", "disgrace"], "answer": 1, "choice": [["comfort", "pleasure"], ["safety", "peril"], ["sanity", "sense"], ["anger", "rage"]], "prefix": "high-intermediate"}
-{"stem": ["whisper", "quiet"], "answer": 0, "choice": [["folktale", "traditional"], ["whip", "evil"], ["disease", "curable"], ["meal", "satisfying"]], "prefix": "high-intermediate"}
-{"stem": ["island", "archipelago"], "answer": 3, "choice": [["anchor", "aircraft"], ["archive", "album"], ["ocean", "iceberg"], ["article", "newspaper"]], "prefix": "high-intermediate"}
-{"stem": ["patience", "virtue"], "answer": 2, "choice": [["essay", "story"], ["currency", "credit"], ["denial", "reaction"], ["faith", "religion"]], "prefix": "high-intermediate"}
-{"stem": ["kiss", "affection"], "answer": 2, "choice": [["smile", "fear"], ["joke", "importance"], ["message", "information"], ["television", "actors"]], "prefix": "high-intermediate"}
-{"stem": ["network", "connect"], "answer": 0, "choice": [["statue", "memorialize"], ["funeral", "eliminate"], ["telephone", "hear"], ["device", "create"]], "prefix": "high-intermediate"}
-{"stem": ["devastated", "damaged"], "answer": 3, "choice": [["unusual", "weird"], ["unkind", "hurtful"], ["incredible", "mundane"], ["prevalent", "common"]], "prefix": "high-intermediate"}
-{"stem": ["algebra", "mathematics"], "answer": 0, "choice": [["rain", "precipitation"], ["bronze", "metal"], ["tradition", "culture"], ["trade", "economy"]], "prefix": "high-intermediate"}
-{"stem": ["uninhibited", "restraint"], "answer": 3, "choice": [["overweight", "shape"], ["unhealthy", "control"], ["intelligent", "thought"], ["generous", "selfishness"]], "prefix": "high-intermediate"}
-{"stem": ["offer", "request"], "answer": 0, "choice": [["damage", "repair"], ["enjoy", "entertain"], ["experience", "participate"], ["endure", "continue"]], "prefix": "high-intermediate"}
-{"stem": ["epidemic", "widespread"], "answer": 2, "choice": [["artist", "idealistic"], ["island", "lonesome"], ["emergency", "urgent"], ["intention", "challenged"]], "prefix": "high-intermediate"}
-{"stem": ["note", "melody"], "answer": 0, "choice": [["bone", "skeleton"], ["movie", "film"], ["meal", "restaurant"], ["career", "job"]], "prefix": "high-intermediate"}
-{"stem": ["lifejacket", "boat"], "answer": 1, "choice": [["medicine", "disease"], ["seatbelt", "plane"], ["shield", "sword"], ["hat", "helmet"]], "prefix": "high-intermediate"}
-{"stem": ["devout", "religious"], "answer": 0, "choice": [["hyper", "energetic"], ["depressed", "angry"], ["fit", "strong"], ["cruel", "strange"]], "prefix": "high-intermediate"}
-{"stem": ["hidden", "visible"], "answer": 1, "choice": [["spicy", "delicious"], ["flimsy", "sturdy"], ["tasteful", "classy"], ["elevated", "escalated"]], "prefix": "high-intermediate"}
-{"stem": ["cough", "cold"], "answer": 2, "choice": [["fever", "issue"], ["problem", "solution"], ["disagreement", "dispute"], ["room", "hotel"]], "prefix": "high-intermediate"}
-{"stem": ["veins", "circulate"], "answer": 3, "choice": [["calculators", "think"], ["boots", "sprint"], ["laws", "enforce"], ["ornaments", "decorate"]], "prefix": "high-intermediate"}
-{"stem": ["assassination", "murder"], "answer": 2, "choice": [["document", "certificate"], ["beverage", "drink"], ["relay", "race"], ["technology", "robot"]], "prefix": "high-intermediate"}
-{"stem": ["ignite", "extinguish"], "answer": 0, "choice": [["harvest", "plant"], ["rest", "relax"], ["investigate", "trust"], ["remove", "confiscate"]], "prefix": "high-intermediate"}
-{"stem": ["elderly", "youth"], "answer": 3, "choice": [["famous", "popularity"], ["rational", "proof"], ["smug", "satisfaction"], ["well", "illness"]], "prefix": "high-intermediate"}
-{"stem": ["conclusion", "essay"], "answer": 3, "choice": [["theme", "song"], ["meal", "dessert"], ["parade", "party"], ["scene", "play"]], "prefix": "high-intermediate"}
-{"stem": ["locker", "storage"], "answer": 0, "choice": [["telephone", "communication"], ["wallet", "cash"], ["pencil", "paper"], ["lake", "moisture"]], "prefix": "high-intermediate"}
-{"stem": ["excruciating", "painful"], "answer": 0, "choice": [["baffling", "confusing"], ["upsetting", "exciting"], ["improving", "hopeful"], ["crippling", "stressful"]], "prefix": "high-intermediate"}
-{"stem": ["fame", "obscurity"], "answer": 3, "choice": [["peace", "harmony"], ["music", "art"], ["knowledge", "wisdom"], ["sorrow", "joy"]], "prefix": "high-intermediate"}
-{"stem": ["heirloom", "inherited"], "answer": 1, "choice": [["ship", "wooden"], ["sermon", "religious"], ["newspaper", "popular"], ["coupon", "valuable"]], "prefix": "high-intermediate"}
-{"stem": ["sunscreen", "sunburn"], "answer": 1, "choice": [["hope", "tornado"], ["vaccination", "disease"], ["carelessness", "accident"], ["dream", "sleep"]], "prefix": "high-intermediate"}
-{"stem": ["contract", "agreement"], "answer": 0, "choice": [["limerick", "poem"], ["human", "monster"], ["scarf", "jewelry"], ["dog", "feline"]], "prefix": "high-intermediate"}
-{"stem": ["active", "idle"], "answer": 2, "choice": [["challenging", "difficult"], ["dramatic", "tragic"], ["brief", "lengthy"], ["scholarly", "studious"]], "prefix": "high-intermediate"}
-{"stem": ["hasty", "patience"], "answer": 2, "choice": [["unskilled", "magic"], ["terrified", "logic"], ["unqualified", "credentials"], ["gullible", "belief"]], "prefix": "high-intermediate"}
-{"stem": ["klutz", "clumsy"], "answer": 1, "choice": [["priest", "evil"], ["cold", "contagious"], ["car", "broken"], ["vegetable", "green"]], "prefix": "high-intermediate"}
-{"stem": ["lizard", "reptile"], "answer": 3, "choice": [["ambulance", "hospital"], ["fight", "argument"], ["painting", "sketch"], ["crystal", "mineral"]], "prefix": "high-intermediate"}
-{"stem": ["battle", "war"], "answer": 2, "choice": [["button", "hole"], ["friend", "companion"], ["handle", "shovel"], ["lighthouse", "coast"]], "prefix": "high-intermediate"}
-{"stem": ["treaty", "peace"], "answer": 0, "choice": [["title", "ownership"], ["license", "traffic"], ["declaration", "independence"], ["dictionary", "language"]], "prefix": "high-intermediate"}
-{"stem": ["lenient", "strict"], "answer": 1, "choice": [["hopeful", "optimistic"], ["punctual", "late"], ["sentimental", "emotional"], ["irrational", "inexplicable"]], "prefix": "high-intermediate"}
-{"stem": ["blender", "appliance"], "answer": 1, "choice": [["tent", "cabin"], ["letter", "symbol"], ["chemical", "biology"], ["fungus", "mushroom"]], "prefix": "high-intermediate"}
-{"stem": ["lantern", "light"], "answer": 2, "choice": [["fan", "oxygen"], ["toilet", "waste"], ["curtain", "privacy"], ["television", "electricity"]], "prefix": "high-intermediate"}
-{"stem": ["faded", "brilliance"], "answer": 0, "choice": [["decrepit", "strength"], ["contemporary", "modernity"], ["downtrodden", "sadness"], ["troubled", "danger"]], "prefix": "high-intermediate"}
-{"stem": ["classroom", "desk"], "answer": 1, "choice": [["bank", "dollar"], ["church", "pew"], ["studio", "paintbrush"], ["museum", "artifact"]], "prefix": "high-intermediate"}
-{"stem": ["dwindle", "increase"], "answer": 1, "choice": [["ridicule", "mock"], ["denounce", "embrace"], ["celebrate", "congratulate"], ["sting", "stab"]], "prefix": "high-intermediate"}
-{"stem": ["ocean", "immense"], "answer": 2, "choice": [["surface", "flat"], ["career", "fulfilling"], ["enemy", "adversarial"], ["quilt", "detailed"]], "prefix": "high-intermediate"}
-{"stem": ["star", "constellation"], "answer": 3, "choice": [["crystal", "jewel"], ["reservation", "table"], ["bank", "fortune"], ["wick", "candle"]], "prefix": "high-intermediate"}
-{"stem": ["documentary", "film"], "answer": 1, "choice": [["parka", "sweater"], ["hut", "dwelling"], ["debt", "fee"], ["chair", "sofa"]], "prefix": "high-intermediate"}
-{"stem": ["key", "unlock"], "answer": 1, "choice": [["newspaper", "guide"], ["clothespin", "hang"], ["teacher", "study"], ["mortgage", "bankrupt"]], "prefix": "high-intermediate"}
-{"stem": ["nearby", "distant"], "answer": 0, "choice": [["timid", "bold"], ["classy", "mannered"], ["permanent", "eternal"], ["criminal", "illegal"]], "prefix": "high-intermediate"}
-{"stem": ["whimper", "fear"], "answer": 1, "choice": [["grimace", "comfort"], ["shrug", "uncertainty"], ["speech", "language"], ["receipt", "price"]], "prefix": "high-intermediate"}
-{"stem": ["heart", "organ"], "answer": 2, "choice": [["glaze", "sauce"], ["spacecraft", "rocket"], ["octagon", "shape"], ["hero", "doctor"]], "prefix": "high-intermediate"}
-{"stem": ["tidy", "unkempt"], "answer": 0, "choice": [["smooth", "jagged"], ["moral", "judgmental"], ["finite", "limited"], ["intended", "declared"]], "prefix": "high-intermediate"}
-{"stem": ["gasoline", "flammable"], "answer": 1, "choice": [["love", "wonderful"], ["radiation", "toxic"], ["justice", "arbitrary"], ["religion", "strict"]], "prefix": "high-intermediate"}
-{"stem": ["adolescent", "maturity"], "answer": 3, "choice": [["murder", "motive"], ["suitcase", "wheels"], ["idea", "clarity"], ["lunatic", "sanity"]], "prefix": "high-intermediate"}
-{"stem": ["boastful", "proud"], "answer": 1, "choice": [["angry", "outraged"], ["impeccable", "clean"], ["ridiculous", "humorous"], ["skeptical", "doubtful"]], "prefix": "high-intermediate"}
-{"stem": ["infection", "bacteria"], "answer": 0, "choice": [["intoxication", "alcohol"], ["glitter", "shine"], ["worth", "money"], ["rain", "fog"]], "prefix": "high-intermediate"}
-{"stem": ["mask", "disguise"], "answer": 1, "choice": [["powder", "moisten"], ["perfume", "scent"], ["shield", "attack"], ["daughter", "marry"]], "prefix": "high-intermediate"}
-{"stem": ["passport", "document"], "answer": 2, "choice": [["mineral", "geology"], ["clock", "watch"], ["fossil", "artifact"], ["notebook", "literature"]], "prefix": "high-intermediate"}
-{"stem": ["believable", "credible"], "answer": 3, "choice": [["chilly", "freezing"], ["horrible", "monstrous"], ["visible", "obvious"], ["eternal", "endless"]], "prefix": "high-intermediate"}
-{"stem": ["helium", "gas"], "answer": 0, "choice": [["Christianity", "religion"], ["truth", "knowledge"], ["courage", "bravery"], ["polarity", "magnet"]], "prefix": "high-intermediate"}
-{"stem": ["fish", "gills"], "answer": 1, "choice": [["pig", "hooves"], ["human", "lungs"], ["whale", "tails"], ["eagle", "talons"]], "prefix": "high-intermediate"}
-{"stem": ["insecure", "confidence"], "answer": 3, "choice": [["fluent", "language"], ["powerful", "ability"], ["modest", "grace"], ["indecisive", "resolution"]], "prefix": "high-intermediate"}
-{"stem": ["blaze", "fire"], "answer": 2, "choice": [["decision", "idea"], ["lighthouse", "lamp"], ["warlord", "soldier"], ["tournament", "game"]], "prefix": "high-intermediate"}
-{"stem": ["antique", "aged"], "answer": 3, "choice": [["technique", "effective"], ["microphone", "loud"], ["grandfather", "deceased"], ["sphere", "round"]], "prefix": "high-intermediate"}
-{"stem": ["article", "magazine"], "answer": 3, "choice": [["revolution", "war"], ["hood", "jacket"], ["speech", "meeting"], ["trigger", "gun"]], "prefix": "high-intermediate"}
-{"stem": ["lens", "camera"], "answer": 3, "choice": [["amplifier", "violin"], ["keyboard", "television"], ["bank", "vault"], ["lobby", "hotel"]], "prefix": "high-intermediate"}
-{"stem": ["appalled", "dismayed"], "answer": 2, "choice": [["interested", "apathetic"], ["incomprehensible", "illegible"], ["overjoyed", "happy"], ["aloof", "untouchable"]], "prefix": "high-intermediate"}
-{"stem": ["slob", "messy"], "answer": 1, "choice": [["benefactor", "poor"], ["miser", "stingy"], ["godmother", "magical"], ["researcher", "intuitive"]], "prefix": "high-intermediate"}
-{"stem": ["fever", "symptom"], "answer": 2, "choice": [["debate", "argument"], ["newspaper", "magazine"], ["fable", "story"], ["device", "strategy"]], "prefix": "high-intermediate"}
-{"stem": ["advocate", "criticize"], "answer": 1, "choice": [["excuse", "permit"], ["conquer", "liberate"], ["enjoy", "satisfy"], ["relinquish", "give"]], "prefix": "high-intermediate"}
-{"stem": ["christmas", "gifts"], "answer": 2, "choice": [["Thanksgiving", "turkey"], ["summer", "school"], ["Halloween", "candy"], ["May", "flowers"]], "prefix": "high-intermediate"}
-{"stem": ["boundless", "limit"], "answer": 3, "choice": [["saintly", "holiness"], ["understandable", "recognition"], ["renewed", "authenticity"], ["unrivaled", "equal"]], "prefix": "high-intermediate"}
-{"stem": ["coal", "fuel"], "answer": 1, "choice": [["kidney", "body"], ["dictatorship", "government"], ["thought", "feeling"], ["partner", "accomplice"]], "prefix": "high-intermediate"}
-{"stem": ["fisherman", "net"], "answer": 1, "choice": [["teacher", "professor"], ["doctor", "stethoscope"], ["demon", "soul"], ["mother", "child"]], "prefix": "high-intermediate"}
-{"stem": ["brake", "decelerate"], "answer": 1, "choice": [["nurse", "operate"], ["veil", "conceal"], ["commercial", "purchase"], ["gift", "receive"]], "prefix": "high-intermediate"}
-{"stem": ["extrovert", "gregarious"], "answer": 0, "choice": [["jingoist", "nationalistic"], ["judge:", "deciduous"], ["philanthropist", "amorous"], ["businessman", "shrewd"]], "prefix": "low-advanced"}
-{"stem": ["suspect", "credibility"], "answer": 1, "choice": [["dubious", "discussion"], ["conventional", "novelty"], ["controversial", "evidence"], ["mountainous", "elevation"]], "prefix": "low-advanced"}
-{"stem": ["platform", "policies"], "answer": 3, "choice": [["slaughterhouse", "meat"], ["congregation", "churches"], ["hierarchy", "rulers"], ["medley", "songs"]], "prefix": "low-advanced"}
-{"stem": ["aimless", "direction"], "answer": 0, "choice": [["wary", "trust"], ["pathetic", "dignity"], ["lazy", "health"], ["silly", "comedy"]], "prefix": "low-advanced"}
-{"stem": ["marathon", "endurance"], "answer": 1, "choice": [["tournament", "judges"], ["examination", "knowledge"], ["revolution", "ideology"], ["disaster", "piety"]], "prefix": "low-advanced"}
-{"stem": ["emaciated", "thin"], "answer": 2, "choice": [["peripatetic", "mobile"], ["quarrelsome", "agreeable"], ["meticulous", "careful"], ["insubordinate", "obedient"]], "prefix": "low-advanced"}
-{"stem": ["infamy", "reputation"], "answer": 0, "choice": [["compassion", "virtue"], ["pain", "agony"], ["emancipation", "proclamation"], ["sediment", "dirt"]], "prefix": "low-advanced"}
-{"stem": ["jurisprudence", "law"], "answer": 0, "choice": [["linguistics", "language"], ["botany", "animals"], ["literacy", "letters"], ["astrology", "space"]], "prefix": "low-advanced"}
-{"stem": ["apathetic", "zeal"], "answer": 2, "choice": [["righteous", "judgment"], ["secular", "belief"], ["unapologetic", "remorse"], ["impressionable", "youth"]], "prefix": "low-advanced"}
-{"stem": ["avarice", "generosity"], "answer": 1, "choice": [["tenacity", "determination"], ["jeopardy", "security"], ["territorialism", "land"], ["retaliation", "revenge"]], "prefix": "low-advanced"}
-{"stem": ["bellicose", "aggressive"], "answer": 3, "choice": [["reputable", "shady"], ["aromatic", "unscented"], ["corporeal", "imagined"], ["irksome", "annoying"]], "prefix": "low-advanced"}
-{"stem": ["rebuttal", "refute"], "answer": 1, "choice": [["convulsion", "shudder"], ["message", "inform"], ["emporium", "purchase"], ["henchman", "lead"]], "prefix": "low-advanced"}
-{"stem": ["mutinous", "compliant"], "answer": 0, "choice": [["nebulous", "distinct"], ["heinous", "awful"], ["laborious", "toilsome"], ["nominal", "trivial"]], "prefix": "low-advanced"}
-{"stem": ["rant", "bombastic"], "answer": 2, "choice": [["recluse", "friendly"], ["bard", "talkative"], ["conflagration", "disastrous"], ["obelisk", "mysterious"]], "prefix": "low-advanced"}
-{"stem": ["castle", "edifice"], "answer": 2, "choice": [["objective", "task"], ["profiteer", "mercenary"], ["subpoena", "summons"], ["trilogy", "sequel"]], "prefix": "low-advanced"}
-{"stem": ["voluminous", "large"], "answer": 0, "choice": [["ravenous", "hungry"], ["separable", "divisible"], ["sinuous", "straight"], ["lustrous", "golden"]], "prefix": "low-advanced"}
-{"stem": ["negligence", "carelessness"], "answer": 3, "choice": [["stone", "lithograph"], ["jubilation", "anniversary"], ["bigotry", "friendship"], ["admiration", "reverence"]], "prefix": "low-advanced"}
-{"stem": ["shepherd", "dog"], "answer": 2, "choice": [["marsupial", "kangaroo"], ["whelp", "dragon"], ["albatross", "bird"], ["hornet", "bee"]], "prefix": "low-advanced"}
-{"stem": ["irrational", "reason"], "answer": 1, "choice": [["voluble", "fluency"], ["irreproachable", "flaws"], ["eclectic", "versatility"], ["nefarious", "sin"]], "prefix": "low-advanced"}
-{"stem": ["senator", "legislature"], "answer": 1, "choice": [["palisade", "resort"], ["battleship", "armada"], ["predator", "wolf"], ["introvert", "personality"]], "prefix": "low-advanced"}
-{"stem": ["galleon", "sail"], "answer": 1, "choice": [["masterpiece", "create"], ["quarantine", "isolate"], ["neurologist", "think"], ["nominee", "vote"]], "prefix": "low-advanced"}
-{"stem": ["misogynist", "feminist"], "answer": 0, "choice": [["modicum", "abundance"], ["reflection", "inversion"], ["priory", "convent"], ["consequence", "action"]], "prefix": "low-advanced"}
-{"stem": ["parishioner", "church"], "answer": 3, "choice": [["rant", "soliloquy"], ["lament", "testimony"], ["opera", "aria"], ["constituent", "district"]], "prefix": "low-advanced"}
-{"stem": ["insurgent", "rebellious"], "answer": 2, "choice": [["garrison", "garrulous"], ["rivalry", "amicable"], ["stereotype", "oversimplified"], ["voice", "monotonous"]], "prefix": "low-advanced"}
-{"stem": ["epidermis", "skin"], "answer": 0, "choice": [["hypotenuse", "triangle"], ["procedure", "method"], ["supplicant", "lender"], ["transmission", "radio"]], "prefix": "low-advanced"}
-{"stem": ["quandary", "uncertainty"], "answer": 1, "choice": [["treachery", "forgiveness"], ["crime", "wrongdoing"], ["coupon", "redemption"], ["government", "triumvirate"]], "prefix": "low-advanced"}
-{"stem": ["colloquial", "formal"], "answer": 3, "choice": [["unbecoming", "improper"], ["resilient", "persistent"], ["perpendicular", "angled"], ["intermittent", "continuous"]], "prefix": "low-advanced"}
-{"stem": ["spy", "espionage"], "answer": 0, "choice": [["manufacturer", "production"], ["principal", "tutelage"], ["clergyman", "divinity"], ["warden", "prisoners"]], "prefix": "low-advanced"}
-{"stem": ["insomniac", "sleep"], "answer": 2, "choice": [["punishment", "penance"], ["innuendo", "interpretation"], ["stoic", "emotion"], ["counterfeit", "falsity"]], "prefix": "low-advanced"}
-{"stem": ["volatile", "unstable"], "answer": 1, "choice": [["scholarly", "erudite"], ["persnickety", "picky"], ["entertaining", "jovial"], ["important", "momentous"]], "prefix": "low-advanced"}
-{"stem": ["clairvoyant", "predict"], "answer": 1, "choice": [["crustacean", "swim"], ["patron", "support"], ["prodigy", "learn"], ["savant", "teach"]], "prefix": "low-advanced"}
-{"stem": ["dirge", "mournful"], "answer": 3, "choice": [["tree", "deciduous"], ["degenerate", "racist"], ["lawyer", "diplomatic"], ["parody", "amusing"]], "prefix": "low-advanced"}
-{"stem": ["bourgeoisie", "class"], "answer": 3, "choice": [["commission", "wage"], ["mortgage", "insurance"], ["disciple", "leader"], ["smorgasbord", "buffet"]], "prefix": "low-advanced"}
-{"stem": ["menagerie", "animals"], "answer": 1, "choice": [["troupe", "theaters"], ["harem", "concubines"], ["vernacular", "dictionaries"], ["wardrobe", "furniture"]], "prefix": "low-advanced"}
-{"stem": ["bow", "boat"], "answer": 0, "choice": [["word", "lexicon"], ["compliment", "friendship"], ["seaman", "battleship"], ["henchman", "villain"]], "prefix": "low-advanced"}
-{"stem": ["miser", "parsimonious"], "answer": 1, "choice": [["humanitarian", "mortal"], ["misanthrope", "antagonistic"], ["doctor", "hospitable"], ["mercenary", "greedy"]], "prefix": "low-advanced"}
-{"stem": ["prosaic", "exciting"], "answer": 0, "choice": [["clandestine", "overt"], ["mendacious", "untrue"], ["militaristic", "aggressive"], ["nuanced", "detailed"]], "prefix": "low-advanced"}
-{"stem": ["infallible", "error"], "answer": 0, "choice": [["inebriated", "sobriety"], ["obstinate", "acceptance"], ["polytheistic", "salvation"], ["pusillanimous", "fear"]], "prefix": "low-advanced"}
-{"stem": ["vacuous", "intelligence"], "answer": 0, "choice": [["vapid", "liveliness"], ["quixotic", "chivalry"], ["requisite", "necessity"], ["entertaining", "excitement"]], "prefix": "low-advanced"}
-{"stem": ["partisan", "biased"], "answer": 1, "choice": [["rivulet", "powerful"], ["spinster", "unmarried"], ["savage", "classy"], ["proletarian", "socialist"]], "prefix": "low-advanced"}
-{"stem": ["initial", "acronym"], "answer": 2, "choice": [["homophone", "definition"], ["newspaper", "perspective"], ["stanza", "poem"], ["cornucopia", "harvest"]], "prefix": "low-advanced"}
-{"stem": ["meticulous", "careful"], "answer": 0, "choice": [["ascetic", "frugal"], ["knowledgeable", "informative"], ["malignant", "cancerous"], ["artificial", "genuine"]], "prefix": "low-advanced"}
-{"stem": ["ingenue", "naive"], "answer": 1, "choice": [["witness", "judgmental"], ["slur", "pejorative"], ["epitaph", "deceased"], ["feline", "feminine"]], "prefix": "low-advanced"}
-{"stem": ["hamlet", "village"], "answer": 2, "choice": [["fallacy", "lie"], ["formula", "milk"], ["simile", "comparison"], ["pesticide", "crop"]], "prefix": "low-advanced"}
-{"stem": ["frivolous", "grave"], "answer": 3, "choice": [["astute", "clever"], ["pitiless", "callous"], ["sensitive", "tactful"], ["frugal", "extravagant"]], "prefix": "low-advanced"}
-{"stem": ["perceptive", "notice"], "answer": 2, "choice": [["apprehensive", "doubt"], ["maternal", "coddle"], ["versatile", "adapt"], ["guilty", "resent"]], "prefix": "low-advanced"}
-{"stem": ["sophomoric", "maturity"], "answer": 3, "choice": [["circumspect", "attention"], ["capricious", "impulse"], ["prudent", "wisdom"], ["venal", "integrity"]], "prefix": "low-advanced"}
-{"stem": ["disparage", "encourage"], "answer": 0, "choice": [["venerate", "desecrate"], ["diverge", "distract"], ["purloin", "steal"], ["defy", "reject"]], "prefix": "low-advanced"}
-{"stem": ["smorgasbord", "foods"], "answer": 0, "choice": [["anthology", "passages"], ["almanac", "books"], ["disparity", "crimes"], ["massacre", "soldiers"]], "prefix": "low-advanced"}
-{"stem": ["capillary", "vessel"], "answer": 1, "choice": [["concubine", "spouse"], ["tabernacle", "sanctuary"], ["pedestrian", "sidewalk"], ["vignette", "theater"]], "prefix": "low-advanced"}
-{"stem": ["ignoramus", "unintelligent"], "answer": 1, "choice": [["teacher", "tenured"], ["virtuoso", "skilled"], ["illness", "terminal"], ["hooligan", "popular"]], "prefix": "low-advanced"}
-{"stem": ["panacea", "cure"], "answer": 1, "choice": [["condiment", "eat"], ["mallet", "strike"], ["paradox", "contradict"], ["charlatan", "deceive"]], "prefix": "low-advanced"}
-{"stem": ["maladroit", "skill"], "answer": 2, "choice": [["domineering", "power"], ["abject", "poverty"], ["pretentious", "modesty"], ["faithful", "commitment"]], "prefix": "low-advanced"}
-{"stem": ["fastidious", "particular"], "answer": 0, "choice": [["fanatical", "enthusiastic"], ["edible", "delicious"], ["adamant", "opposed"], ["manipulative", "masterful"]], "prefix": "low-advanced"}
-{"stem": ["exoneration", "release"], "answer": 3, "choice": [["examination", "accusation"], ["death", "execution"], ["governor", "pardon"], ["conviction", "sentencing"]], "prefix": "low-advanced"}
-{"stem": ["clay", "malleable"], "answer": 3, "choice": [["profanity", "censored"], ["acceleration", "quick"], ["animosity", "unwarranted"], ["chicanery", "dishonest"]], "prefix": "low-advanced"}
-{"stem": ["pristine", "damaged"], "answer": 3, "choice": [["ruined", "annihilated"], ["didactic", "instructive"], ["inconspicuous", "stealthy"], ["paramount", "unimportant"]], "prefix": "low-advanced"}
-{"stem": ["fetter", "restraint"], "answer": 0, "choice": [["dichotomy", "division"], ["school", "seminary"], ["parasite", "assistant"], ["follicle", "hair"]], "prefix": "low-advanced"}
-{"stem": ["map", "atlas"], "answer": 0, "choice": [["appendage", "body"], ["reprimand", "insult"], ["typhoon", "hurricane"], ["beast", "creature"]], "prefix": "low-advanced"}
-{"stem": ["diffident", "confidence"], "answer": 3, "choice": [["infertile", "family"], ["incorrigible", "punishment"], ["rash", "audacity"], ["deceitful", "honesty"]], "prefix": "low-advanced"}
-{"stem": ["agnostic", "belief"], "answer": 0, "choice": [["lummox", "grace"], ["reputation", "notoriety"], ["predecessor", "origin"], ["tyrant", "prerogative"]], "prefix": "low-advanced"}
-{"stem": ["palliative", "relieve"], "answer": 2, "choice": [["predicament", "solve"], ["tonic", "dissolve"], ["deterrent", "dissuade"], ["correspondent", "sanction"]], "prefix": "low-advanced"}
-{"stem": ["exorcism", "demons"], "answer": 0, "choice": [["putsch", "government"], ["sin", "evil"], ["nation", "expatriates"], ["cave", "stalagmites"]], "prefix": "low-advanced"}
-{"stem": ["grouch", "cantakerous"], "answer": 3, "choice": [["conspiracy", "successful"], ["magnate", "magnanimous"], ["building", "ramshackle"], ["palace", "ornate"]], "prefix": "low-advanced"}
-{"stem": ["incipient", "mature"], "answer": 2, "choice": [["prescient", "correct"], ["analogous", "comparable"], ["destitute", "affluent"], ["unctuous", "oily"]], "prefix": "low-advanced"}
-{"stem": ["succulent", "rich"], "answer": 2, "choice": [["caustic", "relaxing"], ["amiable", "indifferent"], ["bloodthirsty", "violent"], ["farcical", "funny"]], "prefix": "low-advanced"}
-{"stem": ["caucus", "meeting"], "answer": 2, "choice": [["chef", "entree"], ["dissertation", "degree"], ["paleontologist", "scientist"], ["salute", "capitulation"]], "prefix": "low-advanced"}
-{"stem": ["indigent", "poor"], "answer": 3, "choice": [["ethereal", "concrete"], ["apathetic", "depressed"], ["inadvertent", "presaged"], ["sanctimonious", "hypocritical"]], "prefix": "low-advanced"}
-{"stem": ["impromptu", "rehearsal"], "answer": 1, "choice": [["precocious", "direction"], ["perpetual", "cessation"], ["impious", "dedication"], ["truant", "membership"]], "prefix": "low-advanced"}
-{"stem": ["maelstrom", "storm"], "answer": 1, "choice": [["feline", "cat"], ["analgesic", "painkiller"], ["omen", "destiny"], ["savant", "disability"]], "prefix": "low-advanced"}
-{"stem": ["enigma", "mysterious"], "answer": 0, "choice": [["bigot", "prejudiced"], ["beetle", "venomous"], ["politician", "obtuse"], ["professor", "glib"]], "prefix": "low-advanced"}
-{"stem": ["veil", "enshroud"], "answer": 1, "choice": [["beautician", "paint"], ["lampoon", "mock"], ["laureate", "preside"], ["flare", "locate"]], "prefix": "low-advanced"}
-{"stem": ["poison", "noxious"], "answer": 2, "choice": [["performance", "stellar"], ["satellite", "worldly"], ["maze", "labyrinthine"], ["wavelength", "shallow"]], "prefix": "low-advanced"}
-{"stem": ["placid", "tumultuous"], "answer": 3, "choice": [["coveted", "desired"], ["reviled", "despised"], ["tangential", "irrelevant"], ["credible", "dubious"]], "prefix": "low-advanced"}
-{"stem": ["blatant", "obvious"], "answer": 0, "choice": [["preeminent", "important"], ["legendary", "unbelievable"], ["novel", "obsolete"], ["powerful", "dominant"]], "prefix": "low-advanced"}
-{"stem": ["blasphemy", "religion"], "answer": 1, "choice": [["fornication", "marriage"], ["treason", "state"], ["lethargy", "energy"], ["avarice", "currency"]], "prefix": "low-advanced"}
-{"stem": ["tawdry", "taste"], "answer": 2, "choice": [["vicious", "wrath"], ["bourgeois", "wealth"], ["haughty", "humility"], ["paraplegic", "legs"]], "prefix": "low-advanced"}
-{"stem": ["tedium", "excitement"], "answer": 3, "choice": [["revision", "edition"], ["honor", "prestige"], ["mortgage", "debt"], ["resignation", "denial"]], "prefix": "low-advanced"}
-{"stem": ["cringe", "discomfort"], "answer": 0, "choice": [["nod", "acquiescence"], ["handshake", "discrimination"], ["haiku", "poetry"], ["hyperbole", "literature"]], "prefix": "low-advanced"}
-{"stem": ["diatribe", "speech"], "answer": 2, "choice": [["deal", "hustle"], ["nuance", "pattern"], ["laceration", "injury"], ["plaintiff", "defendant"]], "prefix": "low-advanced"}
-{"stem": ["buttress", "wall"], "answer": 1, "choice": [["precinct", "city"], ["philanthropist", "charity"], ["cream", "lotion"], ["document", "preamble"]], "prefix": "low-advanced"}
-{"stem": ["jury", "deliberate"], "answer": 3, "choice": [["candidate", "deprecate"], ["precedent", "preside"], ["ruse", "illuminate"], ["lobbyist", "persuade"]], "prefix": "low-advanced"}
-{"stem": ["saccharine", "sweet"], "answer": 2, "choice": [["omniscient", "omnipotent"], ["lethargic", "slovenly"], ["sacrosanct", "sacred"], ["hypocritical", "dissonant"]], "prefix": "low-advanced"}
-{"stem": ["altruism", "selfishness"], "answer": 1, "choice": [["alacrity", "clarity"], ["impartiality", "bias"], ["levity", "flippancy"], ["gravity", "momentum"]], "prefix": "low-advanced"}
-{"stem": ["bishop", "ordained"], "answer": 0, "choice": [["prince", "opulent"], ["transgression", "acceptable"], ["cliche", "intrepid"], ["loft", "unattainable"]], "prefix": "low-advanced"}
-{"stem": ["pragmatic", "practical"], "answer": 3, "choice": [["irritating", "pleasing"], ["tenacious", "faltering"], ["opaque", "translucent"], ["trivial", "negligible"]], "prefix": "low-advanced"}
-{"stem": ["cauldron", "pot"], "answer": 1, "choice": [["vibration", "perception"], ["pictograph", "symbol"], ["favor", "currency"], ["luminary", "phantasm"]], "prefix": "low-advanced"}
-{"stem": ["precept", "guidance"], "answer": 2, "choice": [["chord", "music"], ["footnote", "connotation"], ["alibi", "defense"], ["epilogue", "introduction"]], "prefix": "low-advanced"}
-{"stem": ["trinket", "value"], "answer": 2, "choice": [["sequoia", "longevity"], ["physician", "medicine"], ["fool", "sagacity"], ["grandmother", "idiosyncrasy"]], "prefix": "low-advanced"}
-{"stem": ["euphemism", "polite"], "answer": 2, "choice": [["prophet", "rogue"], ["metaphor", "literal"], ["expletive", "vulgar"], ["sonnet", "renegade"]], "prefix": "low-advanced"}
-{"stem": ["frail", "brawn"], "answer": 3, "choice": [["humorous", "wit"], ["obtuse", "intensity"], ["disinterested", "ennui"], ["longwinded", "brevity"]], "prefix": "low-advanced"}
-{"stem": ["acrophobia", "heights"], "answer": 2, "choice": [["claustrophobia", "closets"], ["homophobia", "discrimination"], ["agoraphobia", "crowds"], ["vertigo", "balance"]], "prefix": "low-advanced"}
-{"stem": ["heretic", "unorthodox"], "answer": 1, "choice": [["hero", "folksy"], ["braggart", "boastful"], ["javelin", "underhanded"], ["hiatus", "eternal"]], "prefix": "low-advanced"}
-{"stem": ["debunk", "verify"], "answer": 0, "choice": [["revere", "denigrate"], ["besmirch", "slander"], ["cower", "submit"], ["pontificate", "pronounce"]], "prefix": "low-advanced"}
-{"stem": ["legend", "map"], "answer": 1, "choice": [["continent", "nation"], ["page", "tome"], ["tirade", "government"], ["legion", "family"]], "prefix": "low-advanced"}
-{"stem": ["epistle", "letter"], "answer": 0, "choice": [["decathlon", "competition"], ["multitude", "feast"], ["lounge", "vacation"], ["credo", "church"]], "prefix": "low-advanced"}
-{"stem": ["detective", "mysteries"], "answer": 2, "choice": [["theologian", "cancer"], ["sojourner", "destiny"], ["archaeologist", "hieroglyphics"], ["courier", "packages"]], "prefix": "low-advanced"}
-{"stem": ["thwart", "frustrate"], "answer": 2, "choice": [["retain", "burst"], ["meditate", "snooze"], ["laud", "praise"], ["bristle", "brush"]], "prefix": "low-advanced"}
-{"stem": ["decoy", "deceive"], "answer": 3, "choice": [["landscape", "surround"], ["eulogy", "kill"], ["quartet", "compose"], ["bulwark", "protect"]], "prefix": "low-advanced"}
-{"stem": ["larceny", "crime"], "answer": 0, "choice": [["bureaucracy", "administration"], ["astrology", "religion"], ["venom", "flavoring"], ["mythology", "deity"]], "prefix": "low-advanced"}
-{"stem": ["athlete", "fit"], "answer": 2, "choice": [["chef", "fat"], ["dog", "energetic"], ["priest", "religious"], ["dancer", "intelligent"]], "prefix": "low-intermediate"}
-{"stem": ["microwave", "heat"], "answer": 0, "choice": [["refrigerator", "cool"], ["freezer", "cook"], ["sink", "organize"], ["fireplace", "destroy"]], "prefix": "low-intermediate"}
-{"stem": ["comedy", "funny"], "answer": 2, "choice": [["mystery", "boring"], ["drama", "romantic"], ["tragedy", "sad"], ["newspaper", "expensive"]], "prefix": "low-intermediate"}
-{"stem": ["brother", "sibling"], "answer": 3, "choice": [["mother", "daughter"], ["doctor", "nurse"], ["uncle", "aunt"], ["father", "parent"]], "prefix": "low-intermediate"}
-{"stem": ["humiliated", "embarrassed"], "answer": 1, "choice": [["shy", "timid"], ["enraged", "angry"], ["sad", "upset"], ["excited", "anxious"]], "prefix": "low-intermediate"}
-{"stem": ["train", "railroad"], "answer": 2, "choice": [["boat", "mountain"], ["helicopter", "cloud"], ["truck", "highway"], ["wagon", "wheel"]], "prefix": "low-intermediate"}
-{"stem": ["skeptical", "belief"], "answer": 1, "choice": [["unpopular", "wealth"], ["homeless", "shelter"], ["polite", "power"], ["nervous", "stress"]], "prefix": "low-intermediate"}
-{"stem": ["optimism", "pesimissm"], "answer": 0, "choice": [["success", "failure"], ["food", "hunger"], ["motivation", "dedication"], ["maturity", "youth"]], "prefix": "low-intermediate"}
-{"stem": ["sunscreen", "skin"], "answer": 2, "choice": [["magic", "children"], ["grass", "house"], ["armor", "body"], ["faith", "country"]], "prefix": "low-intermediate"}
-{"stem": ["spaghetti", "pasta"], "answer": 0, "choice": [["ketchup", "condiment"], ["lettuce", "sauce"], ["bacon", "fruit"], ["cereal", "dairy"]], "prefix": "low-intermediate"}
-{"stem": ["liar", "honesty"], "answer": 2, "choice": [["lawyer", "mercy"], ["mother", "children"], ["fool", "wisdom"], ["soldier", "power"]], "prefix": "low-intermediate"}
-{"stem": ["downpour", "rain"], "answer": 2, "choice": [["wave", "water"], ["tornado", "clouds"], ["blizzard", "snow"], ["desert", "heat"]], "prefix": "low-intermediate"}
-{"stem": ["wizard", "magical"], "answer": 0, "choice": [["king", "royal"], ["nun", "silent"], ["teacher", "ordinary"], ["chef", "delicious"]], "prefix": "low-intermediate"}
-{"stem": ["misfortune", "luck"], "answer": 0, "choice": [["victory", "defeat"], ["coffee", "tea"], ["life", "birth"], ["sugar", "salt"]], "prefix": "low-intermediate"}
-{"stem": ["verse", "song"], "answer": 0, "choice": [["core", "apple"], ["mop", "broom"], ["supermarket", "office"], ["coat", "jacket"]], "prefix": "low-intermediate"}
-{"stem": ["almond", "nut"], "answer": 1, "choice": [["hill", "mountain"], ["helicopter", "aircraft"], ["sport", "football"], ["lamp", "lightbulb"]], "prefix": "low-intermediate"}
-{"stem": ["wool", "sheep"], "answer": 0, "choice": [["leather", "cows"], ["metal", "trees"], ["paper", "rocks"], ["wood", "mountains"]], "prefix": "low-intermediate"}
-{"stem": ["pebble", "stone"], "answer": 0, "choice": [["minnow", "fish"], ["car", "truck"], ["tiger", "lion"], ["dictionary", "book"]], "prefix": "low-intermediate"}
-{"stem": ["newspaper", "inform"], "answer": 3, "choice": [["television", "watch"], ["book", "communicate"], ["movie", "persuade"], ["game", "entertain"]], "prefix": "low-intermediate"}
-{"stem": ["bus", "automobile"], "answer": 1, "choice": [["building", "house"], ["tiger", "animal"], ["letter", "alphabet"], ["bath", "shower"]], "prefix": "low-intermediate"}
-{"stem": ["engine", "car"], "answer": 0, "choice": [["lens", "microscope"], ["day", "night"], ["picture", "frame"], ["club", "member"]], "prefix": "low-intermediate"}
-{"stem": ["butcher", "meat"], "answer": 3, "choice": [["maid", "chores"], ["teacher", "knowledge"], ["librarian", "books"], ["baker", "bread"]], "prefix": "low-intermediate"}
-{"stem": ["obscene", "inappropriate"], "answer": 3, "choice": [["impossible", "easy"], ["polite", "rude"], ["tall", "honest"], ["spotless", "clean"]], "prefix": "low-intermediate"}
-{"stem": ["positive", "negative"], "answer": 0, "choice": [["clean", "filthy"], ["angry", "upset"], ["friendly", "popular"], ["challenging", "interesting"]], "prefix": "low-intermediate"}
-{"stem": ["cigarette", "unhealthy"], "answer": 0, "choice": [["sin", "immoral"], ["baby", "wise"], ["husband", "rich"], ["nation", "peaceful"]], "prefix": "low-intermediate"}
-{"stem": ["helmet", "head"], "answer": 0, "choice": [["mask", "face"], ["belt", "train"], ["ring", "wrist"], ["slipper", "ankle"]], "prefix": "low-intermediate"}
-{"stem": ["sewing", "craft"], "answer": 2, "choice": [["salt", "food"], ["fate", "science"], ["gasoline", "fuel"], ["sunrise", "art"]], "prefix": "low-intermediate"}
-{"stem": ["accident", "unintended"], "answer": 2, "choice": [["idea", "true"], ["law", "perfect"], ["villain", "evil"], ["castle", "unknown"]], "prefix": "low-intermediate"}
-{"stem": ["trivial", "importance"], "answer": 3, "choice": [["prestigious", "honor"], ["written", "rhyme"], ["invisible", "sight"], ["familiar", "novelty"]], "prefix": "low-intermediate"}
-{"stem": ["expert", "skilled"], "answer": 3, "choice": [["athlete", "thin"], ["student", "intelligent"], ["spy", "friendly"], ["fanatic", "enthusiastic"]], "prefix": "low-intermediate"}
-{"stem": ["coffee", "bitter"], "answer": 1, "choice": [["meat", "fried"], ["glass", "fragile"], ["gas", "cheap"], ["silk", "rough"]], "prefix": "low-intermediate"}
-{"stem": ["alarm", "warn"], "answer": 0, "choice": [["map", "navigate"], ["dog", "party"], ["cup", "pour"], ["shirt", "design"]], "prefix": "low-intermediate"}
-{"stem": ["soda", "beverage"], "answer": 3, "choice": [["fish", "ocean"], ["dirt", "ingredient"], ["cereal", "pancake"], ["shrimp", "seafood"]], "prefix": "low-intermediate"}
-{"stem": ["clock", "time"], "answer": 1, "choice": [["guitar", "music"], ["calendar", "date"], ["ruler", "speed"], ["mother", "family"]], "prefix": "low-intermediate"}
-{"stem": ["deck", "ship"], "answer": 0, "choice": [["sleeve", "shirt"], ["player", "game"], ["tail", "human"], ["year", "month"]], "prefix": "low-intermediate"}
-{"stem": ["help", "hinder"], "answer": 0, "choice": [["hurry", "delay"], ["travel", "fly"], ["steal", "take"], ["smile", "laugh"]], "prefix": "low-intermediate"}
-{"stem": ["apple", "tree"], "answer": 2, "choice": [["cow", "field"], ["wish", "dream"], ["pearl", "clam"], ["tooth", "sandwich"]], "prefix": "low-intermediate"}
-{"stem": ["shell", "nut"], "answer": 1, "choice": [["pill", "doctor"], ["page", "book"], ["song", "music"], ["cat", "house"]], "prefix": "low-intermediate"}
-{"stem": ["carefree", "worry"], "answer": 2, "choice": [["upset", "sadness"], ["successful", "money"], ["enslaved", "freedom"], ["talented", "wisdom"]], "prefix": "low-intermediate"}
-{"stem": ["huge", "large"], "answer": 1, "choice": [["possible", "easy"], ["critical", "important"], ["likely", "incredible"], ["upsetting", "offensive"]], "prefix": "low-intermediate"}
-{"stem": ["torch", "illuminate"], "answer": 1, "choice": [["stove", "bake"], ["vacuum", "clean"], ["car", "run"], ["phone", "write"]], "prefix": "low-intermediate"}
-{"stem": ["jewel", "shiny"], "answer": 0, "choice": [["demon", "evil"], ["trick", "magic"], ["cat", "lazy"], ["mother", "helpless"]], "prefix": "low-intermediate"}
-{"stem": ["wedding", "ceremony"], "answer": 3, "choice": [["animal", "dog"], ["saint", "nun"], ["mountain", "volcano"], ["president", "leader"]], "prefix": "low-intermediate"}
-{"stem": ["gallery", "art"], "answer": 0, "choice": [["library", "books"], ["kitchen", "food"], ["butcher", "meat"], ["mailbox", "letters"]], "prefix": "low-intermediate"}
-{"stem": ["violinist", "orchestra"], "answer": 1, "choice": [["referee", "team"], ["employee", "company"], ["judge", "jury"], ["friend", "family"]], "prefix": "low-intermediate"}
-{"stem": ["foot", "inches"], "answer": 2, "choice": [["bathtub", "gallons"], ["meter", "miles"], ["pound", "ounces"], ["fork", "spoons"]], "prefix": "low-intermediate"}
-{"stem": ["bright", "dull"], "answer": 3, "choice": [["obvious", "clear"], ["guilty", "wrong"], ["secret", "hidden"], ["ordinary", "unusual"]], "prefix": "low-intermediate"}
-{"stem": ["apathetic", "motivation"], "answer": 3, "choice": [["brilliant", "ideas"], ["active", "technology"], ["employed", "money"], ["lonesome", "company"]], "prefix": "low-intermediate"}
-{"stem": ["loathe", "dislike"], "answer": 2, "choice": [["praise", "enjoy"], ["watch", "observe"], ["worship", "admire"], ["burn", "scorch"]], "prefix": "low-intermediate"}
-{"stem": ["root", "plant"], "answer": 0, "choice": [["blade", "knife"], ["pot", "pan"], ["microphone", "radio"], ["television", "satellite"]], "prefix": "low-intermediate"}
-{"stem": ["orphan", "parents"], "answer": 0, "choice": [["prisoner", "freedom"], ["doctor", "patience"], ["man", "feelings"], ["star", "space"]], "prefix": "low-intermediate"}
-{"stem": ["mirror", "reflect"], "answer": 1, "choice": [["preacher", "cook"], ["telescope", "magnify"], ["nurse", "smoke"], ["lock", "unlock"]], "prefix": "low-intermediate"}
-{"stem": ["cloth", "threads"], "answer": 2, "choice": [["gun", "bullets"], ["guitar", "drums"], ["chain", "links"], ["star", "planets"]], "prefix": "low-intermediate"}
-{"stem": ["tattoo", "permanent"], "answer": 3, "choice": [["necklace", "silver"], ["boat", "electric"], ["phone", "broken"], ["marathon", "long"]], "prefix": "low-intermediate"}
-{"stem": ["outdated", "modern"], "answer": 0, "choice": [["beautiful", "ugly"], ["happy", "glad"], ["successful", "rich"], ["curious", "smart"]], "prefix": "low-intermediate"}
-{"stem": ["adorable", "cute"], "answer": 3, "choice": [["obvious", "mysterious"], ["unkind", "happy"], ["polite", "common"], ["tragic", "sad"]], "prefix": "low-intermediate"}
-{"stem": ["sculpture", "art"], "answer": 3, "choice": [["language", "book"], ["justice", "jail"], ["happiness", "religion"], ["weightlifting", "exercise"]], "prefix": "low-intermediate"}
-{"stem": ["order", "chaos"], "answer": 0, "choice": [["unity", "division"], ["culture", "feeling"], ["family", "tradition"], ["anger", "pride"]], "prefix": "low-intermediate"}
-{"stem": ["reckless", "caution"], "answer": 1, "choice": [["silly", "thought"], ["doubtful", "conviction"], ["selfish", "friends"], ["shy", "jewelry"]], "prefix": "low-intermediate"}
-{"stem": ["fork", "utensil"], "answer": 0, "choice": [["jet", "airplane"], ["fact", "idea"], ["program", "computer"], ["mountain", "plastic"]], "prefix": "low-intermediate"}
-{"stem": ["general", "army"], "answer": 1, "choice": [["queen", "fortress"], ["guide", "expedition"], ["dad", "business"], ["salesman", "sail"]], "prefix": "low-intermediate"}
-{"stem": ["helmet", "protect"], "answer": 0, "choice": [["bomb", "destroy"], ["storm", "rain"], ["parade", "walk"], ["dream", "sleep"]], "prefix": "low-intermediate"}
-{"stem": ["bachelor", "wife"], "answer": 0, "choice": [["nomad", "home"], ["postman", "job"], ["computer", "fire"], ["building", "wall"]], "prefix": "low-intermediate"}
-{"stem": ["gigantic", "large"], "answer": 3, "choice": [["new", "strange"], ["little", "small"], ["funny", "important"], ["freezing", "cold"]], "prefix": "low-intermediate"}
-{"stem": ["pain", "discomfort"], "answer": 0, "choice": [["carelessness", "mistakes"], ["ignorance", "knowledge"], ["laughter", "jokes"], ["food", "nutrition"]], "prefix": "low-intermediate"}
-{"stem": ["mansion", "large"], "answer": 1, "choice": [["tree", "free"], ["suit", "formal"], ["car", "safe"], ["ladder", "low"]], "prefix": "low-intermediate"}
-{"stem": ["bald", "hairy"], "answer": 0, "choice": [["overweight", "skinny"], ["large", "huge"], ["strong", "forceful"], ["depressed", "sad"]], "prefix": "low-intermediate"}
-{"stem": ["sword", "weapon"], "answer": 1, "choice": [["father", "brother"], ["yacht", "boat"], ["salad", "cake"], ["color", "art"]], "prefix": "low-intermediate"}
-{"stem": ["stage", "theater"], "answer": 1, "choice": [["march", "belief"], ["jacket", "suit"], ["fruit", "apple"], ["windmill", "wind"]], "prefix": "low-intermediate"}
-{"stem": ["ruby", "gem"], "answer": 3, "choice": [["baseball", "basketball"], ["concert", "music"], ["party", "house"], ["trophy", "prize"]], "prefix": "low-intermediate"}
-{"stem": ["building", "manmade"], "answer": 3, "choice": [["bracelet", "stylish"], ["jacket", "leather"], ["school", "strict"], ["biography", "nonfiction"]], "prefix": "low-intermediate"}
-{"stem": ["insecure", "confidence"], "answer": 1, "choice": [["disabled", "worth"], ["certain", "doubt"], ["unemployed", "hope"], ["elegant", "sympathy"]], "prefix": "low-intermediate"}
-{"stem": ["ingredient", "recipe"], "answer": 2, "choice": [["moral", "story"], ["chair", "table"], ["roof", "house"], ["map", "plan"]], "prefix": "low-intermediate"}
-{"stem": ["nightmare", "dream"], "answer": 0, "choice": [["wrench", "tool"], ["want", "need"], ["friend", "enemy"], ["grade", "school"]], "prefix": "low-intermediate"}
-{"stem": ["scientist", "laboratory"], "answer": 2, "choice": [["librarian", "bookstore"], ["cashier", "hotel"], ["artist", "studio"], ["doctor", "church"]], "prefix": "low-intermediate"}
-{"stem": ["hilarious", "funny"], "answer": 1, "choice": [["strange", "weird"], ["famished", "hungry"], ["uncomfortable", "painful"], ["familiar", "trustworthy"]], "prefix": "low-intermediate"}
-{"stem": ["surgeon", "doctor"], "answer": 1, "choice": [["soup", "drink"], ["lollipop", "candy"], ["animal", "bear"], ["house", "hut"]], "prefix": "low-intermediate"}
-{"stem": ["siren", "alert"], "answer": 2, "choice": [["heart", "love"], ["flag", "wave"], ["truck", "transport"], ["stereo", "receive"]], "prefix": "low-intermediate"}
-{"stem": ["ruthless", "pity"], "answer": 0, "choice": [["neutral", "prejudice"], ["challenged", "rivals"], ["gullible", "truth"], ["childish", "speech"]], "prefix": "low-intermediate"}
-{"stem": ["mandatory", "optional"], "answer": 1, "choice": [["unwanted", "discarded"], ["destructive", "creative"], ["animated", "happy"], ["pure", "clean"]], "prefix": "low-intermediate"}
-{"stem": ["house", "shelter"], "answer": 0, "choice": [["fire", "heat"], ["tire", "wheels"], ["mother", "children"], ["cow", "meat"]], "prefix": "low-intermediate"}
-{"stem": ["strange", "familiar"], "answer": 3, "choice": [["easy", "simple"], ["great", "good"], ["pretty", "sour"], ["sick", "healthy"]], "prefix": "low-intermediate"}
-{"stem": ["room", "house"], "answer": 1, "choice": [["beach", "shore"], ["stem", "flower"], ["school", "classroom"], ["tree", "leaf"]], "prefix": "low-intermediate"}
-{"stem": ["silk", "smooth"], "answer": 1, "choice": [["sunset", "early"], ["night", "dark"], ["literature", "fancy"], ["television", "funny"]], "prefix": "low-intermediate"}
-{"stem": ["plant", "garden"], "answer": 2, "choice": [["head", "face"], ["motorcycle", "wheel"], ["buckle", "belt"], ["idea", "plan"]], "prefix": "low-intermediate"}
-{"stem": ["trip", "fall"], "answer": 2, "choice": [["spill", "run"], ["play", "cry"], ["exercise", "sweat"], ["order", "enjoy"]], "prefix": "low-intermediate"}
-{"stem": ["mechanic", "cars"], "answer": 0, "choice": [["dentist", "teeth"], ["doctor", "children"], ["chef", "vegetables"], ["playwright", "theaters"]], "prefix": "low-intermediate"}
-{"stem": ["cotton", "cloth"], "answer": 1, "choice": [["trust", "pleasure"], ["joy", "emotion"], ["rain", "snow"], ["music", "piano"]], "prefix": "low-intermediate"}
-{"stem": ["criminal", "innocence"], "answer": 0, "choice": [["novice", "experience"], ["expert", "humility"], ["worker", "employment"], ["elegant", "style"]], "prefix": "low-intermediate"}
-{"stem": ["priceless", "valuable"], "answer": 0, "choice": [["wonderful", "good"], ["temporary", "eternal"], ["distant", "far"], ["new", "original"]], "prefix": "low-intermediate"}
-{"stem": ["rooster", "chicken"], "answer": 2, "choice": [["frog", "tadpole"], ["girl", "human"], ["bull", "cow"], ["whale", "dolphin"]], "prefix": "low-intermediate"}
-{"stem": ["policeman", "enforce"], "answer": 1, "choice": [["politician", "destroy"], ["judge", "uphold"], ["mother", "teach"], ["television", "inform"]], "prefix": "low-intermediate"}
-{"stem": ["full", "empty"], "answer": 3, "choice": [["piercing", "sharp"], ["fancy", "elegant"], ["traditional", "old"], ["relaxing", "stressful"]], "prefix": "low-intermediate"}
-{"stem": ["novel", "fictional"], "answer": 0, "choice": [["pretzel", "salty"], ["cloud", "gray"], ["man", "violent"], ["nurse", "polite"]], "prefix": "low-intermediate"}
-{"stem": ["daffodil", "plant"], "answer": 2, "choice": [["spider", "insect"], ["fortune", "money"], ["diamond", "stone"], ["planet", "star"]], "prefix": "low-intermediate"}
-{"stem": ["unique", "uncommon"], "answer": 3, "choice": [["pleasant", "enjoyable"], ["spicy", "powerful"], ["bitter", "delicious"], ["disgusting", "unpleasant"]], "prefix": "low-intermediate"}
-{"stem": ["bread", "bakery"], "answer": 0, "choice": [["coffee", "cafe"], ["clothing", "laundromat"], ["medicine", "church"], ["money", "supermarket"]], "prefix": "low-intermediate"}
-{"stem": ["democracy", "government"], "answer": 1, "choice": [["music", "invention"], ["hammer", "tool"], ["friendship", "person"], ["wine", "grape"]], "prefix": "low-intermediate"}
-{"stem": ["extravagant", "modesty"], "answer": 3, "choice": [["arrogant", "money"], ["bitter", "remorse"], ["disappointed", "stress"], ["unready", "preparation"]], "prefix": "low-intermediate"}
-{"stem": ["hand", "clock"], "answer": 3, "choice": [["song", "note"], ["flag", "pole"], ["tea", "cup"], ["step", "staircase"]], "prefix": "low-intermediate"}
+{"stem": ["candy", "sweet"], "answer": 3, "choice": [["water", "cold"], ["time", "fast"], ["money", "expensive"], ["fire", "hot"]], "prefix": "grade4"}
+{"stem": ["mountain", "high"], "answer": 1, "choice": [["river", "ugly"], ["valley", "low"], ["forest", "lonely"], ["desert", "wet"]], "prefix": "grade5"}
+{"stem": ["teacher", "educate"], "answer": 0, "choice": [["senator", "represent"], ["lawyer", "instruct"], ["coach", "condemn"], ["priest", "annoy"]], "prefix": "grade5"}
+{"stem": ["gold", "expensive"], "answer": 3, "choice": [["jewelry", "dull"], ["cotton", "beautiful"], ["silver", "outrageous"], ["velvet", "soft"]], "prefix": "grade5"}
+{"stem": ["mother", "female"], "answer": 2, "choice": [["vegetable", "green"], ["snake", "dangerous"], ["rock", "hard"], ["tree", "old"]], "prefix": "grade5"}
+{"stem": ["infuriating", "annoying"], "answer": 1, "choice": [["ruined", "ugly"], ["devastated", "sad"], ["depressed", "intelligent"], ["arrogant", "clever"]], "prefix": "grade5"}
+{"stem": ["helicopter", "sky"], "answer": 3, "choice": [["canoe", "street"], ["truck", "river"], ["motorcycle", "bus"], ["submarine", "water"]], "prefix": "grade5"}
+{"stem": ["unknown", "fame"], "answer": 1, "choice": [["rapid", "speed"], ["ignorant", "education"], ["refined", "manners"], ["lovely", "sight"]], "prefix": "grade5"}
+{"stem": ["nice", "unkind"], "answer": 0, "choice": [["hideous", "pretty"], ["safe", "solid"], ["loud", "noisy"], ["terrible", "awful"]], "prefix": "grade5"}
+{"stem": ["television", "watched"], "answer": 2, "choice": [["record", "baked"], ["newspaper", "cooked"], ["novel", "read"], ["comic", "laughed"]], "prefix": "grade5"}
+{"stem": ["pie", "dessert"], "answer": 0, "choice": [["bacon", "meat"], ["candy", "drink"], ["cola", "tea"], ["ham", "beef"]], "prefix": "grade5"}
+{"stem": ["second", "minute"], "answer": 0, "choice": [["day", "week"], ["centimeter", "inch"], ["mile", "hour"], ["year", "month"]], "prefix": "grade5"}
+{"stem": ["author", "write"], "answer": 3, "choice": [["mother", "annoy"], ["banker", "preach"], ["firefighter", "study"], ["janitor", "clean"]], "prefix": "grade5"}
+{"stem": ["wonderful", "good"], "answer": 2, "choice": [["great", "terrific"], ["sinful", "evil"], ["terrifying", "scary"], ["perfect", "flawed"]], "prefix": "grade5"}
+{"stem": ["broken", "repaired"], "answer": 1, "choice": [["foreign", "strange"], ["selfish", "generous"], ["unusual", "weird"], ["nasty", "mean"]], "prefix": "grade5"}
+{"stem": ["knife", "sharp"], "answer": 0, "choice": [["crime", "illegal"], ["child", "rude"], ["wife", "powerful"], ["war", "peaceful"]], "prefix": "grade5"}
+{"stem": ["boots", "feet"], "answer": 2, "choice": [["socks", "underwear"], ["shorts", "pants"], ["mittens", "hands"], ["braces", "glasses"]], "prefix": "grade5"}
+{"stem": ["zebra", "animal"], "answer": 0, "choice": [["green", "color"], ["shape", "cube"], ["country", "Brazil"], ["food", "dessert"]], "prefix": "grade5"}
+{"stem": ["obvious", "hidden"], "answer": 2, "choice": [["silver", "jewelry"], ["dress", "gown"], ["idea", "belief"], ["liberal", "conservative"]], "prefix": "grade5"}
+{"stem": ["evil", "morals"], "answer": 2, "choice": [["special", "manners"], ["famous", "friends"], ["blind", "sight"], ["beautiful", "opinions"]], "prefix": "grade5"}
+{"stem": ["racist", "prejudiced"], "answer": 3, "choice": [["saint", "holy"], ["worker", "tired"], ["nurse", "sick"], ["clerk", "hungry"]], "prefix": "grade5"}
+{"stem": ["weak", "strength"], "answer": 3, "choice": [["silly", "comedy"], ["wild", "friends"], ["brave", "courage"], ["lost", "direction"]], "prefix": "grade5"}
+{"stem": ["hurricane", "storm"], "answer": 0, "choice": [["table", "furniture"], ["tornado", "rain"], ["snow", "wind"], ["chair", "sofa"]], "prefix": "grade5"}
+{"stem": ["suit", "formal"], "answer": 1, "choice": [["hat", "attractive"], ["coat", "warm"], ["shoe", "lonely"], ["tie", "black"]], "prefix": "grade5"}
+{"stem": ["hungry", "full"], "answer": 2, "choice": [["salty", "delicious"], ["polite", "kind"], ["evil", "good"], ["beautiful", "lovely"]], "prefix": "grade5"}
+{"stem": ["lap", "race"], "answer": 1, "choice": [["head", "hair"], ["act", "play"], ["runner", "athlete"], ["show", "theater"]], "prefix": "grade5"}
+{"stem": ["hamburger", "sandwich"], "answer": 3, "choice": [["foot", "leg"], ["cow", "pig"], ["sport", "baseball"], ["pretzel", "snack"]], "prefix": "grade5"}
+{"stem": ["meat", "animals"], "answer": 0, "choice": [["paper", "trees"], ["diamonds", "pearls"], ["wood", "rocks"], ["oranges", "apples"]], "prefix": "grade5"}
+{"stem": ["angry", "mad"], "answer": 3, "choice": [["awake", "alone"], ["depressed", "confused"], ["polite", "rude"], ["nice", "kind"]], "prefix": "grade5"}
+{"stem": ["commercial", "advertise"], "answer": 2, "choice": [["sport", "teach"], ["newspaper", "inspire"], ["comedy", "entertain"], ["drama", "annoy"]], "prefix": "grade5"}
+{"stem": ["volleyball", "sport"], "answer": 1, "choice": [["rabbit", "cat"], ["runner", "athlete"], ["tiger", "zoo"], ["soccer", "football"]], "prefix": "grade5"}
+{"stem": ["corrupt", "morals"], "answer": 3, "choice": [["talented", "skill"], ["rude", "intelligence"], ["fortunate", "money"], ["ruthless", "mercy"]], "prefix": "grade7"}
+{"stem": ["democracy", "government"], "answer": 2, "choice": [["master", "slave"], ["storm", "blizzard"], ["sonnet", "poem"], ["tribe", "family"]], "prefix": "grade7"}
+{"stem": ["cowardly", "brave"], "answer": 1, "choice": [["numerous", "many"], ["foolish", "wise"], ["awful", "dreadful"], ["anxious", "nervous"]], "prefix": "grade7"}
+{"stem": ["knight", "chivalrous"], "answer": 0, "choice": [["flower", "fragrant"], ["daughter", "rebellious"], ["conversation", "short"], ["disease", "curable"]], "prefix": "grade7"}
+{"stem": ["buckle", "belt"], "answer": 3, "choice": [["suit", "tie"], ["shovel", "pit"], ["summer", "season"], ["month", "year"]], "prefix": "grade7"}
+{"stem": ["blizzard", "storm"], "answer": 0, "choice": [["novelist", "writer"], ["boat", "submarine"], ["radio", "television"], ["organization", "party"]], "prefix": "grade7"}
+{"stem": ["carnivore", "meat"], "answer": 1, "choice": [["vegetarian", "wheat"], ["herbivore", "plants"], ["omnivore", "food"], ["vegan", "pastries"]], "prefix": "grade7"}
+{"stem": ["honest", "sincere"], "answer": 0, "choice": [["solitary", "alone"], ["peaceful", "nervous"], ["vengeful", "forgiving"], ["religious", "doubtful"]], "prefix": "grade7"}
+{"stem": ["academy", "educate"], "answer": 2, "choice": [["court", "blame"], ["trailer", "roam"], ["jail", "imprison"], ["cafe", "ingest"]], "prefix": "grade7"}
+{"stem": ["rectangle", "shape"], "answer": 3, "choice": [["dealer", "employer"], ["deer", "antelope"], ["telephone", "call"], ["assault", "crime"]], "prefix": "grade7"}
+{"stem": ["senate", "congress"], "answer": 1, "choice": [["cinema", "theater"], ["lobby", "hotel"], ["judge", "chamber"], ["government", "democracy"]], "prefix": "grade7"}
+{"stem": ["success", "failure"], "answer": 2, "choice": [["grief", "sadness"], ["debt", "loss"], ["virtue", "evil"], ["life", "birth"]], "prefix": "grade7"}
+{"stem": ["heinous", "evil"], "answer": 0, "choice": [["tremendous", "large"], ["old", "antique"], ["distressed", "flawed"], ["possible", "probable"]], "prefix": "grade7"}
+{"stem": ["scribe", "write"], "answer": 3, "choice": [["mother", "reign"], ["tribute", "offend"], ["translator", "read"], ["watchman", "guard"]], "prefix": "grade7"}
+{"stem": ["glass", "delicate"], "answer": 2, "choice": [["air", "bearable"], ["stone", "gray"], ["cola", "bubbly"], ["peace", "eternal"]], "prefix": "grade7"}
+{"stem": ["cat", "feline"], "answer": 1, "choice": [["book", "novel"], ["blunder", "mistake"], ["theatre", "play"], ["automobile", "tank"]], "prefix": "grade7"}
+{"stem": ["hobby", "pastime"], "answer": 0, "choice": [["emperor", "leader"], ["producer", "product"], ["skill", "sport"], ["player", "athlete"]], "prefix": "grade7"}
+{"stem": ["ambitious", "lazy"], "answer": 3, "choice": [["embarrassed", "timid"], ["talkative", "loud"], ["friendly", "gregarious"], ["insecure", "confident"]], "prefix": "grade7"}
+{"stem": ["carefree", "worries"], "answer": 1, "choice": [["hesitant", "doubt"], ["ignorant", "knowledge"], ["pleasing", "happiness"], ["lovely", "affection"]], "prefix": "grade7"}
+{"stem": ["master", "dominant"], "answer": 3, "choice": [["nation", "powerful"], ["activist", "naive"], ["worker", "impoverished"], ["ghost", "ethereal"]], "prefix": "grade7"}
+{"stem": ["slave", "submissive"], "answer": 0, "choice": [["murderer", "violent"], ["circus", "laughable"], ["professor", "ignorant"], ["professional", "bossy"]], "prefix": "grade7"}
+{"stem": ["pipe", "water"], "answer": 2, "choice": [["bottle", "wine"], ["artery", "paint"], ["vein", "blood"], ["nozzle", "hose"]], "prefix": "grade7"}
+{"stem": ["dreamer", "idealistic"], "answer": 1, "choice": [["judge", "legal"], ["cynic", "critical"], ["parent", "feminine"], ["novice", "skilled"]], "prefix": "grade7"}
+{"stem": ["verdict", "judgment"], "answer": 3, "choice": [["jet", "helicopter"], ["observation", "science"], ["principal", "school"], ["infant", "baby"]], "prefix": "grade7"}
+{"stem": ["cruel", "unkind"], "answer": 1, "choice": [["graceful", "flexible"], ["vicious", "aggressive"], ["frightening", "spooky"], ["evil", "insane"]], "prefix": "grade7"}
+{"stem": ["square", "quadrilateral"], "answer": 0, "choice": [["rifle", "weapon"], ["instrument", "violin"], ["pattern", "plaid"], ["airplane", "spacecraft"]], "prefix": "grade7"}
+{"stem": ["clumsy", "grace"], "answer": 0, "choice": [["doubtful", "faith"], ["determined", "work"], ["rich", "charity"], ["beautiful", "love"]], "prefix": "grade7"}
+{"stem": ["permanent", "temporary"], "answer": 3, "choice": [["ordinary", "plain"], ["imaginary", "fake"], ["astonishing", "surprising"], ["skeptical", "trusting"]], "prefix": "grade7"}
+{"stem": ["attorney", "lawyer"], "answer": 2, "choice": [["worker", "secretary"], ["flower", "daffodil"], ["dog", "canine"], ["doctor", "dentist"]], "prefix": "grade7"}
+{"stem": ["rain", "precipitation"], "answer": 0, "choice": [["salmon", "seafood"], ["snow", "tundra"], ["jungle", "desert"], ["pet", "hamster"]], "prefix": "grade7"}
+{"stem": ["aluminum", "metal"], "answer": 0, "choice": [["limerick", "poetry"], ["mathematics", "numbers"], ["rain", "season"], ["water", "thirst"]], "prefix": "grade8"}
+{"stem": ["cough", "cold"], "answer": 2, "choice": [["fever", "issue"], ["problem", "solution"], ["disagreement", "argument"], ["room", "hotel"]], "prefix": "grade8"}
+{"stem": ["panacea", "cure"], "answer": 2, "choice": [["cello", "compose"], ["stereo", "listen"], ["contagion", "infect"], ["stopwatch", "hasten"]], "prefix": "grade9"}
+{"stem": ["denouement", "plot"], "answer": 0, "choice": [["appetizer", "meal"], ["gown", "ball"], ["rifle", "dagger"], ["libertarian", "revolution"]], "prefix": "grade9"}
+{"stem": ["labyrinth", "complicated"], "answer": 1, "choice": [["tempo", "upbeat"], ["enigma", "mysterious"], ["narrator", "biased"], ["legend", "credible"]], "prefix": "grade9"}
+{"stem": ["livid", "angry"], "answer": 3, "choice": [["trim", "anorexic"], ["contrary", "contrite"], ["faithful", "dogmatic"], ["crestfallen", "depressed"]], "prefix": "grade9"}
+{"stem": ["aloof", "connected"], "answer": 0, "choice": [["deliberate", "accidental"], ["rigid", "firm"], ["ethereal", "fleeting"], ["logical", "calculating"]], "prefix": "grade9"}
+{"stem": ["neutral", "indifferent"], "answer": 1, "choice": [["exotic", "commonplace"], ["lazy", "indolent"], ["finicky", "relaxed"], ["unsettling", "detached"]], "prefix": "grade9"}
+{"stem": ["mallet", "strike"], "answer": 2, "choice": [["harpsichord", "twinkle"], ["impression", "paint"], ["ornament", "embellish"], ["ottoman", "weave"]], "prefix": "grade9"}
+{"stem": ["plagiarism", "wrongdoing"], "answer": 3, "choice": [["citrus", "lemonade"], ["infection", "bacteria"], ["crime", "punishment"], ["cancer", "malady"]], "prefix": "grade9"}
+{"stem": ["blatant", "inconspicuous"], "answer": 0, "choice": [["tedious", "engaging"], ["restorative", "peaceful"], ["indulgent", "luxurious"], ["pedantic", "ordinary"]], "prefix": "grade9"}
+{"stem": ["objective", "bias"], "answer": 2, "choice": [["fallacious", "lies"], ["autistic", "health"], ["tentative", "certainty"], ["awake", "insomnia"]], "prefix": "grade9"}
+{"stem": ["pragmatic", "unrealistic"], "answer": 0, "choice": [["perplexing", "straightforward"], ["flirtatious", "coquettish"], ["opulent", "rich"], ["sinful", "erotic"]], "prefix": "grade9"}
+{"stem": ["priest", "ordained"], "answer": 2, "choice": [["lord", "defrocked"], ["senator", "allowed"], ["president", "inaugurated"], ["king", "graduated"]], "prefix": "grade9"}
+{"stem": ["neighborhood", "city"], "answer": 3, "choice": [["priory", "monk"], ["jumper", "dress"], ["iceberg", "tip"], ["annex", "building"]], "prefix": "grade9"}
+{"stem": ["piccolo", "instrument"], "answer": 2, "choice": [["violoncello", "bass"], ["currency", "dollar"], ["decathlon", "competition"], ["cult", "festival"]], "prefix": "grade9"}
+{"stem": ["conundrum", "puzzle"], "answer": 0, "choice": [["palace", "estate"], ["phenomenon", "science"], ["dynamite", "destruction"], ["actor", "choreographer"]], "prefix": "grade9"}
+{"stem": ["ruse", "trick"], "answer": 2, "choice": [["hangman", "condemn"], ["funeral", "eliminate"], ["spectacle", "entertain"], ["inventor", "deviate"]], "prefix": "grade9"}
+{"stem": ["sacrosanct", "holy"], "answer": 3, "choice": [["surprising", "remarkable"], ["skeptical", "gullible"], ["ridiculous", "absurd"], ["abominable", "evil"]], "prefix": "grade9"}
+{"stem": ["cathedral", "church"], "answer": 0, "choice": [["university", "school"], ["orchestra", "symphony"], ["preamble", "constitution"], ["prefix", "suffix"]], "prefix": "grade9"}
+{"stem": ["selfish", "altruism"], "answer": 3, "choice": [["ambiguity", "uncertainty"], ["hollow", "emptiness"], ["insidious", "diseases"], ["depraved", "morality"]], "prefix": "grade9"}
+{"stem": ["loquacious", "quiet"], "answer": 1, "choice": [["forgiven", "annulled"], ["trivial", "crucial"], ["salacious", "impure"], ["enduring", "ongoing"]], "prefix": "grade9"}
+{"stem": ["filament", "lightbulb"], "answer": 1, "choice": [["misunderstanding", "conversation"], ["blade", "propeller"], ["car", "gearshift"], ["outlet", "economy"]], "prefix": "grade9"}
+{"stem": ["carnival", "entertainment"], "answer": 2, "choice": [["poster", "propaganda"], ["handout", "welfare"], ["encyclopedia", "information"], ["statement", "persuasion"]], "prefix": "grade9"}
+{"stem": ["inconceivable", "doubtful"], "answer": 3, "choice": [["healthful", "beneficial"], ["credible", "plausible"], ["indecent", "lustful"], ["sickening", "repugnant"]], "prefix": "grade9"}
+{"stem": ["exhausting", "rejuvenating"], "answer": 0, "choice": [["disturbing", "soothing"], ["cruel", "ruthless"], ["pitiful", "miserable"], ["vexing", "irritating"]], "prefix": "grade9"}
+{"stem": ["corpse", "deceased"], "answer": 0, "choice": [["infant", "nascent"], ["prophet", "skeptical"], ["tyrant", "easygoing"], ["athlete", "sluggish"]], "prefix": "grade9"}
+{"stem": ["lamentation", "sorrow"], "answer": 2, "choice": [["psalm", "warning"], ["sonnet", "religion"], ["eulogy", "praise"], ["newspaper", "disapproval"]], "prefix": "grade9"}
+{"stem": ["medal", "accolade"], "answer": 1, "choice": [["song", "hymnal"], ["cauldron", "kettle"], ["fire", "kindling"], ["airplane", "hangar"]], "prefix": "grade9"}
+{"stem": ["provisional", "permanent"], "answer": 3, "choice": [["aggressive", "fierce"], ["improved", "enhanced"], ["undercover", "covert"], ["moderate", "extreme"]], "prefix": "grade9"}
+{"stem": ["foolish", "sagacity"], "answer": 0, "choice": [["miserly", "generosity"], ["tangible", "fingers"], ["tardy", "time"], ["infamous", "celebrity"]], "prefix": "grade9"}
+{"stem": ["euphemism", "inoffensive"], "answer": 0, "choice": [["charlatan", "dishonest"], ["wizard", "mundane"], ["scorpion", "harmless"], ["gymnast", "clumsy"]], "prefix": "grade9"}
+{"stem": ["anarchist", "government"], "answer": 3, "choice": [["activist", "diversity"], ["feminist", "men"], ["politician", "order"], ["abolitionist", "slavery"], ["teetotaler", "prohibition"]], "prefix": "grade10"}
+{"stem": ["propaganda", "opinion"], "answer": 0, "choice": [["sermon", "morality"], ["commercial", "economy"], ["battle", "violence"], ["diatribe", "negativity"], ["eulogy", "death"]], "prefix": "grade10"}
+{"stem": ["couch", "furniture"], "answer": 1, "choice": [["bookcase", "encyclopedia"], ["knife", "cutlery"], ["bed", "canopy"], ["cinema", "rental"], ["protestor", "villain"]], "prefix": "grade10"}
+{"stem": ["surreptitious", "obvious"], "answer": 2, "choice": [["scholarly", "professional"], ["harmonious", "musical"], ["pacifying", "enraging"], ["sponsored", "bribed"], ["artistic", "masterful"]], "prefix": "grade10"}
+{"stem": ["finale", "musical"], "answer": 4, "choice": [["inning", "baseball"], ["stitch", "tapestry"], ["mystery", "novel"], ["barista", "coffee"], ["homestretch", "race"]], "prefix": "grade10"}
+{"stem": ["listen", "eavesdrop"], "answer": 4, "choice": [["grin", "smile"], ["donate", "relinquish"], ["assume", "conclude"], ["prognosticate", "guess"], ["move", "sneak"]], "prefix": "grade10"}
+{"stem": ["glutton", "moderation"], "answer": 0, "choice": [["braggart", "humility"], ["professor", "knowledge"], ["sage", "wisdom"], ["lawyer", "prudence"], ["caretaker", "affection"]], "prefix": "grade10"}
+{"stem": ["winery", "merlot"], "answer": 3, "choice": [["supermarket", "espresso"], ["marathon", "water"], ["cafe", "whiskey"], ["brewery", "beer"], ["grove", "applesauce"]], "prefix": "grade10"}
+{"stem": ["articulate", "mute"], "answer": 0, "choice": [["graceful", "klutzy"], ["spectacular", "showy"], ["ornate", "elegant"], ["embellished", "superficial"], ["excruciating", "painful"]], "prefix": "grade10"}
+{"stem": ["waterway", "navigable"], "answer": 1, "choice": [["farm", "famished"], ["mountain", "surmountable"], ["vault", "unimpressed"], ["fountain", "youthful"], ["judge", "ramshackle"]], "prefix": "grade10"}
+{"stem": ["splinter", "wood"], "answer": 2, "choice": [["skin", "cell"], ["guitar", "orchestra"], ["shard", "glass"], ["seed", "bagel"], ["glaze", "pottery"]], "prefix": "grade10"}
+{"stem": ["clemency", "forgiveness"], "answer": 0, "choice": [["ardor", "passion"], ["oblivion", "repair"], ["nirvana", "faith"], ["intoxication", "sobriety"], ["digestion", "cuisine"]], "prefix": "grade10"}
+{"stem": ["altercation", "discussion"], "answer": 3, "choice": [["sermon", "preacher"], ["judgment", "mercy"], ["insult", "critic"], ["diatribe", "speech"], ["requiem", "composer"]], "prefix": "grade10"}
+{"stem": ["grain", "silo"], "answer": 0, "choice": [["water", "reservoir"], ["fuel", "ration"], ["gasoline", "automobile"], ["snow", "igloo"], ["parchment", "library"]], "prefix": "grade10"}
+{"stem": ["anguish", "pain"], "answer": 4, "choice": [["lust", "virtue"], ["bliss", "sadness"], ["emptiness", "vacancy"], ["similarity", "relationship"], ["longing", "desire"]], "prefix": "grade10"}
+{"stem": ["predictable", "spontaneity"], "answer": 1, "choice": [["stormy", "reason"], ["unfeeling", "sympathy"], ["capricious", "will"], ["dreamy", "rest"], ["unafraid", "shame"]], "prefix": "grade10"}
+{"stem": ["hidden", "covert"], "answer": 2, "choice": [["diverse", "ordinary"], ["angry", "judgmental"], ["feminine", "ladylike"], ["hardworking", "dull"], ["prohibited", "allowed"]], "prefix": "grade10"}
+{"stem": ["cat", "shed"], "answer": 0, "choice": [["bird", "molt"], ["elephant", "hunt"], ["dog", "fetch"], ["ferret", "burrow"], ["human", "tattoo"]], "prefix": "grade10"}
+{"stem": ["bluff", "intentions"], "answer": 1, "choice": [["cloak", "mask"], ["disguise", "appearance"], ["backpack", "computer"], ["envelope", "messenger"], ["prayer", "faith"]], "prefix": "grade10"}
+{"stem": ["sharp", "blunt"], "answer": 3, "choice": [["studious", "intelligent"], ["impermanent", "temporary"], ["philosophical", "religious"], ["forgiving", "harsh"], ["translated", "interpreted"]], "prefix": "grade10"}
+{"stem": ["game", "spectators"], "answer": 1, "choice": [["theater", "actors"], ["opera", "audience"], ["diner", "waitresses"], ["museum", "dinosaurs"], ["school", "pupils"]], "prefix": "grade10"}
+{"stem": ["arid", "moisture"], "answer": 2, "choice": [["vacant", "emptiness"], ["prophetic", "vision"], ["stoic", "emotion"], ["crystal", "clarity"], ["salty", "sodium"]], "prefix": "grade10"}
+{"stem": ["pain", "sensation"], "answer": 4, "choice": [["knowledge", "mathematics"], ["resonance", "music"], ["pork", "meatloaf"], ["judgment", "court"], ["excitement", "emotion"]], "prefix": "grade10"}
+{"stem": ["bohemian", "unconventional"], "answer": 0, "choice": [["pariah", "unpopular"], ["fairy", "ephemeral"], ["symphony", "cacophonous"], ["masterpiece", "novel"], ["libertine", "chaste"]], "prefix": "grade10"}
+{"stem": ["buttress", "wall"], "answer": 4, "choice": [["precinct", "city"], ["column", "pillar"], ["cream", "lotion"], ["document", "preamble"], ["philanthropist", "charity"]], "prefix": "grade11"}
+{"stem": ["jury", "deliberate"], "answer": 3, "choice": [["candidate", "deprecate"], ["precedent", "preside"], ["ruse", "illuminate"], ["lobbyist", "persuade"], ["parachute", "open"]], "prefix": "grade11"}
+{"stem": ["saccharine", "sweet"], "answer": 2, "choice": [["omniscient", "omnipotent"], ["lethargic", "slovenly"], ["sacrosanct", "sacred"], ["hypocritical", "dissonant"], ["obtuse", "angular"]], "prefix": "grade11"}
+{"stem": ["altruism", "selfishness"], "answer": 4, "choice": [["alacrity", "clarity"], ["passion", "fervor"], ["levity", "flippancy"], ["gravity", "momentum"], ["impartiality", "bias"]], "prefix": "grade11"}
+{"stem": ["bishop", "ordained"], "answer": 0, "choice": [["palace", "stately"], ["transgression", "acceptable"], ["cliche", "intrepid"], ["loft", "unattainable"], ["character", "humorous"]], "prefix": "grade11"}
+{"stem": ["pragmatic", "practical"], "answer": 3, "choice": [["irritating", "pleasing"], ["tenacious", "faltering"], ["opaque", "translucent"], ["trivial", "negligible"], ["unusual", "ludicrous"]], "prefix": "grade11"}
+{"stem": ["cauldron", "pot"], "answer": 1, "choice": [["vibration", "perception"], ["pictograph", "symbol"], ["favor", "currency"], ["luminary", "phantasm"], ["paragon", "light"]], "prefix": "grade11"}
+{"stem": ["precept", "guidance"], "answer": 4, "choice": [["chord", "music"], ["footnote", "connotation"], ["mathematician", "numbers"], ["epilogue", "introduction"], ["alibi", "defense"]], "prefix": "grade11"}
+{"stem": ["frail", "brawn"], "answer": 3, "choice": [["humorous", "wit"], ["obtuse", "intensity"], ["disinterested", "ennui"], ["longwinded", "brevity"], ["tenuous", "weakness"]], "prefix": "grade11"}
+{"stem": ["acrophobia", "heights"], "answer": 2, "choice": [["claustrophobia", "closets"], ["homophobia", "discrimination"], ["agoraphobia", "crowds"], ["vertigo", "balance"], ["arachnophobia", "insects"]], "prefix": "grade11"}
+{"stem": ["heretic", "unorthodox"], "answer": 1, "choice": [["hero", "folksy"], ["braggart", "boastful"], ["javelin", "underhanded"], ["hiatus", "eternal"], ["jinx", "auspicious"]], "prefix": "grade11"}
+{"stem": ["debunk", "verify"], "answer": 0, "choice": [["revere", "denigrate"], ["besmirch", "slander"], ["cower", "submit"], ["pontificate", "pronounce"], ["capitulate", "surrender"]], "prefix": "grade11"}
+{"stem": ["legend", "map"], "answer": 1, "choice": [["continent", "nation"], ["page", "tome"], ["tirade", "government"], ["legion", "family"], ["army", "soldier"]], "prefix": "grade11"}
+{"stem": ["epistle", "letter"], "answer": 0, "choice": [["decathlon", "competition"], ["multitude", "feast"], ["lounge", "vacation"], ["credo", "church"], ["festival", "carnival"]], "prefix": "grade11"}
+{"stem": ["archaeologist", "hieroglyphics"], "answer": 4, "choice": [["theologian", "cancer"], ["sojourner", "destiny"], ["storyteller", "mysteries"], ["courier", "packages"], ["translator", "languages"]], "prefix": "grade11"}
+{"stem": ["thwart", "frustrate"], "answer": 4, "choice": [["retain", "burst"], ["meditate", "snooze"], ["bully", "balk"], ["bristle", "brush"], ["laud", "praise"]], "prefix": "grade11"}
+{"stem": ["enigma", "mysterious"], "answer": 0, "choice": [["bigot", "prejudiced"], ["beetle", "venomous"], ["politician", "obtuse"], ["professor", "glib"], ["potion", "potent"]], "prefix": "grade11"}
+{"stem": ["veil", "enshroud"], "answer": 1, "choice": [["beautician", "paint"], ["lampoon", "mock"], ["laureate", "preside"], ["flare", "locate"], ["lantern", "identify"]], "prefix": "grade11"}
+{"stem": ["poison", "noxious"], "answer": 2, "choice": [["performance", "stellar"], ["satellite", "worldly"], ["maze", "labyrinthine"], ["wavelength", "shallow"], ["leather", "worn"]], "prefix": "grade11"}
+{"stem": ["placid", "tumultuous"], "answer": 3, "choice": [["coveted", "desired"], ["reviled", "despised"], ["tangential", "irrelevant"], ["credible", "dubious"], ["unconventional", "irregular"]], "prefix": "grade11"}
+{"stem": ["blatant", "obvious"], "answer": 4, "choice": [["obscure", "marred"], ["legendary", "unbelievable"], ["novel", "obsolete"], ["powerful", "dominant"], ["preeminent", "important"]], "prefix": "grade11"}
+{"stem": ["blasphemy", "religion"], "answer": 1, "choice": [["fornication", "marriage"], ["treason", "state"], ["lethargy", "energy"], ["avarice", "currency"], ["apathy", "motivation"]], "prefix": "grade11"}
+{"stem": ["tawdry", "taste"], "answer": 2, "choice": [["vicious", "wrath"], ["bourgeois", "wealth"], ["haughty", "humility"], ["paraplegic", "legs"], ["misshapen", "deformity"]], "prefix": "grade11"}
+{"stem": ["tedium", "excitement"], "answer": 3, "choice": [["revision", "edition"], ["honor", "prestige"], ["mortgage", "debt"], ["acceptance", "denial"], ["perturbation", "frustration"]], "prefix": "grade11"}
+{"stem": ["pragmatism", "philosophy"], "answer": 1, "choice": [["elevation", "pinnacle"], ["cancer", "malady"], ["electricity", "outlet"], ["cacophony", "opera"], ["chemistry", "element"]], "prefix": "grade12"}
+{"stem": ["element", "aggregate"], "answer": 1, "choice": [["fresco", "painting"], ["foreground", "landscape"], ["benefactor", "fortune"], ["mandate", "ruler"], ["diet", "nutrient"]], "prefix": "grade12"}
+{"stem": ["decanter", "pour"], "answer": 0, "choice": [["monument", "venerate"], ["criminal", "deviate"], ["nunnery", "convert"], ["pharmacy", "prescribe"], ["stiletto", "walk"]], "prefix": "grade12"}
+{"stem": ["concession", "placate"], "answer": 2, "choice": [["female", "engender"], ["artillery", "bolster"], ["catalyst", "precipitate"], ["exercise", "enervate"], ["adjudicator", "mitigate"]], "prefix": "grade12"}
+{"stem": ["vitriol", "bitter"], "answer": 1, "choice": [["hindsight", "perfect"], ["alabaster", "white"], ["buoyancy", "light"], ["equilibrium", "just"], ["jubilation", "biblical"]], "prefix": "grade12"}
+{"stem": ["virulent", "poisonous"], "answer": 1, "choice": [["autonomous", "free"], ["disparate", "different"], ["botanical", "flowery"], ["dormant", "tired"], ["unique", "eccentric"]], "prefix": "grade12"}
+{"stem": ["castigate", "criticize"], "answer": 0, "choice": [["dishevel", "destroy"], ["brutalize", "attack"], ["legalize", "filibuster"], ["predict", "forecast"], ["kill", "massacre"]], "prefix": "grade12"}

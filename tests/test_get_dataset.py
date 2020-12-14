@@ -21,6 +21,24 @@ class Test(unittest.TestCase):
         logging.info(data_instance.list_nested_sentence)
         assert out == data_instance.list_nested_sentence
 
+    def test_check_relation_token_uniqueness(self):
+        data_instance = AnalogyData(
+            path_to_data='./data/u2.jsonl', template_types=['is-to-as'], permutation_negative=False)
+        prompt, relation = data_instance.get_prompt()
+        for i in relation:
+            assert len(list(set(i))) == 4, i
+
+        data_instance = AnalogyData(
+            path_to_data='./data/u4.jsonl', template_types=['is-to-as'], permutation_negative=False)
+        prompt, relation = data_instance.get_prompt()
+        for i in relation:
+            assert len(list(set(i))) == 4, i
+
+        data_instance = AnalogyData(
+            path_to_data='./data/sat_package_v3.jsonl', template_types=['is-to-as'], permutation_negative=False)
+        prompt, relation = data_instance.get_prompt()
+        for i in relation:
+            assert len(list(set(i))) == 4, i
 
 if __name__ == "__main__":
     unittest.main()

@@ -86,7 +86,7 @@
 {"stem": ["blizzard", "storm"], "answer": 0, "choice": [["novelist", "writer"], ["boat", "submarine"], ["radio", "television"], ["organization", "party"]], "prefix": "grade7"}
 {"stem": ["carnivore", "meat"], "answer": 1, "choice": [["vegetarian", "wheat"], ["herbivore", "plants"], ["omnivore", "food"], ["vegan", "pastries"]], "prefix": "grade7"}
 {"stem": ["honest", "sincere"], "answer": 0, "choice": [["solitary", "alone"], ["peaceful", "nervous"], ["vengeful", "forgiving"], ["religious", "doubtful"]], "prefix": "grade7"}
-{"stem": ["academy", "educate"], "answer": 2, "choice": [["court", "blame"], ["trailer", "roam"], ["jail", "imprison"], ["cafe\u0301", "ingest"]], "prefix": "grade7"}
+{"stem": ["academy", "educate"], "answer": 2, "choice": [["court", "blame"], ["trailer", "roam"], ["jail", "imprison"], ["cafe", "ingest"]], "prefix": "grade7"}
 {"stem": ["rectangle", "shape"], "answer": 3, "choice": [["dealer", "employer"], ["deer", "antelope"], ["telephone", "call"], ["assault", "crime"]], "prefix": "grade7"}
 {"stem": ["senate", "congress"], "answer": 1, "choice": [["cinema", "theater"], ["lobby", "hotel"], ["judge", "chamber"], ["government", "democracy"]], "prefix": "grade7"}
 {"stem": ["success", "failure"], "answer": 2, "choice": [["grief", "sadness"], ["debt", "loss"], ["virtue", "evil"], ["life", "birth"]], "prefix": "grade7"}
@@ -175,7 +175,7 @@
 {"stem": ["finale", "musical"], "answer": 4, "choice": [["inning", "baseball"], ["stitch", "tapestry"], ["mystery", "novel"], ["barista", "coffee"], ["homestretch", "race"]], "prefix": "grade10"}
 {"stem": ["listen", "eavesdrop"], "answer": 4, "choice": [["grin", "smile"], ["donate", "relinquish"], ["assume", "conclude"], ["prognosticate", "guess"], ["move", "sneak"]], "prefix": "grade10"}
 {"stem": ["glutton", "moderation"], "answer": 0, "choice": [["braggart", "humility"], ["professor", "knowledge"], ["sage", "wisdom"], ["lawyer", "prudence"], ["caretaker", "affection"]], "prefix": "grade10"}
-{"stem": ["winery", "merlot"], "answer": 3, "choice": [["supermarket", "espresso"], ["marathon", "water"], ["cafe\u0301", "whiskey"], ["brewery", "beer"], ["grove", "applesauce"]], "prefix": "grade10"}
+{"stem": ["winery", "merlot"], "answer": 3, "choice": [["supermarket", "espresso"], ["marathon", "water"], ["cafe", "whiskey"], ["brewery", "beer"], ["grove", "applesauce"]], "prefix": "grade10"}
 {"stem": ["articulate", "mute"], "answer": 0, "choice": [["graceful", "klutzy"], ["spectacular", "showy"], ["ornate", "elegant"], ["embellished", "superficial"], ["excruciating", "painful"]], "prefix": "grade10"}
 {"stem": ["waterway", "navigable"], "answer": 1, "choice": [["farm", "famished"], ["mountain", "surmountable"], ["vault", "unimpressed"], ["fountain", "youthful"], ["judge", "ramshackle"]], "prefix": "grade10"}
 {"stem": ["splinter", "wood"], "answer": 2, "choice": [["skin", "cell"], ["guitar", "orchestra"], ["shard", "glass"], ["seed", "bagel"], ["glaze", "pottery"]], "prefix": "grade10"}
@@ -196,7 +196,7 @@
 {"stem": ["jury", "deliberate"], "answer": 3, "choice": [["candidate", "deprecate"], ["precedent", "preside"], ["ruse", "illuminate"], ["lobbyist", "persuade"], ["parachute", "open"]], "prefix": "grade11"}
 {"stem": ["saccharine", "sweet"], "answer": 2, "choice": [["omniscient", "omnipotent"], ["lethargic", "slovenly"], ["sacrosanct", "sacred"], ["hypocritical", "dissonant"], ["obtuse", "angular"]], "prefix": "grade11"}
 {"stem": ["altruism", "selfishness"], "answer": 4, "choice": [["alacrity", "clarity"], ["passion", "fervor"], ["levity", "flippancy"], ["gravity", "momentum"], ["impartiality", "bias"]], "prefix": "grade11"}
-{"stem": ["bishop", "ordained"], "answer": 0, "choice": [["palace", "stately"], ["transgression", "acceptable"], ["cliche\u0301", "intrepid"], ["loft", "unattainable"], ["character", "humorous"]], "prefix": "grade11"}
+{"stem": ["bishop", "ordained"], "answer": 0, "choice": [["palace", "stately"], ["transgression", "acceptable"], ["cliche", "intrepid"], ["loft", "unattainable"], ["character", "humorous"]], "prefix": "grade11"}
 {"stem": ["pragmatic", "practical"], "answer": 3, "choice": [["irritating", "pleasing"], ["tenacious", "faltering"], ["opaque", "translucent"], ["trivial", "negligible"], ["unusual", "ludicrous"]], "prefix": "grade11"}
 {"stem": ["cauldron", "pot"], "answer": 1, "choice": [["vibration", "perception"], ["pictograph", "symbol"], ["favor", "currency"], ["luminary", "phantasm"], ["paragon", "light"]], "prefix": "grade11"}
 {"stem": ["precept", "guidance"], "answer": 4, "choice": [["chord", "music"], ["footnote", "connotation"], ["mathematician", "numbers"], ["epilogue", "introduction"], ["alibi", "defense"]], "prefix": "grade11"}

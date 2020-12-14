@@ -218,7 +218,7 @@
 {"stem": ["tedium", "excitement"], "answer": 3, "choice": [["revision", "edition"], ["honor", "prestige"], ["mortgage", "debt"], ["acceptance", "denial"], ["perturbation", "frustration"]], "prefix": "grade11"}
 {"stem": ["powerless", "efficacy"], "answer": 4, "choice": [["turbulent", "violence"], ["anomalous", "irregularity"], ["homogenous", "similarity"], ["effluent", "water"], ["explicit", "ambiguity"]], "prefix": "grade12"}
 {"stem": ["rivulet", "small"], "answer": 4, "choice": [["dissertation", "plagiarized"], ["bird", "fledgling"], ["bankruptcy", "indebted"], ["hooligan", "athletic"], ["citadel", "fortified"]], "prefix": "grade12"}
-{"stem": ["wretched:", "cheerful"], "answer": 1, "choice": [["territorial", "terrestrial"], ["innocuous", "dangerous"], ["floundering", "struggling"], ["redacted", "censored"], ["solitary", "confined"]], "prefix": "grade12"}
+{"stem": ["wretched", "cheerful"], "answer": 1, "choice": [["territorial", "terrestrial"], ["innocuous", "dangerous"], ["floundering", "struggling"], ["redacted", "censored"], ["solitary", "confined"]], "prefix": "grade12"}
 {"stem": ["level", "hierarchy"], "answer": 0, "choice": [["installment", "serial"], ["halo", "messiah"], ["vinaigrette", "salad"], ["courtroom", "drama"], ["misnomer", "definition"]], "prefix": "grade12"}
 {"stem": ["peccadillo", "sin"], "answer": 0, "choice": [["masquerade", "party"], ["peasant", "serf"], ["sarcophagus", "funeral"], ["letdown", "devastation"], ["hex", "wizard"]], "prefix": "grade12"}
 {"stem": ["tyro", "inexperienced"], "answer": 3, "choice": [["headmaster", "principled"], ["scapegoat", "blameworthy"], ["forgery", "valuable"], ["sycophant", "servile"], ["risk", "worthwhile"]], "prefix": "grade12"}

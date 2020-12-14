@@ -5,11 +5,11 @@ from itertools import permutations, chain
 
 from .prompting_relation import prompting_relation, TEMPLATES
 
-__all__ = ('get_dataset', 'get_dataset_prompt')
+__all__ = 'AnalogyData'
 
 
 def get_dataset(path_to_data: str):
-    """ get prompted SAT-type dataset: a list of (answer: int, prompts: list, stem: list, choice: list)"""
+    """ Get prompted SAT-type dataset: a list of (answer: int, prompts: list, stem: list, choice: list)"""
     assert os.path.exists(path_to_data)
 
     with open(path_to_data, 'r') as f:
@@ -19,10 +19,10 @@ def get_dataset(path_to_data: str):
 def get_dataset_prompt(path_to_data: str,
                        template_types: List = None,
                        permutation_negative: bool = True):
-    """ get prompted SAT-type dataset
+    """ Get prompted SAT-type dataset
 
-    :param path_to_data:
-    :param template_types: a list of templates for prompting
+    :param path_to_data: path to a SAT-type dataset
+    :param template_types: a list of templates for prompting, `TEMPLATES`
     :param permutation_negative: if utilize negative permutation
     :return: a list of (answer: int, prompts: list, stem: list, choice: list)
     """
@@ -61,14 +61,82 @@ def get_dataset_prompt(path_to_data: str,
                         template_type=t),
                     template_types)),
                 negative)))
+            # (prompt, (stem pair, option pair))
+            positive_prompt = list(map(lambda x: (x, (a, b, c, d)), positive_prompt))
+            negative_prompt = list(map(lambda x: (x, (a, b, c, d)), negative_prompt))
             return positive_prompt, negative_prompt
 
         prompts = list(map(lambda x: single_prompt(*x), dictionary['choice']))
-        return dictionary['answer'], prompts, dictionary['stem'], dictionary['choice']
+        return dictionary['answer'], prompts
 
     data = list(map(lambda x: single_entry(x), get_dataset(path_to_data)))
     list_answer = list(list(zip(*data))[0])
     list_nested_sentence = list(list(zip(*data))[1])
-    list_stem = list(list(zip(*data))[2])
-    list_choice = list(list(zip(*data))[3])
-    return list_answer, list_nested_sentence, list_stem, list_choice
+    return list_answer, list_nested_sentence
+
+
+class AnalogyData:
+
+    def __init__(self,
+                 path_to_data: str,
+                 template_types: List = None,
+                 permutation_negative: bool = True):
+
+        self.answer, self.list_nested_sentence = get_dataset_prompt(
+            path_to_data=path_to_data,
+            template_types=template_types,
+            permutation_negative=permutation_negative)
+        self.flatten_prompt_pos, self.structure_id_pos = self.get_structure(self.list_nested_sentence)
+        if permutation_negative:
+            self.flatten_prompt_neg, self.structure_id_neg = self.get_structure(self.list_nested_sentence, False)
+        else:
+            self.flatten_prompt_neg = self.structure_id_neg = None
+
+    def get_prompt(self, return_relation_pairs: bool = True, positive: bool = True):
+        if positive:
+            prompt = self.flatten_prompt_pos
+        else:
+            if self.flatten_prompt_neg is None:
+                return None, None
+            prompt = self.flatten_prompt_neg
+        prompt_list = list(list(zip(*prompt))[0])
+        if return_relation_pairs:
+            relation_list = list(list(zip(*prompt))[1])
+            return prompt_list, relation_list
+        else:
+            return prompt_list,
+
+    @staticmethod
+    def get_structure(nested_list, positive: bool = True):
+        """ create batch while keeping the nested structure """
+        flatten_data = []
+        structure_id = []
+        for n_q, single_q in enumerate(nested_list):
+            for n_o, single_option in enumerate(single_q):
+                perms = single_option[0] if positive else single_option[1]
+                for n_perm, single_permutation in enumerate(perms):
+                    flatten_data.append(single_permutation)
+                    structure_id.append([n_q, n_o, n_perm])
+        return flatten_data, structure_id
+
+    def insert_score(self, score_positive: List, score_negative: List = None):
+        """ restore the nested structure from a flatten list """
+
+        list_placeholder = list(map(
+            lambda x: list(map(
+                lambda y: (
+                    [0] * len(self.list_nested_sentence[x[0]][y][0]),
+                    [0] * len(self.list_nested_sentence[x[0]][y][1])
+                ),
+                range(len(x[1])))),
+            enumerate(self.list_nested_sentence)))
+
+        list_score_pos = score_positive.copy()
+
+        for n_q, n_o, n_perm in self.structure_id_pos:
+            list_placeholder[n_q][n_o][0][n_perm] = list_score_pos.pop(0)
+        if score_negative is not None and self.structure_id_neg is not None:
+            list_score_neg = score_negative.copy()
+            for n_q, n_o, n_perm in self.structure_id_neg:
+                list_placeholder[n_q][n_o][1][n_perm] = list_score_neg.pop(0)
+        return list_placeholder

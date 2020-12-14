@@ -15,10 +15,76 @@ scorer = RelationScorer('albert-base-v1', max_length=32)
 class Test(unittest.TestCase):
     """Test"""
 
-    def test_ppl(self):
+    # def test_ppl(self):
+    #     s = scorer.analogy_test(
+    #         export_dir='./tests/results',
+    #         scoring_method='ppl',
+    #         path_to_data='./data/sample.jsonl',
+    #         template_types=['rel-same'],
+    #         batch_size=4,
+    #         aggregation_positive='mean')
+    #     logging.info(s)
+    #
+    #     # negative
+    #     s = scorer.analogy_test(
+    #         export_dir='./tests/results',
+    #         scoring_method='ppl',
+    #         path_to_data='./data/sample.jsonl',
+    #         template_types=['rel-same'],
+    #         batch_size=4,
+    #         aggregation_positive='mean',
+    #         permutation_negative=True,
+    #         aggregation_negative='mean')
+    #     logging.info(s)
+
+    # def test_pmi(self):
+    #     s = scorer.analogy_test(
+    #         export_dir='./tests/results',
+    #         scoring_method='pmi',
+    #         scoring_method_config={"aggregation": "p_0"},
+    #         path_to_data='./data/sample.jsonl',
+    #         template_types=['rel-same'],
+    #         batch_size=4,
+    #         aggregation_positive='mean')
+    #     logging.info(s)
+    #
+    #     s = scorer.analogy_test(
+    #         export_dir='./tests/results',
+    #         scoring_method='pmi',
+    #         scoring_method_config={"aggregation": "p_11"},
+    #         path_to_data='./data/sample.jsonl',
+    #         template_types=['rel-same'],
+    #         batch_size=4,
+    #         aggregation_positive='mean')
+    #     logging.info(s)
+    #
+    #     s = scorer.analogy_test(
+    #         export_dir='./tests/results',
+    #         scoring_method='pmi',
+    #         scoring_method_config={"aggregation": 'mean'},
+    #         path_to_data='./data/sample.jsonl',
+    #         template_types=['rel-same'],
+    #         batch_size=4,
+    #         aggregation_positive='mean')
+    #     logging.info(s)
+    #
+    #     # negative
+    #     s = scorer.analogy_test(
+    #         export_dir='./tests/results',
+    #         scoring_method='pmi',
+    #         scoring_method_config={"aggregation": 'mean'},
+    #         path_to_data='./data/sample.jsonl',
+    #         template_types=['rel-same'],
+    #         batch_size=4,
+    #         aggregation_positive='mean',
+    #         permutation_negative=True,
+    #         aggregation_negative='mean')
+    #     logging.info(s)
+
+    def test_embedding_similarity(self):
         s = scorer.analogy_test(
             export_dir='./tests/results',
-            scoring_method='ppl',
+            scoring_method='embedding_similarity',
             path_to_data='./data/sample.jsonl',
             template_types=['rel-same'],
             batch_size=4,
@@ -28,51 +94,7 @@ class Test(unittest.TestCase):
         # negative
         s = scorer.analogy_test(
             export_dir='./tests/results',
-            scoring_method='ppl',
-            path_to_data='./data/sample.jsonl',
-            template_types=['rel-same'],
-            batch_size=4,
-            aggregation_positive='mean',
-            permutation_negative=True,
-            aggregation_negative='mean')
-        logging.info(s)
-
-    def test_pmi(self):
-        s = scorer.analogy_test(
-            export_dir='./tests/results',
-            scoring_method='pmi',
-            scoring_method_config={"aggregation": "p_0"},
-            path_to_data='./data/sample.jsonl',
-            template_types=['rel-same'],
-            batch_size=4,
-            aggregation_positive='mean')
-        logging.info(s)
-
-        s = scorer.analogy_test(
-            export_dir='./tests/results',
-            scoring_method='pmi',
-            scoring_method_config={"aggregation": "p_11"},
-            path_to_data='./data/sample.jsonl',
-            template_types=['rel-same'],
-            batch_size=4,
-            aggregation_positive='mean')
-        logging.info(s)
-
-        s = scorer.analogy_test(
-            export_dir='./tests/results',
-            scoring_method='pmi',
-            scoring_method_config={"aggregation": 'mean'},
-            path_to_data='./data/sample.jsonl',
-            template_types=['rel-same'],
-            batch_size=4,
-            aggregation_positive='mean')
-        logging.info(s)
-
-        # negative
-        s = scorer.analogy_test(
-            export_dir='./tests/results',
-            scoring_method='pmi',
-            scoring_method_config={"aggregation": 'mean'},
+            scoring_method='embedding_similarity',
             path_to_data='./data/sample.jsonl',
             template_types=['rel-same'],
             batch_size=4,

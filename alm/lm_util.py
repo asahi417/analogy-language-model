@@ -52,8 +52,7 @@ class TransformersLM:
                  model: str,
                  max_length: int = None,
                  cache_dir: str = './cache',
-                 num_worker: int = 1,
-                 embedding_mode: bool = False):
+                 num_worker: int = 1):
         """ transformers language model based sentence-mining
 
         :param model: a model name corresponding to a model card in `transformers`
@@ -64,39 +63,44 @@ class TransformersLM:
         if self.num_worker == 1:
             os.environ["OMP_NUM_THREADS"] = "1"  # to turn off warning message
 
-        # model setup
-        self.is_causal = 'gpt' in model  # TODO: fix to be more comprehensive method
+        self.model_name = model
+        self.cache_dir = cache_dir
+        self.device = 'cpu'
+        self.model = None
+        self.is_causal = 'gpt' in self.model_name  # TODO: fix to be more comprehensive method
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(model, cache_dir=cache_dir)
-        self.config = transformers.AutoConfig.from_pretrained(model, cache_dir=cache_dir)
-        params = dict(config=self.config, cache_dir=cache_dir)
-        self.embedding_mode = embedding_mode
-        if embedding_mode:
-            # a mode to use embedding instead of prediction logit
-            self.model = transformers.AutoModel.from_pretrained(model, **params)
-        elif self.is_causal:
-            self.model = transformers.AutoModelForCausalLM.from_pretrained(model, **params)
+        if self.is_causal:
             self.tokenizer.pad_token = self.tokenizer.eos_token
-        else:
-            self.model = transformers.AutoModelForMaskedLM.from_pretrained(model, **params)
-        self.model.eval()
+        self.config = transformers.AutoConfig.from_pretrained(model, cache_dir=cache_dir)
         if max_length:
             assert self.tokenizer.model_max_length >= max_length
             self.max_length = max_length
         else:
             self.max_length = self.tokenizer.model_max_length
 
-        # gpu
-        self.n_gpu = torch.cuda.device_count()
-        assert self.n_gpu <= 1
-        self.device = 'cuda' if self.n_gpu > 0 else 'cpu'
-        self.model.to(self.device)
-        logging.info('running on %i GPU' % self.n_gpu)
-
         # sentence prefix tokens
         tokens = self.tokenizer.tokenize('get tokenizer specific prefix')
         tokens_encode = self.tokenizer.convert_ids_to_tokens(self.tokenizer.encode('get tokenizer specific prefix'))
         self.sp_token_prefix = tokens_encode[:tokens_encode.index(tokens[0])]
         self.sp_token_suffix = tokens_encode[tokens_encode.index(tokens[-1]) + 1:]
+
+    def load_model(self, lm_head: bool = True):
+        """ Model setup """
+        logging.info('setting up language model')
+        params = dict(config=self.config, cache_dir=self.cache_dir)
+        if lm_head and self.is_causal:
+            self.model = transformers.AutoModelForCausalLM.from_pretrained(self.model_name, **params)
+        elif lm_head:
+            self.model = transformers.AutoModelForMaskedLM.from_pretrained(self.model_name, **params)
+        else:
+            self.model = transformers.AutoModel.from_pretrained(self.model_name, **params)
+        self.model.eval()
+        # gpu
+        n_gpu = torch.cuda.device_count()
+        assert n_gpu <= 1
+        self.device = 'cuda' if n_gpu > 0 else 'cpu'
+        self.model.to(self.device)
+        logging.info('running on %i GPU'.format(n_gpu))
 
     def find_position(self, str_to_mask, text, token: List = None):
         """ Find masking position in a token-space given a string target
@@ -151,6 +155,7 @@ class TransformersLM:
         :param reduce: to reduce NLL over sequence or not
         :return: a list of NLL
         """
+        assert self.model
         loss_fct = nn.CrossEntropyLoss(reduction='none')
         nll = []
         with torch.no_grad():
@@ -196,7 +201,7 @@ class TransformersLM:
         """
         assert type(text) is str
         assert len(text.replace(' ', '')) != 0, 'found an empty text'
-        assert not self.is_causal or not self.embedding_mode
+        assert not self.is_causal
 
         token_list = self.tokenizer.tokenize(text)
         token_list_tmp = token_list.copy()
@@ -302,7 +307,8 @@ class TransformersLM:
         :return:
         """
         assert type(texts) is list and type(tokens_to_mask) is list, 'type error'
-        assert not self.embedding_mode or self.is_causal
+        if not self.model:
+            self.load_model()
 
         def decode_score(_nested_score, total_score: float = 0.0):
             """ Lowest nll based subword decoding """
@@ -401,7 +407,9 @@ class TransformersLM:
         :return: a list of (pseudo) perplexity
         """
         assert type(texts) is list, 'type error'
-        assert not self.embedding_mode
+        if not self.model:
+            self.load_model()
+
         data_loader, partition = self.batch_encode_plus_perplexity(texts, batch_size=batch_size)
         nll = self.__get_nll(data_loader)
         # for pseudo likelihood aggregation
@@ -410,56 +418,89 @@ class TransformersLM:
     #########################################
     # Modules for embedding operation (WIP) #
     #########################################
-    # def encode_plus_embedding(self,
-    #                          text: str,
-    #                          token_to_embed: List = None,
-    #                          token_to_mask: str,
-    #                          token_to_mask_no_label: str = None):
-    #
-    #     assert type(text) is str
-    #     assert len(text.replace(' ', '')) != 0, 'found an empty text'
-    #     assert not self.is_causal or not self.embedding_mode
-    #
-    #     if self.embedding_mode:
-    #         assert token_to_mask is None, 'token_to_mask is not for either causalLM or embedding mode'
-    #         assert token_to_label is None, 'token_to_label is not for either causalLM or embedding mode'
-    #         encode = self.tokenizer.encode_plus(text, **param)
-    #         if self.embedding_mode:
-    #             token_list = self.tokenizer.tokenize(text)
-    #             if token_to_embed is not None:
-    #                 positions = [self.find_position(s, text, token_list) for s in token_to_embed]
-    #                 pos = [[len(self.sp_token_prefix) + s, len(self.sp_token_prefix) + e] for s, e in positions]
-    #                 assert len(pos) <= 5, 'token_to_embed is allowed upto 5'
-    #                 encode['position_to_embed'] = pos + [[0, 0]] * (5 - len(pos))
-    #             else:
-    #                 encode['position_to_embed'] = \
-    #                     [[len(self.sp_token_prefix), len(self.sp_token_prefix) + len(token_list)]] + [[0, 0]] * 4
-    #         else:
-    #             encode['labels'] = self.input_ids_to_labels(encode['input_ids'])
-    #         return [encode]
+    def encode_plus_embedding(self, text: str, token_to_embed: List):
+        """
 
-    # def get_embedding(self, texts: List, tokens_to_embed: List, batch_size: int = None):
-    #     """ get embedding
-    #
-    #     :param texts:
-    #     :param tokens_to_embed:
-    #     :param batch_size:
-    #     :return: embeddings (len(texts), token num, dim)
-    #     """
-    #     assert self.embedding_mode
-    #     data_loader, _ = self.batch_encode_plus_mask(
-    #         texts, batch_size=batch_size, batch_token_to_embed=tokens_to_embed)
-    #     embeddings = []
-    #     with torch.no_grad():
-    #         for encode in tqdm(data_loader):
-    #             position_to_embed = encode.pop('position_to_embed').cpu().tolist()
-    #             encode = {k: v.to(self.device) for k, v in encode.items()}
-    #             output = self.model(**encode, return_dict=True)
-    #             last_hidden_state = output['last_hidden_state']  # batch, length, dim
-    #             # labels  # batch, target_tokens, (start, end)
-    #             embeddings += [
-    #                 [torch.mean(last_hidden_state[n][s:e], 0).cpu().tolist() for s, e in positions if s != 0 and e != 0]
-    #                 for n, positions in enumerate(position_to_embed)
-    #             ]  # batch, target_tokens, dim
-    #
-    #     return embeddings
+        :param text:
+        :param token_to_embed:
+        :return:
+        """
+
+        assert type(text) is str
+        assert len(text.replace(' ', '')) != 0, 'found an empty text'
+
+        param = {'max_length': self.max_length, 'truncation': True, 'padding': 'max_length'}
+        encode = self.tokenizer.encode_plus(text, **param)
+
+        token_list = self.tokenizer.tokenize(text)
+        positions = [self.find_position(s, text, token_list) for s in token_to_embed]
+        pos = [[len(self.sp_token_prefix) + s, len(self.sp_token_prefix) + e] for s, e in positions]
+        assert len(pos) == 4, 'token_to_embed is allowed upto 4'
+        # encode['position_to_embed'] = pos + [[0, 0]] * (5 - len(pos))
+        encode['position_to_embed'] = pos
+        return encode
+
+    def batch_encode_plus_embedding(self,
+                                    batch_text: List,
+                                    batch_token_to_embed: List,
+                                    batch_size: int = None):
+        batch_size = len(batch_text) if batch_size is None else batch_size
+        data = list(map(lambda x: self.encode_plus_embedding(*x), zip(batch_text, batch_token_to_embed)))
+        return torch.utils.data.DataLoader(
+            Dataset(data),
+            num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False
+        )
+
+    @staticmethod
+    def relation_similarity(embedding_tensor, positions):
+        """ Get relation similarity
+
+        :param embedding_tensor: a tensor (length, dim)
+        :param positions: a list of position (start, end), which should contain 4 different
+        :return:
+        """
+
+        def cos_similarity(a: List, b: List):
+            assert len(a) == len(b)
+            norm_a = sum(map(lambda x: x * x, a)) ** 0.5
+            norm_b = sum(map(lambda x: x * x, b)) ** 0.5
+            inner_prod = sum(map(lambda x: x[0] * x[1], zip(a, b)))
+            return inner_prod / (norm_a * norm_b)
+
+        word_embedding = list(map(lambda x: torch.mean(embedding_tensor[x[0]:x[1]], 0).cpu().tolist(), positions))
+        assert len(word_embedding) == 4
+        diff_stem = list(map(lambda x: x[0] - x[1], word_embedding))
+        diff_predict = list(map(lambda x: x[2] - x[3], word_embedding))
+        return cos_similarity(diff_stem, diff_predict)
+
+    def get_embedding_similarity(self,
+                                 texts: List,
+                                 tokens_to_embed: List, batch_size: int = None):
+        """ Similarity of embedding differences over relations
+
+        :param texts:
+        :param tokens_to_embed:
+        :param batch_size:
+        :return: embeddings (len(texts), token num, dim)
+        """
+        assert type(texts) is list, 'type error'
+        if not self.model:
+            self.load_model(lm_head=False)
+
+        data_loader = self.batch_encode_plus_embedding(
+            texts, batch_size=batch_size, batch_token_to_embed=tokens_to_embed)
+
+        embeddings = []
+
+        with torch.no_grad():
+            for encode in tqdm(data_loader):
+                position_to_embed = encode.pop('position_to_embed').cpu().tolist()
+                encode = {k: v.to(self.device) for k, v in encode.items()}
+                output = self.model(**encode, return_dict=True)
+                last_hidden_state = output['last_hidden_state']  # batch, length, dim
+                embeddings += list(map(
+                    lambda n: self.relation_similarity(last_hidden_state[n], position_to_embed[n]),
+                    range(len(position_to_embed))
+                ))
+
+        return embeddings

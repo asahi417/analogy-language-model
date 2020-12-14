@@ -25,8 +25,7 @@ class RelationScorer:
                  model: str = 'roberta-base',
                  max_length: int = 32,  # the template is usually a short sentence
                  cache_dir: str = './cache',
-                 num_worker: int = 1,
-                 embedding_mode: bool = False):
+                 num_worker: int = 1):
         """ Scoring relations with language models
 
         :param model: LM parameter
@@ -40,8 +39,7 @@ class RelationScorer:
             model=model,
             max_length=max_length,
             cache_dir=cache_dir,
-            num_worker=num_worker,
-            embedding_mode=embedding_mode)
+            num_worker=num_worker)
         self.model_name = model
 
     def release_cache(self):
@@ -114,9 +112,11 @@ class RelationScorer:
                 logging.info(' * load score')
                 return cached_score
 
+            logging.info(' * run scoring: {}'.format(scoring_method))
             if scoring_method == 'ppl':
-                logging.info(' * run scoring: perplexity')
                 return self.lm.get_perplexity(prompt, batch_size=batch_size)
+            elif scoring_method == 'embedding_similarity':
+                return self.lm.get_embedding_similarity(prompt, tokens_to_embed=relation, batch_size=batch_size)
             elif scoring_method == 'pmi':
                 score_list = []
                 for n, (i, k) in enumerate(list(permutations(range(4), 2))):

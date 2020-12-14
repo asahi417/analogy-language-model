@@ -273,6 +273,7 @@ class TransformersLM:
         ))
         data_flat = list(map(lambda x: x.flat_values, data_dk))
         partition = get_partition(data_flat)
+
         data_loader = torch.utils.data.DataLoader(
             Dataset(list(chain(*data_flat))),
             num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False
@@ -385,6 +386,7 @@ class TransformersLM:
         batch_size = len(batch_text) if batch_size is None else batch_size
         data = list(map(lambda x: self.encode_plus_perplexity(x), batch_text))
         partition = get_partition(data)
+
         data_loader = torch.utils.data.DataLoader(
             Dataset(list(chain(*data))),
             num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False

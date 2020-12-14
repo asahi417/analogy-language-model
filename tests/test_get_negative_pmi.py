@@ -48,6 +48,5 @@ class Test(unittest.TestCase):
             assert found_word in TARGET[i] or found_word in TARGET[i].lower()
 
 
-
 if __name__ == "__main__":
     unittest.main()

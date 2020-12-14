@@ -124,6 +124,7 @@ class RelationScorer:
                     tokens_to_mask = list(map(lambda x: x[i], relation))
                     tokens_to_condition = list(map(lambda x: x[k], relation))
                     _score = self.lm.get_negative_pmi(prompt,
+                                                      batch_size=batch_size,
                                                       tokens_to_mask=tokens_to_mask,
                                                       tokens_to_condition=tokens_to_condition)
                     score_list.append(_score)

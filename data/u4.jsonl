@@ -132,7 +132,7 @@
 {"stem": ["fin", "fish"], "answer": 0, "choice": [["string", "guitar"], ["nose", "bird"], ["tail", "human"], ["pickle", "sandwich"]], "prefix": "high-beginning"}
 {"stem": ["blanket", "soft"], "answer": 3, "choice": [["money", "rich"], ["teacher", "good"], ["apple", "ripe"], ["circle", "round"]], "prefix": "high-beginning"}
 {"stem": ["rich", "poor"], "answer": 0, "choice": [["young", "old"], ["smart", "tired"], ["tall", "angry"], ["fun", "nice"]], "prefix": "high-beginning"}
-{"stem": ["obese", "overweight"], "answer": 2, "choice": [["guilty", "wrong"], ["funny", "clever"], ["hideous", "ugly"], ["rude", ""]], "prefix": "high-beginning"}
+{"stem": ["obese", "overweight"], "answer": 2, "choice": [["guilty", "wrong"], ["funny", "clever"], ["hideous", "ugly"], ["rude", "mean"]], "prefix": "high-beginning"}
 {"stem": ["disorganized", "order"], "answer": 2, "choice": [["intelligent", "belief"], ["heavy", "power"], ["insignificant", "importance"], ["delicious", "flavor"]], "prefix": "high-beginning"}
 {"stem": ["brush", "paint"], "answer": 0, "choice": [["straw", "drink"], ["eraser", "write"], ["table", "sit"], ["key", "turn"]], "prefix": "high-beginning"}
 {"stem": ["mountain", "tall"], "answer": 3, "choice": [["game", "fun"], ["ring", "expensive"], ["car", "fast"], ["rainbow", "colorful"]], "prefix": "high-beginning"}

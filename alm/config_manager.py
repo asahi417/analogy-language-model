@@ -1,5 +1,6 @@
 """ configuration manager for `scoring_function.RelationScorer` """
 import os
+import shutil
 import random
 import json
 import string
@@ -26,7 +27,7 @@ def safe_open(_file):
 class ConfigManager:
     """ configuration manager for `scoring_function.RelationScorer` """
 
-    def __init__(self, export_dir: str, overwrite: bool = True, **kwargs):
+    def __init__(self, export_dir: str, **kwargs):
         """ configuration manager for `scoring_function.RelationScorer` """
         self.config = kwargs
         logging.info('*** setting up a config manager ***\n' +
@@ -35,16 +36,16 @@ class ConfigManager:
         export_dir = os.path.join(export_dir, 'outputs')
         self.flatten_score_positive = None
         self.flatten_score_negative = None
+        self.output_exist = False
         if not os.path.exists(export_dir):
             self.export_dir = os.path.join(export_dir, get_random_string())
         else:
             ex_configs = {i: safe_open(i) for i in glob('{}/*/config.json'.format(export_dir))}
             # check duplication
             same_config = list(filter(lambda x: x[1] == self.config, ex_configs.items()))
-            if len(same_config) != 0 and not overwrite:
-                raise ValueError('found same configuration in the directory: {}'.format(same_config[0][0]))
-            elif len(same_config) != 0 and overwrite:
-                logging.info("found same configuration and will be overwritten: {}".format(same_config[0][0]))
+            if len(same_config) != 0:
+                logging.info("found same configuration: {}".format(same_config[0][0]))
+                self.output_exist = True
                 self.export_dir = same_config[0][0].replace('/config.json', '')
             else:
                 # create new experiment directory
@@ -87,8 +88,9 @@ class ConfigManager:
 
     def save(self, accuracy: float, logit_pn: List, logit: List, prediction: List):
         """ export data """
-        if not os.path.exists(self.export_dir):
-            os.makedirs(self.export_dir, exist_ok=True)
+        if os.path.exists(self.export_dir):
+            shutil.rmtree(self.export_dir)
+        os.makedirs(self.export_dir, exist_ok=True)
         with open('{}/accuracy.json'.format(self.export_dir), 'w') as f:
             json.dump({"accuracy": accuracy}, f)
         with open('{}/config.json'.format(self.export_dir), 'w') as f:

@@ -58,7 +58,7 @@ class RelationScorer:
                      skip_scoring_prediction: bool = False,
                      export_dir: str = './results',
                      no_inference: bool = False,
-                     debug = False):
+                     overwrite_output: bool = False):
         """ relation scoring test on analogy dataset
 
         :param path_to_data:
@@ -72,6 +72,7 @@ class RelationScorer:
         :param skip_scoring_prediction:
         :param no_inference: use only cached score
         :param export_dir: directory to export the result
+        :param overwrite_output: overwrite existing result file
         :return:
         """
         start = time()
@@ -90,6 +91,9 @@ class RelationScorer:
             scoring_method=scoring_method, template_types=template_types, permutation_negative=permutation_negative,
             aggregation_positive=aggregation_positive, aggregation_negative=aggregation_negative
         )
+        if config.output_exist and not overwrite_output:
+            logging.info('skip as the output is already produced: {}'.format(config.export_dir))
+            return
 
         # fetch data
         logging.info('fetch data and templating: {}'.format(path_to_data))
@@ -107,11 +111,11 @@ class RelationScorer:
                 logging.info(' * skip permutation')
                 return None
 
-            assert not no_inference and not debug, 'no cache found'
             if cached_score:
                 logging.info(' * load score')
                 return cached_score
 
+            assert not no_inference, '"no_inference==True" but no cache found'
             logging.info(' * run scoring: {}'.format(scoring_method))
             if scoring_method == 'ppl':
                 return self.lm.get_perplexity(prompt, batch_size=batch_size)
@@ -165,7 +169,5 @@ class RelationScorer:
         assert len(pred) == len(data_instance.answer)
         accuracy = sum(map(lambda x: int(x[0] == x[1]), zip(pred, data_instance.answer))) / len(data_instance.answer)
         logging.info('accuracy: {}'.format(accuracy))
-        if debug:
-            return
         config.save(accuracy=accuracy, logit_pn=logit_pn, logit=logit, prediction=pred)
         logging.info('experiment completed: {} sec in total'.format(time()-start))

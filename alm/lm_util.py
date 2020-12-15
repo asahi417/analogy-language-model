@@ -100,7 +100,7 @@ class TransformersLM:
         assert n_gpu <= 1
         self.device = 'cuda' if n_gpu > 0 else 'cpu'
         self.model.to(self.device)
-        logging.info('running on %i GPU'.format(n_gpu))
+        logging.info('running on {} GPU'.format(n_gpu))
 
     def find_position(self, str_to_mask, text, token: List = None):
         """ Find masking position in a token-space given a string target

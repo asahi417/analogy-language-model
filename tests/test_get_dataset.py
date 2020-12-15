@@ -40,5 +40,6 @@ class Test(unittest.TestCase):
         for i in relation:
             assert len(list(set(i))) == 4, i
 
+
 if __name__ == "__main__":
     unittest.main()

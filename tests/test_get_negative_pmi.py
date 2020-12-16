@@ -38,6 +38,10 @@ class Test(unittest.TestCase):
         assert len(score) == len(TEST)
         logging.info(score)
 
+        score = model.get_negative_pmi(TEST, weight=0.5, tokens_to_mask=TARGET, tokens_to_condition=TARGET_MASK)
+        assert len(score) == len(TEST)
+        logging.info(score)
+
     def test_token_position(self):
         for i in range(2):
             token = model.tokenizer.tokenize(TEST[i])

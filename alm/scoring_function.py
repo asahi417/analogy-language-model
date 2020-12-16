@@ -50,6 +50,8 @@ class RelationScorer:
                      path_to_data: str,
                      batch_size: int = 4,
                      scoring_method: str = 'ppl',
+                     pmi_aggregation: str = None,
+                     pmi_lambda: float = None,
                      scoring_method_config: Dict = None,
                      template_types: List = None,
                      permutation_negative: bool = False,
@@ -86,7 +88,8 @@ class RelationScorer:
         # configuration manager
         config = ConfigManager(
             export_dir=export_dir,
-            scoring_method_config=scoring_method_config,
+            pmi_aggregation=pmi_aggregation,
+            pmi_lambda=pmi_lambda,
             model=self.model_name, max_length=self.lm.max_length, path_to_data=path_to_data,
             scoring_method=scoring_method, template_types=template_types, permutation_negative=permutation_negative,
             aggregation_positive=aggregation_positive, aggregation_negative=aggregation_negative
@@ -134,7 +137,8 @@ class RelationScorer:
                     _score = self.lm.get_negative_pmi(prompt,
                                                       batch_size=batch_size,
                                                       tokens_to_mask=tokens_to_mask,
-                                                      tokens_to_condition=tokens_to_condition)
+                                                      tokens_to_condition=tokens_to_condition,
+                                                      weight=pmi_lambda)
                     config.cache_scores_pmi(key, _score, positive=positive)
                     score_list.append(_score)
                 full_score = list(zip(*score_list))
@@ -158,17 +162,15 @@ class RelationScorer:
 
         # scoring method depending post aggregation
         if scoring_method == 'pmi':
-
+            assert pmi_aggregation, 'undefined pmi aggregation'
             # we use same aggregation method for both positive/negative permutations
-            assert len(scoring_method_config) == 1, 'unknown config: {}'.format(scoring_method_config)
-            pmi_aggregation = scoring_method_config['aggregation']
             logging.info("PMI aggregator: {}".format(pmi_aggregation))
             aggregator = AGGREGATOR[pmi_aggregation]
             score_pos = list(map(lambda x: aggregator(x), score_pos))
             if score_neg:
                 score_neg = list(map(lambda x: aggregator(x), score_neg))
         else:
-            assert scoring_method_config is None, 'method {} has no configuration'.format(scoring_method)
+            assert pmi_lambda is None and pmi_aggregation is None, 'pmi_lambda and pmi_aggregation should be None'
 
         # restore the nested structure
         logging.info('restore batch structure')

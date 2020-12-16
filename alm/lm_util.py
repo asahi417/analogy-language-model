@@ -290,7 +290,7 @@ class TransformersLM:
                          tokens_to_mask: List,
                          tokens_to_condition: List = None,
                          batch_size: int = None,
-                         weight: float = 1.0):
+                         weight: float = None):
         """ Negative Point-wise Mutual Information (PMI)
         negative PMI(t|c) = w * sum[NLL(t)] - sum[NLL(t|c=mask])]
         - NLL(t): negative log likelihood of t
@@ -309,6 +309,7 @@ class TransformersLM:
         assert type(texts) is list and type(tokens_to_mask) is list, 'type error'
         if not self.model:
             self.load_model()
+        weight = 1 if weight is None else weight
 
         def decode_score(_nested_score, total_score: float = 0.0):
             """ Lowest nll based subword decoding """

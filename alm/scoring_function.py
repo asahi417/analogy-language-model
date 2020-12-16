@@ -52,7 +52,6 @@ class RelationScorer:
                      scoring_method: str = 'ppl',
                      pmi_aggregation: str = None,
                      pmi_lambda: float = None,
-                     scoring_method_config: Dict = None,
                      template_types: List = None,
                      permutation_negative: bool = False,
                      aggregation_positive: str = 'mean',
@@ -65,7 +64,6 @@ class RelationScorer:
 
         :param path_to_data:
         :param scoring_method:
-        :param scoring_method_config:
         :param batch_size:
         :param template_types: a list of templates for prompting
         :param permutation_negative: if utilize negative permutation
@@ -141,6 +139,7 @@ class RelationScorer:
                                                       weight=pmi_lambda)
                     config.cache_scores_pmi(key, _score, positive=positive)
                     score_list.append(_score)
+                
                 full_score = list(zip(*score_list))
             else:
                 raise ValueError('unknown method: {}'.format(scoring_method))

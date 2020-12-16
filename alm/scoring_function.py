@@ -104,12 +104,11 @@ class RelationScorer:
         logging.info('creating batch (data size: {})'.format(len(data_instance.flatten_prompt_pos)))
 
         def prediction(positive: bool = True):
-            logging.info('{} permutation'.format('positive' if positive else 'negative'))
+            prefix = 'positive' if positive else 'negative'
+            logging.info('{} permutation'.format(prefix))
             prompt, relation = data_instance.get_prompt(positive=positive)
-            cached_score = config.flatten_score_positive if positive else config.flatten_score_negative
-            if prompt is None:
-                logging.info(' * skip permutation')
-                return None
+            cached_score = config.flatten_score[prefix]
+            assert prompt
 
             if cached_score:
                 logging.info(' * load score')
@@ -118,30 +117,42 @@ class RelationScorer:
             assert not no_inference, '"no_inference==True" but no cache found'
             logging.info(' * run scoring: {}'.format(scoring_method))
             if scoring_method == 'ppl':
-                return self.lm.get_perplexity(prompt, batch_size=batch_size)
+                full_score = self.lm.get_perplexity(prompt, batch_size=batch_size)
             elif scoring_method == 'embedding_similarity':
-                return self.lm.get_embedding_similarity(prompt, tokens_to_embed=relation, batch_size=batch_size)
+                full_score = self.lm.get_embedding_similarity(prompt, tokens_to_embed=relation, batch_size=batch_size)
             elif scoring_method == 'pmi':
                 score_list = []
                 for n, (i, k) in enumerate(list(permutations(range(4), 2))):
                     logging.info(' * PMI permutation: {}, {} ({}/12)'.format(i, k, n + 1))
+                    key = '{}-{}'.format(i, k)
+                    if config.pmi_logits[prefix] and key in config.pmi_logits[prefix].keys():
+                        _score = config.pmi_logits[prefix][key]
+                        continue
+
                     tokens_to_mask = list(map(lambda x: x[i], relation))
                     tokens_to_condition = list(map(lambda x: x[k], relation))
                     _score = self.lm.get_negative_pmi(prompt,
                                                       batch_size=batch_size,
                                                       tokens_to_mask=tokens_to_mask,
                                                       tokens_to_condition=tokens_to_condition)
-                    self.release_cache()
+                    config.cache_scores_pmi(key, _score, positive=positive)
                     score_list.append(_score)
-                return list(zip(*score_list))
+                full_score = list(zip(*score_list))
             else:
                 raise ValueError('unknown method: {}'.format(scoring_method))
+            config.cache_scores(full_score, positive=positive)
+            return full_score
 
         # run inference
-        score_pos = prediction(positive=True)
-        score_neg = prediction(positive=False)
+        score_pos = prediction()
+        config.cache_scores(score_pos)
 
-        config.cache_scores(flatten_score_positive=score_pos, flatten_score_negative=score_neg)
+        if permutation_negative:
+            score_neg = prediction(positive=False)
+            config.cache_scores(score_neg, positive=False)
+        else:
+            score_neg = None
+
         if skip_scoring_prediction:
             return
 

@@ -131,6 +131,7 @@ class RelationScorer:
                                                       batch_size=batch_size,
                                                       tokens_to_mask=tokens_to_mask,
                                                       tokens_to_condition=tokens_to_condition)
+                    self.release_cache()
                     score_list.append(_score)
                 return list(zip(*score_list))
             else:
@@ -148,8 +149,8 @@ class RelationScorer:
         if scoring_method == 'pmi':
 
             # we use same aggregation method for both positive/negative permutations
-            pmi_aggregation = scoring_method_config.pop('aggregation')
-            assert len(scoring_method_config) == 0, 'unknown config: {}'.format(scoring_method_config)
+            assert len(scoring_method_config) == 1, 'unknown config: {}'.format(scoring_method_config)
+            pmi_aggregation = scoring_method_config['aggregation']
             logging.info("PMI aggregator: {}".format(pmi_aggregation))
             aggregator = AGGREGATOR[pmi_aggregation]
             score_pos = list(map(lambda x: aggregator(x), score_pos))

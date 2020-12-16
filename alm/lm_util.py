@@ -415,9 +415,9 @@ class TransformersLM:
         # for pseudo likelihood aggregation
         return list(map(lambda x: math.exp(sum(nll[x[0]:x[1]]) / (x[1] - x[0])), partition))
 
-    #########################################
-    # Modules for embedding operation (WIP) #
-    #########################################
+    ###################################
+    # Modules for embedding operation #
+    ###################################
     def encode_plus_embedding(self, text: str, token_to_embed: List):
         """
 

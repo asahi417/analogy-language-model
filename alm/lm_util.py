@@ -102,7 +102,7 @@ class TransformersLM:
         self.model.to(self.device)
         logging.info('running on {} GPU'.format(n_gpu))
 
-    def find_position(self, str_to_mask, text, token: List = None):
+    def find_position(self, str_to_mask, text, token: List = None, minimum_length: int = 6):
         """ Find masking position in a token-space given a string target
 
         :param str_to_mask: a string to be masked
@@ -124,8 +124,13 @@ class TransformersLM:
         while i < len(token):
             i += 1
             decode = self.tokenizer.convert_tokens_to_string(token[:i])
-            if str_to_mask in decode or str_to_mask.lower() in decode:
+            tmp_decode = decode.lower().replace(' ', '')
+            tmp_str_to_mask = str_to_mask.lower().replace(' ', '')
+            if tmp_str_to_mask in tmp_decode:
                 break
+        if i - len(token_before) > minimum_length:
+            raise ValueError('find_position gets too long tokens:\n - source: `{}` \n - string: `{}`\n - found: `{}`'
+                             .format(text, str_to_mask, token[len(token_before):i]))
         return [len(token_before), i]
 
     def input_ids_to_labels(self, input_ids, label_position: List = None, label_id: List = None):

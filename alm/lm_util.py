@@ -275,15 +275,18 @@ class TransformersLM:
 
         logging.info('creating data loader')
         data_dk = []
+        data_flat = []
         # this can be parallelized, but due to deepcopy at DictKeeper, it may cause memory error in some machine
-        for x in tqdm(zip(batch_text, batch_token_to_mask, batch_token_to_mask_no_label)):
-            data_dk.append(self.encode_plus_mask(text=x[0], token_to_mask=x[1], token_to_mask_no_label=x[2]))
+        for x in tqdm(list(zip(batch_text, batch_token_to_mask, batch_token_to_mask_no_label))):
+            tmp_data_dk = self.encode_plus_mask(text=x[0], token_to_mask=x[1], token_to_mask_no_label=x[2])
+            data_dk.append(tmp_data_dk)
+            data_flat.append(tmp_data_dk.flat_values)
         # data_dk = list(map(
         #     lambda x: self.encode_plus_mask(text=x[0], token_to_mask=x[1], token_to_mask_no_label=x[2]),
         #     zip(batch_text, batch_token_to_mask, batch_token_to_mask_no_label)
         # ))
+        # data_flat = list(map(lambda x: x.flat_values, data_dk))
 
-        data_flat = list(map(lambda x: x.flat_values, data_dk))
         partition = get_partition(data_flat)
 
         data_loader = torch.utils.data.DataLoader(
@@ -398,13 +401,11 @@ class TransformersLM:
         :return: (`torch.utils.data.DataLoader` class, partition)
         """
         batch_size = len(batch_text) if batch_size is None else batch_size
-        # for x in tqdm(zip(batch_text, batch_token_to_mask, batch_token_to_mask_no_label)):
-        #     data_dk.append(self.encode_plus_mask(text=x[0], token_to_mask=x[1], token_to_mask_no_label=x[2]))
         logging.info('creating data loader')
-        # data = list(map(lambda x: self.encode_plus_perplexity(x), batch_text))
-        data = []
-        for x in tqdm(batch_text):
-            data.append(self.encode_plus_perplexity(x))
+        data = list(map(lambda x: self.encode_plus_perplexity(x), batch_text))
+        # data = []
+        # for x in tqdm(batch_text):
+        #     data.append(self.encode_plus_perplexity(x))
 
         partition = get_partition(data)
 

@@ -272,10 +272,17 @@ class TransformersLM:
             batch_token_to_mask_no_label = [None] * len(batch_text)
 
         assert len(batch_text) == len(batch_token_to_mask) == len(batch_token_to_mask_no_label)
-        data_dk = list(map(
-            lambda x: self.encode_plus_mask(text=x[0], token_to_mask=x[1], token_to_mask_no_label=x[2]),
-            zip(batch_text, batch_token_to_mask, batch_token_to_mask_no_label)
-        ))
+
+        # this can be parallelized, but due to deepcopy at DictKeeper, it may cause memory error in some machine
+        data_dk = []
+        for x in zip(batch_text, batch_token_to_mask, batch_token_to_mask_no_label):
+            data_dk.append(self.encode_plus_mask(text=x[0], token_to_mask=x[1], token_to_mask_no_label=x[2]))
+
+        # data_dk = list(map(
+        #     lambda x: self.encode_plus_mask(text=x[0], token_to_mask=x[1], token_to_mask_no_label=x[2]),
+        #     zip(batch_text, batch_token_to_mask, batch_token_to_mask_no_label)
+        # ))
+
         data_flat = list(map(lambda x: x.flat_values, data_dk))
         partition = get_partition(data_flat)
 

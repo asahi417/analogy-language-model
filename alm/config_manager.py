@@ -82,7 +82,7 @@ class ConfigManager:
                     self.pmi_logits[i] = {}
                     for _file in glob(os.path.join(self.cache_dir, 'pmi_{}_*.pkl'.format(i))):
                         if os.path.exists(_file):
-                            k = _file.split('pmi_{}_'.format(i))[-1].replace('.pkl')
+                            k = _file.split('pmi_{}_'.format(i))[-1].replace('.pkl', '')
                             with open(_file, "rb") as fp:  # Unpickling
                                 self.pmi_logits[i][k] = pickle.load(fp)
                             logging.info('load pmi_{} from {}'.format(i, _file))

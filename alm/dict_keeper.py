@@ -47,6 +47,7 @@ class DictKeeper:
     """ keep a nested dict structure and replace the value with flatten values, restoring original nest """
 
     def __init__(self, _dict: Dict, target_key: str = 'encode'):
+        print(_dict)
         self.original_dict = _dict
         self.target_key = target_key
         self.flat_values = flatten_dict(_dict, target_key=self.target_key)

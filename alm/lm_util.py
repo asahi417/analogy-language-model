@@ -210,6 +210,7 @@ class TransformersLM:
             token_list_tmp[s:e] = [self.tokenizer.mask_token] * (e - s)
 
         s, e = self.find_position(token_to_mask, text, token_list)
+        print(s, e, len(token_list_tmp))
         all_encode = self.encode_combinations(token_list_tmp, list(range(s, e)))
         return DictKeeper(all_encode, target_key='encode')
 

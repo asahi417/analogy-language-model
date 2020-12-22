@@ -64,6 +64,8 @@ class RelationScorer:
 
         :param path_to_data:
         :param scoring_method:
+        :param pmi_aggregation:
+        :param pmi_lambda:
         :param batch_size:
         :param template_types: a list of templates for prompting
         :param permutation_negative: if utilize negative permutation
@@ -119,6 +121,9 @@ class RelationScorer:
             logging.info(' * run scoring: {}'.format(scoring_method))
             if scoring_method == 'ppl':
                 full_score = self.lm.get_perplexity(prompt, batch_size=batch_size)
+            elif scoring_method == 'pmi-ppl':
+                
+                full_score = self.lm.get_perplexity(prompt, batch_size=batch_size)
             elif scoring_method == 'embedding_similarity':
                 full_score = self.lm.get_embedding_similarity(prompt, tokens_to_embed=relation, batch_size=batch_size)
             elif scoring_method == 'pmi':
@@ -139,7 +144,7 @@ class RelationScorer:
                                                       weight=pmi_lambda)
                     config.cache_scores_pmi(key, _score, positive=positive)
                     score_list.append(_score)
-                
+
                 full_score = list(zip(*score_list))
             else:
                 raise ValueError('unknown method: {}'.format(scoring_method))

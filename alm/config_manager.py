@@ -36,6 +36,7 @@ class ConfigManager:
         export_dir = os.path.join(export_dir, 'outputs')
         self.output_exist = False
         self.flatten_score = {'positive': None, 'negative': None}
+        self.flatten_score_mar = {'positive': None, 'negative': None}
         self.pmi_logits = {'positive': None, 'negative': None}
         if not os.path.exists(export_dir):
             self.export_dir = os.path.join(export_dir, get_random_string())
@@ -70,6 +71,13 @@ class ConfigManager:
                         self.flatten_score[i] = pickle.load(fp)
                     logging.info('load flatten_score_{} from {}'.format(i, _file))
 
+                # load stats for ppl_pmi
+                _file = os.path.join(self.cache_dir, 'flatten_score_mar_{}.pkl'.format(i))
+                if os.path.exists(_file):
+                    with open(_file, "rb") as fp:  # Unpickling
+                        self.flatten_score_mar[i] = pickle.load(fp)
+                    logging.info('load flatten_score_mar_{} from {}'.format(i, _file))
+
             # load intermediate score for PMI specific
             if self.config['scoring_method'] in ['pmi']:
                 for i in ['positive', 'negative']:
@@ -99,10 +107,11 @@ class ConfigManager:
         with open('{}/pmi_{}_{}.pkl'.format(self.cache_dir, prefix, logit_name), "wb") as fp:
             pickle.dump(pmi_logit, fp)
 
-    def cache_scores(self, flatten_score: List, positive: bool = True):
+    def cache_scores(self, flatten_score: List, positive: bool = True, marginalized: bool = False):
         """ cache scores """
         self.__cache_init()
         prefix = 'positive' if positive else 'negative'
+        prefix += '_mar' if marginalized else ''
         with open('{}/flatten_score_{}.pkl'.format(self.cache_dir, prefix), "wb") as fp:
             pickle.dump(flatten_score, fp)
 

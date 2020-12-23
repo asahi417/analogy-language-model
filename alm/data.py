@@ -18,12 +18,14 @@ def get_dataset(path_to_data: str):
 
 def get_dataset_prompt(path_to_data: str,
                        template_types: List = None,
-                       permutation_negative: bool = True):
+                       permutation_negative: bool = True,
+                       permutation_marginalize: bool = False):
     """ Get prompted SAT-type dataset
 
     :param path_to_data: path to a SAT-type dataset
     :param template_types: a list of templates for prompting, `TEMPLATES`
     :param permutation_negative: if utilize negative permutation
+    :param permutation_marginalize: for ppl_pmi marginal likelihood
     :return: a list of (answer: int, prompts: list, stem: list, choice: list)
     """
     if template_types:
@@ -66,7 +68,12 @@ def get_dataset_prompt(path_to_data: str,
             negative_prompt = list(map(lambda x: (x, (a, b, c, d)), negative_prompt))
             return positive_prompt, negative_prompt
 
-        prompts = list(map(lambda x: single_prompt(*x), dictionary['choice']))
+        choice = dictionary['choice']
+        if permutation_marginalize:
+            marginal_choice = list(chain(*[[[i[0], m[1]] for m in choice] for i in choice]))
+            prompts = list(map(lambda x: single_prompt(*x), marginal_choice))
+        else:
+            prompts = list(map(lambda x: single_prompt(*x), dictionary['choice']))
         return dictionary['answer'], prompts
 
     data = list(map(lambda x: single_entry(x), get_dataset(path_to_data)))
@@ -80,25 +87,51 @@ class AnalogyData:
     def __init__(self,
                  path_to_data: str,
                  template_types: List = None,
-                 permutation_negative: bool = True):
+                 permutation_negative: bool = True,
+                 permutation_marginalize: bool = True):
 
         self.answer, self.list_nested_sentence = get_dataset_prompt(
             path_to_data=path_to_data,
             template_types=template_types,
-            permutation_negative=permutation_negative)
+            permutation_negative=permutation_negative,
+            permutation_marginalize=permutation_marginalize)
         self.flatten_prompt_pos, self.structure_id_pos = self.get_structure(self.list_nested_sentence)
+        # if permutation_marginalize:
+        #     self.flatten_prompt_pos_mar, self.structure_id_pos_mar = self.get_structure(self.list_nested_sentence_mar)
+        # else:
+        #     self.flatten_prompt_pos_mar = self.structure_id_pos_mar = None
         if permutation_negative:
             self.flatten_prompt_neg, self.structure_id_neg = self.get_structure(self.list_nested_sentence, False)
+            # if permutation_marginalize:
+            #     self.flatten_prompt_neg, self.structure_id_neg = self.get_structure(self.list_nested_sentence_mar, False)
+            # else:
+            #     self.flatten_prompt_neg_mar = self.structure_id_neg_mar = None
         else:
             self.flatten_prompt_neg = self.structure_id_neg = None
 
-    def get_prompt(self, return_relation_pairs: bool = True, positive: bool = True):
+    def get_prompt(self,
+                   return_relation_pairs: bool = True,
+                   positive: bool = True,
+                   marginalized: bool = False):
         if positive:
+            # flatten_prompt_mar = self.flatten_prompt_pos_mar
             prompt = self.flatten_prompt_pos
         else:
-            if self.flatten_prompt_neg is None:
-                return None, None
+            # flatten_prompt_mar = self.flatten_prompt_neg_mar
             prompt = self.flatten_prompt_neg
+        # if marginalized:
+        #     prompt = flatten_prompt_mar
+        if not prompt:
+            return None, None
+        #
+        # if positive:
+        #     if marginalized and self.list_nested_sentence_pos:
+        #
+        #     prompt = self.flatten_prompt_pos
+        # else:
+        #     if self.flatten_prompt_neg is None:
+        #         return None, None
+        #     prompt = self.flatten_prompt_neg
         prompt_list = list(list(zip(*prompt))[0])
         if return_relation_pairs:
             relation_list = list(list(zip(*prompt))[1])

@@ -1,7 +1,8 @@
 import logging
-from typing import List, Dict
+from typing import List
 from time import time
 from itertools import permutations
+from math import log
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
 import torch
@@ -101,7 +102,10 @@ class RelationScorer:
         # fetch data
         logging.info('fetch data and templating: {}'.format(path_to_data))
         # get data with all permutation regardless of the configuration
-        data_instance = AnalogyData(path_to_data, template_types, permutation_negative=permutation_negative)
+        permutation_marginalize = scoring_method in ['ppl_pmi']
+        data_instance = AnalogyData(path_to_data, template_types,
+                                    permutation_negative=permutation_negative,
+                                    permutation_marginalize=permutation_marginalize)
 
         # create batch
         logging.info('creating batch (data size: {})'.format(len(data_instance.flatten_prompt_pos)))
@@ -118,12 +122,20 @@ class RelationScorer:
                 return cached_score
 
             assert not no_inference, '"no_inference==True" but no cache found'
-            logging.info(' * run scoring: {}'.format(scoring_method))
-            if scoring_method == 'ppl':
+            logging.info('# run scoring: {}'.format(scoring_method))
+            if scoring_method in ['ppl_pmi', 'pmi']:
+                logging.info(' * ppl computation')
                 full_score = self.lm.get_perplexity(prompt, batch_size=batch_size)
-            elif scoring_method == 'pmi-ppl':
-                
-                full_score = self.lm.get_perplexity(prompt, batch_size=batch_size)
+            # elif
+            #     if config.flatten_score[positive]:
+            #         logging.info(' * load marginal ppl pattern')
+            #         full_score = config.flatten_score_mar[positive]
+            #     else:
+            #         logging.info(' * compute marginal ppl pattern')
+            #         prompt_mar, relation_mar = data_instance.get_prompt(positive=positive, marginalized=True)
+            #         full_score_mar = self.lm.get_perplexity(prompt_mar, batch_size=batch_size)
+            #         config.cache_scores(full_score_mar, positive=positive, marginalized=True)
+
             elif scoring_method == 'embedding_similarity':
                 full_score = self.lm.get_embedding_similarity(prompt, tokens_to_embed=relation, batch_size=batch_size)
             elif scoring_method == 'pmi':
@@ -164,7 +176,7 @@ class RelationScorer:
         if skip_scoring_prediction:
             return
 
-        # scoring method depending post aggregation
+        # negative pmi score aggregation
         if scoring_method == 'pmi':
             assert pmi_aggregation, 'undefined pmi aggregation'
             # we use same aggregation method for both positive/negative permutations
@@ -179,10 +191,54 @@ class RelationScorer:
         # restore the nested structure
         logging.info('restore batch structure')
         score = data_instance.insert_score(score_pos, score_neg)
-        # score = restore_structure(list_nested_sentence, score_pos, batch_id_pos, score_neg, batch_id_neg)
-        logit_pn = list(map(lambda o: list(map(lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])), o)), score))
+
+        # ppl_pmi aggregation
+        if scoring_method == 'ppl_pmi':
+
+            def compute_pmi(ppl_scores):
+                opt_length = len(ppl_scores) ** 0.5
+                assert opt_length.is_integer(), 'something wrong'
+                opt_length = int(opt_length)
+
+                if all(s == 0 for s in ppl_scores):
+                    return [0] * opt_length
+
+                # conditional negative log likelihood (fixed head and tail tokens)
+                ppl_in_option = list(map(lambda x: ppl_scores[opt_length * x + x], range(opt_length)))
+                negative_log_likelihood_cond = list(map(lambda x: log(x / sum(ppl_in_option)), ppl_in_option))
+
+                # marginal negative log likelihood (fixed tail token)
+                ppl_out_option = list(map(
+                    lambda x: sum(map(lambda y: ppl_scores[x + opt_length * y], range(opt_length))),
+                    range(opt_length)))
+                negative_log_likelihood_mar = list(map(lambda x: log(x / sum(ppl_scores)), ppl_out_option))
+
+                # negative pmi approx by perplexity difference
+                neg_pmi = list(map(
+                    lambda x: x[0] - x[1], zip(negative_log_likelihood_cond, negative_log_likelihood_mar)))
+                return neg_pmi
+
+            # loop over all positive permutations
+            pmi = list(map(lambda o: (
+                list(map(lambda x: compute_pmi(list(map(lambda s: s[0][x], o))), range(8))),
+                list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))), range(8)))
+            ), score))
+
+            logit_pn = list(map(
+                lambda s: (
+                    [aggregator_pos(o) for o in list(zip(*s[0]))],
+                    [aggregator_neg(o) for o in list(zip(*s[1]))]
+                ),
+                pmi))
+        else:
+            logit_pn = list(map(
+                lambda o: list(map(
+                    lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])),
+                    o)),
+                score))
         logit = list(map(lambda o: list(map(lambda s: s[1] - s[0], o)), logit_pn))
         pred = list(map(lambda x: x.index(max(x)), logit))
+
         # compute accuracy
         assert len(pred) == len(data_instance.answer)
         accuracy = sum(map(lambda x: int(x[0] == x[1]), zip(pred, data_instance.answer))) / len(data_instance.answer)

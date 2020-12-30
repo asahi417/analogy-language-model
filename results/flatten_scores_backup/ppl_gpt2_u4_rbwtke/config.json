@@ -1,1 +1,0 @@
-{"model": "gpt2-large", "max_length": 32, "path_to_data": "./data/u4.jsonl", "scoring_method": "ppl", "template_types": ["she-to-as"]}

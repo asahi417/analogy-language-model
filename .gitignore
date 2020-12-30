@@ -1,6 +1,5 @@
 cache
-results/flatten_scores
-results/outputs
+results
 helper
 results_bu
 tmp.py

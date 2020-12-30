@@ -53,6 +53,7 @@ class RelationScorer:
                      scoring_method: str = 'ppl',
                      pmi_aggregation: str = None,
                      pmi_lambda: float = None,
+                     ppl_pmi_lambda: float = 1.0,
                      template_types: List = None,
                      permutation_negative: bool = False,
                      aggregation_positive: str = 'mean',
@@ -67,6 +68,7 @@ class RelationScorer:
         :param scoring_method:
         :param pmi_aggregation:
         :param pmi_lambda:
+        :param ppl_pmi_lambda:
         :param batch_size:
         :param template_types: a list of templates for prompting
         :param permutation_negative: if utilize negative permutation
@@ -93,7 +95,8 @@ class RelationScorer:
             pmi_lambda=pmi_lambda,
             model=self.model_name, max_length=self.lm.max_length, path_to_data=path_to_data,
             scoring_method=scoring_method, template_types=template_types, permutation_negative=permutation_negative,
-            aggregation_positive=aggregation_positive, aggregation_negative=aggregation_negative
+            aggregation_positive=aggregation_positive, aggregation_negative=aggregation_negative,
+            ppl_pmi_lambda=ppl_pmi_lambda
         )
         if config.output_exist and not overwrite_output:
             logging.info('skip as the output is already produced: {}'.format(config.export_dir))
@@ -126,16 +129,6 @@ class RelationScorer:
             if scoring_method in ['ppl_pmi', 'pmi']:
                 logging.info(' * ppl computation')
                 full_score = self.lm.get_perplexity(prompt, batch_size=batch_size)
-            # elif
-            #     if config.flatten_score[positive]:
-            #         logging.info(' * load marginal ppl pattern')
-            #         full_score = config.flatten_score_mar[positive]
-            #     else:
-            #         logging.info(' * compute marginal ppl pattern')
-            #         prompt_mar, relation_mar = data_instance.get_prompt(positive=positive, marginalized=True)
-            #         full_score_mar = self.lm.get_perplexity(prompt_mar, batch_size=batch_size)
-            #         config.cache_scores(full_score_mar, positive=positive, marginalized=True)
-
             elif scoring_method == 'embedding_similarity':
                 full_score = self.lm.get_embedding_similarity(prompt, tokens_to_embed=relation, batch_size=batch_size)
             elif scoring_method == 'pmi':
@@ -211,11 +204,11 @@ class RelationScorer:
                 ppl_out_option = list(map(
                     lambda x: sum(map(lambda y: ppl_scores[x + opt_length * y], range(opt_length))),
                     range(opt_length)))
-                negative_log_likelihood_mar = list(map(lambda x: log(x / sum(ppl_scores)), ppl_out_option))
+                negative_log_likelihood_mar = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
 
-                # negative pmi approx by perplexity difference
+                # negative pmi approx by perplexity difference: higher is better
                 neg_pmi = list(map(
-                    lambda x: x[0] - x[1], zip(negative_log_likelihood_cond, negative_log_likelihood_mar)))
+                    lambda x: x[0] - x[1] * ppl_pmi_lambda, zip(negative_log_likelihood_cond, negative_log_likelihood_mar)))
                 return neg_pmi
 
             # loop over all positive permutations
@@ -226,10 +219,13 @@ class RelationScorer:
 
             logit_pn = list(map(
                 lambda s: (
-                    [aggregator_pos(o) for o in list(zip(*s[0]))],
-                    [aggregator_neg(o) for o in list(zip(*s[1]))]
+                    list(zip(
+                        list(map(lambda o: aggregator_pos(o), list(zip(*s[0])))),
+                        list(map(lambda o: aggregator_neg(o), list(zip(*s[1]))))
+                    ))
                 ),
                 pmi))
+
         else:
             logit_pn = list(map(
                 lambda o: list(map(

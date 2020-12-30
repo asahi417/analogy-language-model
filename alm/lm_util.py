@@ -253,7 +253,10 @@ class TransformersLM:
         for _p in position:
             label_id.append(self.tokenizer.convert_tokens_to_ids(tmp_token_list[_p]))
             tmp_token_list[_p] = self.tokenizer.mask_token
-        _encode = self.tokenizer.encode_plus(tmp_token_list, **param)
+        tmp_string = self.tokenizer.convert_tokens_to_string(tmp_token_list)
+        # print(tmp_token_list, param, tmp_string)
+        # _encode = self.tokenizer.encode_plus(tmp_token_list, **param)
+        _encode = self.tokenizer.encode_plus(tmp_string, **param)
         _encode['labels'] = self.input_ids_to_labels(
             _encode['input_ids'], label_position=position, label_id=label_id)
         return _encode
@@ -389,7 +392,9 @@ class TransformersLM:
                 _token_list = token_list.copy()  # can not be encode outputs because of prefix
                 masked_token_id = self.tokenizer.convert_tokens_to_ids(_token_list[mask_position])
                 _token_list[mask_position] = self.tokenizer.mask_token
-                _encode = self.tokenizer.encode_plus(_token_list, **param)
+                tmp_string = self.tokenizer.convert_tokens_to_string(_token_list)
+                # _encode = self.tokenizer.encode_plus(_token_list, **param)
+                _encode = self.tokenizer.encode_plus(tmp_string, **param)
                 _encode['labels'] = self.input_ids_to_labels(
                     _encode['input_ids'],
                     label_position=[mask_position + len(self.sp_token_prefix)],

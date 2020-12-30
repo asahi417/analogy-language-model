@@ -52,7 +52,7 @@ class RelationScorer:
                      batch_size: int = 4,
                      scoring_method: str = 'ppl',
                      pmi_aggregation: str = None,
-                     pmi_lambda: float = None,
+                     pmi_lambda: float = 1.0,
                      ppl_pmi_lambda: float = 1.0,
                      template_types: List = None,
                      permutation_negative: bool = False,
@@ -179,7 +179,7 @@ class RelationScorer:
             if score_neg:
                 score_neg = list(map(lambda x: aggregator(x), score_neg))
         else:
-            assert pmi_lambda is None and pmi_aggregation is None, 'pmi_lambda and pmi_aggregation should be None'
+            assert pmi_lambda == 1.0 and pmi_aggregation, 'pmi_lambda/pmi_aggregation should be default'
 
         # restore the nested structure
         logging.info('restore batch structure')

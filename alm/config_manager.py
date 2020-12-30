@@ -55,7 +55,7 @@ class ConfigManager:
 
         # load model prediction if the model config is at least same, enabling to skip model inference in case
         cond = ['model', 'max_length', 'path_to_data', 'template_types', 'scoring_method']
-        if self.config['pmi_lambda']:
+        if self.config['scoring_method'] == 'pmi':
             cond.append('pmi_lambda')
         self.config_cache = {k: v for k, v in self.config.items() if k in cond}
         ex_configs = {i: safe_open(i) for i in glob('{}/*/config.json'.format(cache_dir))}

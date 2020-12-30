@@ -1,6 +1,4 @@
 cache
-results
-helper
-results_bu
+results*
 tmp.py
 summary.csv

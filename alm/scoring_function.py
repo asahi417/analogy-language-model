@@ -126,7 +126,7 @@ class RelationScorer:
 
             assert not no_inference, '"no_inference==True" but no cache found'
             logging.info('# run scoring: {}'.format(scoring_method))
-            if scoring_method in ['ppl_pmi', 'pmi']:
+            if scoring_method in ['ppl_pmi', 'ppl']:
                 logging.info(' * ppl computation')
                 full_score = self.lm.get_perplexity(prompt, batch_size=batch_size)
             elif scoring_method == 'embedding_similarity':

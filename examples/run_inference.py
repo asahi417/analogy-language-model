@@ -4,6 +4,7 @@ import alm
 for i in range(-10, 10):
     scorer = alm.RelationScorer(model='roberta-large', max_length=32)
     scorer.analogy_test(
+        scoring_method='pmi',
         path_to_data='./data/sat_package_v3.jsonl',
         template_types=['rel-same'],
         batch_size=512,

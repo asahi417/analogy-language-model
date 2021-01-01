@@ -346,6 +346,7 @@ class TransformersLM:
             texts,
             batch_token_to_mask=tokens_to_mask,
             batch_size=batch_size)
+        logging.info('inference')
         score = self.__get_nll(data_loader, reduce=False)
         conditional_nll = list(map(
             lambda x: decode_score(x[0].restore_structure(score[x[1][0]:x[1][1]], insert_key='score')),
@@ -437,6 +438,7 @@ class TransformersLM:
             self.load_model()
 
         data_loader, partition = self.batch_encode_plus_perplexity(texts, batch_size=batch_size)
+        logging.info('inference')
         nll = self.__get_nll(data_loader)
         # for pseudo likelihood aggregation
         return list(map(lambda x: math.exp(sum(nll[x[0]:x[1]]) / (x[1] - x[0])), partition))
@@ -518,6 +520,7 @@ class TransformersLM:
 
         embeddings = []
 
+        logging.info('inference')
         with torch.no_grad():
             for encode in tqdm(data_loader):
                 position_to_embed = encode.pop('position_to_embed').cpu().tolist()

@@ -187,6 +187,7 @@ class RelationScorer:
 
         # ppl_pmi aggregation
         if scoring_method == 'ppl_pmi':
+            # TODO: validate on multiple templates 
 
             def compute_pmi(ppl_scores):
                 opt_length = len(ppl_scores) ** 0.5

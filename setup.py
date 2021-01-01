@@ -14,7 +14,7 @@ setup(
     long_description=readme,
     author='Asahi Ushio',
     author_email='asahi1992ushio@gmail.com',
-    packages=find_packages(exclude=('random', 'dataset')),
+    packages=find_packages(exclude=('helper', 'dataset')),
     include_package_data=True,
     test_suite='tests',
     install_requires=[

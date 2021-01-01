@@ -5,19 +5,22 @@ from glob import glob
 import pandas as pd
 
 aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
+# aggregation_positives = ['p_2']
 export_dir = './results_ppl_pmi_tuning'
 # get accuracy
 scorer = alm.RelationScorer(model='roberta-large', max_length=32)
-for i in range(-20, 20):
+for n, i in enumerate(range(-50, 50)):
+    print('#### {}/{} ####'.format(n, 100))
+    i = i * 0.01
     for aggregation_positive in aggregation_positives:
         scorer.analogy_test(
             scoring_method='ppl_pmi',
             path_to_data='./data/sat_package_v3.jsonl',
             template_types=['as-what-same'],
             aggregation_positive=aggregation_positive,
-            ppl_pmi_lambda=i*0.1,
+            ppl_pmi_lambda=i,
             no_inference=True,
-            overwrite_output=True,
+            overwrite_output=False,
             export_dir=export_dir
         )
 

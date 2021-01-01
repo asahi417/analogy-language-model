@@ -96,16 +96,8 @@ class AnalogyData:
             permutation_negative=permutation_negative,
             permutation_marginalize=permutation_marginalize)
         self.flatten_prompt_pos, self.structure_id_pos = self.get_structure(self.list_nested_sentence)
-        # if permutation_marginalize:
-        #     self.flatten_prompt_pos_mar, self.structure_id_pos_mar = self.get_structure(self.list_nested_sentence_mar)
-        # else:
-        #     self.flatten_prompt_pos_mar = self.structure_id_pos_mar = None
         if permutation_negative:
             self.flatten_prompt_neg, self.structure_id_neg = self.get_structure(self.list_nested_sentence, False)
-            # if permutation_marginalize:
-            #     self.flatten_prompt_neg, self.structure_id_neg = self.get_structure(self.list_nested_sentence_mar, False)
-            # else:
-            #     self.flatten_prompt_neg_mar = self.structure_id_neg_mar = None
         else:
             self.flatten_prompt_neg = self.structure_id_neg = None
 
@@ -114,24 +106,11 @@ class AnalogyData:
                    positive: bool = True,
                    marginalized: bool = False):
         if positive:
-            # flatten_prompt_mar = self.flatten_prompt_pos_mar
             prompt = self.flatten_prompt_pos
         else:
-            # flatten_prompt_mar = self.flatten_prompt_neg_mar
             prompt = self.flatten_prompt_neg
-        # if marginalized:
-        #     prompt = flatten_prompt_mar
         if not prompt:
             return None, None
-        #
-        # if positive:
-        #     if marginalized and self.list_nested_sentence_pos:
-        #
-        #     prompt = self.flatten_prompt_pos
-        # else:
-        #     if self.flatten_prompt_neg is None:
-        #         return None, None
-        #     prompt = self.flatten_prompt_neg
         prompt_list = list(list(zip(*prompt))[0])
         if return_relation_pairs:
             relation_list = list(list(zip(*prompt))[1])

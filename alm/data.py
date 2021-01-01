@@ -103,8 +103,7 @@ class AnalogyData:
 
     def get_prompt(self,
                    return_relation_pairs: bool = True,
-                   positive: bool = True,
-                   marginalized: bool = False):
+                   positive: bool = True):
         if positive:
             prompt = self.flatten_prompt_pos
         else:

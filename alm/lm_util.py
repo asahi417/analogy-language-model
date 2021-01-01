@@ -412,10 +412,10 @@ class TransformersLM:
         """
         batch_size = len(batch_text) if batch_size is None else batch_size
         logging.info('creating data loader')
-        data = list(map(lambda x: self.encode_plus_perplexity(x), batch_text))
-        # data = []
-        # for x in tqdm(batch_text):
-        #     data.append(self.encode_plus_perplexity(x))
+        # data = list(map(lambda x: self.encode_plus_perplexity(x), batch_text))
+        data = []
+        for x in tqdm(batch_text):
+            data.append(self.encode_plus_perplexity(x))
 
         partition = get_partition(data)
 

@@ -7,7 +7,10 @@ df = pd.read_csv('./{}/summary.csv'.format(export_dir), index_col=0)
 sns.set_theme(style="darkgrid")
 
 for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
-    tmp_df = df[df[i] == 1]
+    if i == 'ppl_pmi_lambda':
+        tmp_df = df[df['ppl_pmi_alpha'] == 1]
+    else:
+        tmp_df = df[df['ppl_pmi_lambda'] == 1]
 
     # Line plot with 95% interval
     sns_plot = sns.lineplot(x=i, y="accuracy", data=tmp_df)

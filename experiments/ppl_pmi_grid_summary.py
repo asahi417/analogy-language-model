@@ -8,7 +8,8 @@ aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4'
 export_dir = './results_ppl_pmi_tuning'
 # get accuracy
 scorer = alm.RelationScorer(model='roberta-large', max_length=32)
-for i in [-1.5, -1, 0.5, 0, 0.5, 1, 1.5]:
+# for i in [-1.5, -1, 0.5, 0, 0.5, 1, 1.5]:
+for n, i in enumerate(range(-50, 50)):
 
     list(map(lambda x: scorer.analogy_test(
         scoring_method='ppl_pmi',

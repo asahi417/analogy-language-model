@@ -21,6 +21,8 @@ for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
     fig.savefig('{}/plot_mean.{}.png'.format(export_dir, i))
     fig.clf()
 
+for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
+
     # Line plot with individual result
     df['aggregation_positive'] = ['P'+i.replace('p_', '') if 'p_' in i else i
                                   for i in df['aggregation_positive'].values.tolist()]
@@ -32,7 +34,7 @@ for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
     plt.tight_layout()
     fig = sns_plot.get_figure()
     fig.savefig('{}/plot.{}.png'.format(export_dir, i))
-    fig.clf()
+    fig.clear()
 
 
 result = df.pivot(index='ppl_pmi_lambda', columns='ppl_pmi_alpha', values='accuracy')

@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 export_dir = './experiments/ppl_pmi_grid_close/results'
 df = pd.read_csv('{}/summary.csv'.format(export_dir), index_col=0)
 sns.set_theme(style="darkgrid")
+df['aggregation_positive'] = ['P'+i.replace('p_', '') if 'p_' in i else i
+                              for i in df['aggregation_positive'].values.tolist()]
 
 
 fig = plt.figure()

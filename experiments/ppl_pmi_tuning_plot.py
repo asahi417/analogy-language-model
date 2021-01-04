@@ -17,6 +17,8 @@ for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
     print(tmp_df)
 
     # Line plot with 95% interval
+    fig = plt.figure()
+    fig.clear()
     sns_plot = sns.lineplot(x=i, y="accuracy", data=tmp_df)
     sns_plot.set_xlabel(n, fontsize=15)
     sns_plot.set_ylabel("Accuracy", fontsize=15)
@@ -26,6 +28,8 @@ for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
     fig.clear()
 
     # Line plot with individual result
+    fig = plt.figure()
+    fig.clear()
     sns_plot = sns.lineplot(x=i, y="accuracy", data=tmp_df, hue='aggregation_positive')
     sns_plot.set_xlabel(n, fontsize=15)
     sns_plot.set_ylabel("Accuracy", fontsize=15)

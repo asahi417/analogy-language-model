@@ -10,6 +10,7 @@ export_dir = './results_ppl_pmi_tuning'
 scorer = alm.RelationScorer(model='roberta-large', max_length=32)
 for i in [-1.5, -1, 0.5, 0, 0.5, 1, 1.5]:
     for _i in [-1.5, -1, 0.5, 0, 0.5, 1, 1.5]:
+        print(i, _i)
 
         list(map(lambda x: scorer.analogy_test(
             scoring_method='ppl_pmi',
@@ -22,16 +23,6 @@ for i in [-1.5, -1, 0.5, 0, 0.5, 1, 1.5]:
             overwrite_output=False,
             export_dir=export_dir
             ),  aggregation_positives))
-        # list(map(lambda x: scorer.analogy_test(
-        #     scoring_method='ppl_pmi',
-        #     path_to_data='./data/sat_package_v3.jsonl',
-        #     template_types=['as-what-same'],
-        #     aggregation_positive=x,
-        #     ppl_pmi_alpha=i,
-        #     no_inference=True,
-        #     overwrite_output=False,
-        #     export_dir=export_dir
-        # ), aggregation_positives))
 
 # export as a csv
 index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive', 'ppl_pmi_lambda', 'ppl_pmi_alpha']

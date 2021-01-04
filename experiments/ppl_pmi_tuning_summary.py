@@ -4,8 +4,8 @@ import json
 from glob import glob
 import pandas as pd
 
-# aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
-aggregation_positives = ['p_2']
+aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
+# aggregation_positives = ['p_2']
 export_dir = './results_ppl_pmi_tuning'
 # get accuracy
 scorer = alm.RelationScorer(model='roberta-large', max_length=32)
@@ -24,7 +24,7 @@ for i in [-1.5, -1, -0.5, 0, 0.5, 1, 1.5]:
             overwrite_output=False,
             export_dir=export_dir
             ),  aggregation_positives))
-    
+
 # export as a csv
 index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive', 'ppl_pmi_lambda', 'ppl_pmi_alpha']
 df = pd.DataFrame(index=index + ['accuracy'])

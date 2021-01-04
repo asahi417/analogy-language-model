@@ -44,7 +44,7 @@ for i in list(set(list(df['aggregation_positive'].values))):
     print(i)
 
     tmp = df[df['aggregation_positive'] == i]
-    result = df.pivot(index='ppl_pmi_lambda', columns='ppl_pmi_alpha', values='accuracy')
+    result = tmp.pivot(index='ppl_pmi_lambda', columns='ppl_pmi_alpha', values='accuracy')
     sns_plot = sns.heatmap(result, annot=True, fmt="g", cmap='viridis')
     sns_plot.set_xlabel("Lambda", fontsize=15)
     sns_plot.set_ylabel("Alpha", fontsize=15)

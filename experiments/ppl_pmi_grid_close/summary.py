@@ -10,6 +10,7 @@ export_dir = './experiments/ppl_pmi_grid/results'
 scorer = alm.RelationScorer(model='roberta-large', max_length=32)
 for lam in map(lambda x: x/10, range(10, 20)):
     for alpha in map(lambda x: x / 10, range(-10, 0)):
+        print(lam, alpha)
 
         list(map(lambda x: scorer.analogy_test(
             scoring_method='ppl_pmi',

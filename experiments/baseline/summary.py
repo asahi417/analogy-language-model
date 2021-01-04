@@ -10,7 +10,7 @@ aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4'
 all_templates = [['is-to-what'], ['is-to-as'], ['rel-same'], ['what-is-to'], ['she-to-as'], ['as-what-same']]
 data = ['./data/sat_package_v3.jsonl', './data/u2.jsonl', './data/u4.jsonl']
 lm = [('roberta-large', 32, 512), ('gpt2-xl', 32, 512)]
-export_dir = './results'
+export_dir = './experiments/baseline/results'
 
 for _model, _max_length, _batch in lm:
     scorer = alm.RelationScorer(model=_model, max_length=_max_length)

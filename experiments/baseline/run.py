@@ -3,7 +3,7 @@ import alm
 all_templates = [['is-to-what'], ['is-to-as'], ['rel-same'], ['what-is-to'], ['she-to-as'], ['as-what-same']]
 data = ['./data/sat_package_v3.jsonl', './data/u2.jsonl', './data/u4.jsonl']
 lm = [('roberta-large', 32, 512), ('gpt2-xl', 32, 512)]
-export_dir = './result'
+export_dir = './experiments/baseline/results'
 
 for _model, _max_length, _batch in lm:
     scorer = alm.RelationScorer(model=_model, max_length=_max_length)

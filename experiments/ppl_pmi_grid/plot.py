@@ -24,6 +24,7 @@ for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
     sns_plot.set_ylabel("Accuracy", fontsize=15)
     sns_plot.tick_params(labelsize=10)
     fig = sns_plot.get_figure()
+    plt.tight_layout()
     fig.savefig('{}/plot.mean.{}.png'.format(export_dir, i))
     fig.clear()
 
@@ -35,8 +36,8 @@ for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
     sns_plot.set_ylabel("Accuracy", fontsize=15)
     sns_plot.tick_params(labelsize=10)
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-    plt.tight_layout()
     fig = sns_plot.get_figure()
+    plt.tight_layout()
     fig.savefig('{}/plot.{}.png'.format(export_dir, i))
     fig.clear()
 

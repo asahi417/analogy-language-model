@@ -26,7 +26,6 @@ for _model, _max_length, _batch in lm:
                         batch_size=_batch,
                         export_dir=export_dir,
                         permutation_negative=False,
-                        skip_scoring_prediction=True,
                         no_inference=True,
                         overwrite_output=True,
                         aggregation_positive=aggregation_positive,

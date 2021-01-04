@@ -107,11 +107,10 @@ class ConfigManager:
         with open('{}/pmi_{}_{}.pkl'.format(self.cache_dir, prefix, logit_name), "wb") as fp:
             pickle.dump(pmi_logit, fp)
 
-    def cache_scores(self, flatten_score: List, positive: bool = True, marginalized: bool = False):
+    def cache_scores(self, flatten_score: List, positive: bool = True):
         """ cache scores """
         self.__cache_init()
         prefix = 'positive' if positive else 'negative'
-        prefix += '_mar' if marginalized else ''
         with open('{}/flatten_score_{}.pkl'.format(self.cache_dir, prefix), "wb") as fp:
             pickle.dump(flatten_score, fp)
 

@@ -54,6 +54,7 @@ class RelationScorer:
                      pmi_aggregation: str = None,
                      pmi_lambda: float = 1.0,
                      ppl_pmi_lambda: float = 1.0,
+                     ppl_pmi_alpha: float = 1.0,
                      template_types: List = None,
                      permutation_negative: bool = False,
                      aggregation_positive: str = 'mean',
@@ -96,7 +97,7 @@ class RelationScorer:
             model=self.model_name, max_length=self.lm.max_length, path_to_data=path_to_data,
             scoring_method=scoring_method, template_types=template_types, permutation_negative=permutation_negative,
             aggregation_positive=aggregation_positive, aggregation_negative=aggregation_negative,
-            ppl_pmi_lambda=ppl_pmi_lambda
+            ppl_pmi_lambda=ppl_pmi_lambda, ppl_pmi_alpha=ppl_pmi_alpha
         )
         if config.output_exist and not overwrite_output:
             logging.info('skip as the output is already produced: {}'.format(config.export_dir))
@@ -187,7 +188,7 @@ class RelationScorer:
 
         # ppl_pmi aggregation
         if scoring_method == 'ppl_pmi':
-            # TODO: validate on multiple templates 
+            # TODO: validate on multiple templates
 
             def compute_pmi(ppl_scores):
                 opt_length = len(ppl_scores) ** 0.5
@@ -208,8 +209,11 @@ class RelationScorer:
                 negative_log_likelihood_mar = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
 
                 # negative pmi approx by perplexity difference: higher is better
+                # neg_pmi = list(map(
+                #     lambda x: x[0] - x[1] * ppl_pmi_lambda, zip(negative_log_likelihood_cond, negative_log_likelihood_mar)))
                 neg_pmi = list(map(
-                    lambda x: x[0] - x[1] * ppl_pmi_lambda, zip(negative_log_likelihood_cond, negative_log_likelihood_mar)))
+                    lambda x: x[0] * ppl_pmi_lambda - x[1] * ppl_pmi_alpha,
+                    zip(negative_log_likelihood_cond, negative_log_likelihood_mar)))
                 return neg_pmi
 
             # loop over all positive permutations

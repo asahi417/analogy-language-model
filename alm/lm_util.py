@@ -310,6 +310,7 @@ class TransformersLM:
                          batch_size: int = None,
                          weight: float = None):
         """ Negative Point-wise Mutual Information (PMI)
+        negative PMI(t|c) = - PMI(t|c) = - (w * sum[NLL(t)] - sum[NLL(t|c=mask])])
         negative PMI(t|c) = w * sum[NLL(t)] - sum[NLL(t|c=mask])]
         - NLL(t): negative log likelihood of t
         - t: objective (sub) tokens

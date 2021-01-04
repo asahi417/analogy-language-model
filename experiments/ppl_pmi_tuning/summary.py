@@ -5,14 +5,11 @@ from glob import glob
 import pandas as pd
 
 aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
-# aggregation_positives = ['p_2']
-export_dir = './results_ppl_pmi_tuning'
+export_dir = './experiments/ppl_pmi_tuning/results'
 # get accuracy
 scorer = alm.RelationScorer(model='roberta-large', max_length=32)
-for i in [-1.5, -1, -0.5, 0, 0.5, 1, 1.5]:
-    for _i in [-1.5, -1, -0.5, 0, 0.5, 1, 1.5]:
-        print(i, _i)
-
+for i in [-2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2.0]:
+    for _i in [-2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2.0]:
         list(map(lambda x: scorer.analogy_test(
             scoring_method='ppl_pmi',
             path_to_data='./data/sat_package_v3.jsonl',

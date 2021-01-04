@@ -6,10 +6,10 @@ export_dir = './results_ppl_pmi_tuning'
 df = pd.read_csv('./{}/summary.csv'.format(export_dir), index_col=0)
 sns.set_theme(style="darkgrid")
 
-for i in ['ppl_pmi_lambda', 'ppl_pmi_alpha']:
+for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
     # Line plot with 95% interval
     sns_plot = sns.lineplot(x=i, y="accuracy", data=df)
-    sns_plot.set_xlabel("Lambda", fontsize=15)
+    sns_plot.set_xlabel(n, fontsize=15)
     sns_plot.set_ylabel("Accuracy", fontsize=15)
     sns_plot.tick_params(labelsize=10)
     fig = sns_plot.get_figure()
@@ -20,7 +20,7 @@ for i in ['ppl_pmi_lambda', 'ppl_pmi_alpha']:
     df['aggregation_positive'] = ['P'+i.replace('p_', '') if 'p_' in i else i
                                   for i in df['aggregation_positive'].values.tolist()]
     sns_plot = sns.lineplot(x=i, y="accuracy", data=df, hue='aggregation_positive')
-    sns_plot.set_xlabel("Lambda", fontsize=15)
+    sns_plot.set_xlabel(n, fontsize=15)
     sns_plot.set_ylabel("Accuracy", fontsize=15)
     sns_plot.tick_params(labelsize=10)
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)

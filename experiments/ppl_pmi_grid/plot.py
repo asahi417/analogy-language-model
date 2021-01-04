@@ -47,8 +47,8 @@ for i in list(set(list(df['aggregation_positive'].values))):
     tmp = df[df['aggregation_positive'] == i]
     result = tmp.pivot(index='ppl_pmi_lambda', columns='ppl_pmi_alpha', values='accuracy')
     sns_plot = sns.heatmap(result, annot=True, fmt="g", cmap='viridis', cbar=False)
-    sns_plot.set_xlabel("Alpha", fontsize=15)
-    sns_plot.set_ylabel("Lambda", fontsize=15)
+    sns_plot.set_xlabel("Lambda", fontsize=15)
+    sns_plot.set_ylabel("Alpha", fontsize=15)
     sns_plot.tick_params(labelsize=10)
     fig = sns_plot.get_figure()
     fig.savefig('{}/plot.heatmap.{}.png'.format(export_dir, i))

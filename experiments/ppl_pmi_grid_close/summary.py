@@ -8,8 +8,8 @@ aggregation_positives = ['p_2']
 export_dir = './experiments/ppl_pmi_grid/results'
 # get accuracy
 scorer = alm.RelationScorer(model='roberta-large', max_length=32)
-for alpha in map(lambda x: x/10, range(10, 20)):
-    for lam in map(lambda x: x / 10, range(-10, 0)):
+for lam in map(lambda x: x/10, range(10, 20)):
+    for alpha in map(lambda x: x / 10, range(-10, 0)):
 
         list(map(lambda x: scorer.analogy_test(
             scoring_method='ppl_pmi',

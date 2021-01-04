@@ -24,7 +24,7 @@ for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
     sns_plot.set_ylabel("Accuracy", fontsize=15)
     sns_plot.tick_params(labelsize=10)
     fig = sns_plot.get_figure()
-    fig.savefig('{}/plot_mean.{}.png'.format(export_dir, i))
+    fig.savefig('{}/plot.mean.{}.png'.format(export_dir, i))
     fig.clear()
 
     # Line plot with individual result
@@ -46,6 +46,7 @@ for i in list(set(list(df['aggregation_positive'].values))):
     fig.clear()
     tmp = df[df['aggregation_positive'] == i]
     result = tmp.pivot(index='ppl_pmi_lambda', columns='ppl_pmi_alpha', values='accuracy')
+    print(result)
     sns_plot = sns.heatmap(result, annot=True, fmt="g", cmap='viridis', cbar=False)
     sns_plot.set_xlabel("Lambda", fontsize=15)
     sns_plot.set_ylabel("Alpha", fontsize=15)

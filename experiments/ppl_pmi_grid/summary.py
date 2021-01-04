@@ -4,8 +4,9 @@ import json
 from glob import glob
 import pandas as pd
 
-aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
 export_dir = './experiments/ppl_pmi_grid/results'
+
+aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
 # get accuracy
 scorer = alm.RelationScorer(model='roberta-large', max_length=32)
 for i in [-2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2.0]:
@@ -36,4 +37,4 @@ for i in glob('./{}/outputs/*'.format(export_dir)):
 
 df = df.T
 df = df.sort_values(by=index, ignore_index=True)
-df.to_csv('./{}/summary.csv'.format(export_dir))
+df.to_csv('{}/summary.csv'.format(export_dir))

@@ -9,8 +9,8 @@ export_dir = './experiments/ppl_pmi_grid_close/results'
 
 # get accuracy
 scorer = alm.RelationScorer(model='roberta-large', max_length=32)
-for lam in map(lambda x: x/10, range(10, 20)):
-    for alpha in map(lambda x: x / 10, range(-10, 0)):
+for lam in map(lambda x: x/10, range(10, 21)):
+    for alpha in map(lambda x: x / 10, range(-10, 1)):
         scorer.analogy_test(
             scoring_method='ppl_pmi',
             path_to_data='./data/sat_package_v3.jsonl',

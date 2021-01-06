@@ -2,56 +2,62 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-export_dir = './experiments/ppl_pmi_grid/results'
-df = pd.read_csv('{}/summary.csv'.format(export_dir), index_col=0)
-df['aggregation_positive'] = ['P'+i.replace('p_', '') if 'p_' in i else i
-                                  for i in df['aggregation_positive'].values.tolist()]
-sns.set_theme(style="darkgrid")
 
-for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
-    if i == 'ppl_pmi_lambda':
-        tmp_df = df[df['ppl_pmi_alpha'] == 1]
-    else:
-        tmp_df = df[df['ppl_pmi_lambda'] == 1]
+def main(export_dir):
 
-    print(tmp_df)
+    df = pd.read_csv('{}/summary.csv'.format(export_dir), index_col=0)
+    df['aggregation_positive'] = ['P'+i.replace('p_', '') if 'p_' in i else i
+                                      for i in df['aggregation_positive'].values.tolist()]
+    sns.set_theme(style="darkgrid")
 
-    # Line plot with 95% interval
-    fig = plt.figure()
-    fig.clear()
-    sns_plot = sns.lineplot(x=i, y="accuracy", data=tmp_df)
-    sns_plot.set_xlabel(n, fontsize=15)
-    sns_plot.set_ylabel("Accuracy", fontsize=15)
-    sns_plot.tick_params(labelsize=10)
-    fig = sns_plot.get_figure()
-    plt.tight_layout()
-    fig.savefig('{}/plot.mean.{}.png'.format(export_dir, i))
-    fig.clear()
+    for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
+        if i == 'ppl_pmi_lambda':
+            tmp_df = df[df['ppl_pmi_alpha'] == 1]
+        else:
+            tmp_df = df[df['ppl_pmi_lambda'] == 1]
 
-    # Line plot with individual result
-    fig = plt.figure()
-    fig.clear()
-    sns_plot = sns.lineplot(x=i, y="accuracy", data=tmp_df, hue='aggregation_positive')
-    sns_plot.set_xlabel(n, fontsize=15)
-    sns_plot.set_ylabel("Accuracy", fontsize=15)
-    sns_plot.tick_params(labelsize=10)
-    plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-    fig = sns_plot.get_figure()
-    plt.tight_layout()
-    fig.savefig('{}/plot.{}.png'.format(export_dir, i))
-    fig.clear()
+        print(tmp_df)
 
-for i in list(set(list(df['aggregation_positive'].values))):
-    fig = plt.figure()
-    fig.clear()
-    tmp = df[df['aggregation_positive'] == i]
-    result = tmp.pivot(index='ppl_pmi_lambda', columns='ppl_pmi_alpha', values='accuracy')
-    sns_plot = sns.heatmap(result, annot=True, fmt="g", cmap='viridis', cbar=False)
-    sns_plot.set_xlabel("Alpha", fontsize=15)
-    sns_plot.set_ylabel("Lambda", fontsize=15)
-    sns_plot.tick_params(labelsize=10)
-    fig = sns_plot.get_figure()
-    plt.tight_layout()
-    fig.savefig('{}/plot.heatmap.{}.png'.format(export_dir, i))
+        # Line plot with 95% interval
+        fig = plt.figure()
+        fig.clear()
+        sns_plot = sns.lineplot(x=i, y="accuracy", data=tmp_df)
+        sns_plot.set_xlabel(n, fontsize=15)
+        sns_plot.set_ylabel("Accuracy", fontsize=15)
+        sns_plot.tick_params(labelsize=10)
+        fig = sns_plot.get_figure()
+        plt.tight_layout()
+        fig.savefig('{}/plot.mean.{}.png'.format(export_dir, i))
+        fig.clear()
+
+        # Line plot with individual result
+        fig = plt.figure()
+        fig.clear()
+        sns_plot = sns.lineplot(x=i, y="accuracy", data=tmp_df, hue='aggregation_positive')
+        sns_plot.set_xlabel(n, fontsize=15)
+        sns_plot.set_ylabel("Accuracy", fontsize=15)
+        sns_plot.tick_params(labelsize=10)
+        plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+        fig = sns_plot.get_figure()
+        plt.tight_layout()
+        fig.savefig('{}/plot.{}.png'.format(export_dir, i))
+        fig.clear()
+
+    for i in list(set(list(df['aggregation_positive'].values))):
+        fig = plt.figure()
+        fig.clear()
+        tmp = df[df['aggregation_positive'] == i]
+        result = tmp.pivot(index='ppl_pmi_lambda', columns='ppl_pmi_alpha', values='accuracy')
+        sns_plot = sns.heatmap(result, annot=True, fmt="g", cmap='viridis', cbar=False)
+        sns_plot.set_xlabel("Alpha", fontsize=15)
+        sns_plot.set_ylabel("Lambda", fontsize=15)
+        sns_plot.tick_params(labelsize=10)
+        fig = sns_plot.get_figure()
+        plt.tight_layout()
+        fig.savefig('{}/plot.heatmap.{}.png'.format(export_dir, i))
 
 
+if __name__ == '__main__':
+    # main(export_dir='./experiments/ppl_pmi_grid/results')
+    main(export_dir='./experiments/ppl_pmi_grid/results_u2')
+    main(export_dir='./experiments/ppl_pmi_grid/results_u4')

@@ -54,8 +54,6 @@ if __name__ == '__main__':
 
         with open(os.path.join(i, 'accuracy.json'), 'r') as f:
             accuracy = json.load(f)
-        with open(os.path.join(i, 'config.json'), 'r') as f:
-            config = json.load(f)
         df[len(df.T)] = [','.join(config[i]) if type(config[i]) is list else config[i] for i in index] + \
                         [round(accuracy['accuracy'] * 100, 2)]
 

@@ -1,14 +1,19 @@
+import os
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+export_dir_root = './experiments/ppl_pmi_grid/results'
+df_main = pd.read_csv('{}/summary.close.csv'.format(export_dir_root), index_col=0)
 
-def main(export_dir):
-    df = pd.read_csv('{}/summary.csv'.format(export_dir), index_col=0)
+
+def main(path_to_data, ppl_pmi_aggregation, aggregation_positive):
+    data_name = os.path.basename(path_to_data).split('.')[0]
+    export_dir = '{}/figure'.format(export_dir_root)
+    df = df_main[df_main['path_to_data'] == path_to_data]
+    df = df[df['ppl_pmi_aggregation'] == ppl_pmi_aggregation][df['aggregation_positive'] == aggregation_positive]
+
     sns.set_theme(style="darkgrid")
-    df['aggregation_positive'] = ['P'+i.replace('p_', '') if 'p_' in i else i
-                                  for i in df['aggregation_positive'].values.tolist()]
-
     fig = plt.figure()
     fig.clear()
     result = df.pivot(index='ppl_pmi_lambda', columns='ppl_pmi_alpha', values='accuracy')
@@ -18,10 +23,11 @@ def main(export_dir):
     sns_plot.tick_params(labelsize=10)
     fig = sns_plot.get_figure()
     plt.tight_layout()
-    fig.savefig('{}/plot.heatmap.{}.png'.format(export_dir, df['aggregation_positive'][0]))
+    fig.savefig('{}/plot.heatmap.{}.{}.{}.close.png'.format(
+        export_dir, data_name, aggregation_positive, ppl_pmi_aggregation))
 
 
 if __name__ == '__main__':
-    main(export_dir='./experiments/ppl_pmi_grid_close/results')
-    main(export_dir='./experiments/ppl_pmi_grid_close/results_u2')
-    main(export_dir='./experiments/ppl_pmi_grid_close/results_u4')
+    main(path_to_data='./data/sat_package_v3.jsonl', ppl_pmi_aggregation='p_1', aggregation_positive='p_2')
+    main(path_to_data='./data/u2.jsonl', ppl_pmi_aggregation='p_0', aggregation_positive='p_0')
+    main(path_to_data='./data/u4.jsonl', ppl_pmi_aggregation='max', aggregation_positive='p_0')

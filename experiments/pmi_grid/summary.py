@@ -4,9 +4,12 @@ import json
 from glob import glob
 import pandas as pd
 
+export_dir = './experiments/pmi_grid/results'
 
-def main(export_dir, path_to_data, template):
-    pmi_aggregations = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7', 'p_8', 'p_9', 'p_10', 'p_11']
+
+def main(path_to_data, template):
+    pmi_aggregations = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7', 'p_8',
+                        'p_9', 'p_10', 'p_11']
     aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
     # get accuracy
     scorer = alm.RelationScorer(model='roberta-large', max_length=32)
@@ -20,11 +23,11 @@ def main(export_dir, path_to_data, template):
                 aggregation_positive=x,
                 pmi_lambda=i,
                 no_inference=True,
-                overwrite_output=True,
                 export_dir=export_dir), aggregation_positives))
 
     # export as a csv
-    index = ['model', 'max_length', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive', 'pmi_aggregation', 'pmi_lambda']
+    index = ['model', 'max_length', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive',
+             'pmi_aggregation', 'pmi_lambda']
     df = pd.DataFrame(index=index + ['accuracy'])
 
     for i in glob('{}/outputs/*'.format(export_dir)):
@@ -41,6 +44,6 @@ def main(export_dir, path_to_data, template):
 
 
 if __name__ == '__main__':
-    main(export_dir='./experiments/pmi_grid/results', path_to_data='./data/sat_package_v3.jsonl', template='rel-same')
-    main(export_dir='./experiments/pmi_grid/results_u2', path_to_data='./data/u2.jsonl', template='rel-same')
-    main(export_dir='./experiments/pmi_grid/results_u4', path_to_data='./data/u4.jsonl', template='what-is-to')
+    main(path_to_data='./data/sat_package_v3.jsonl', template='rel-same')
+    main(path_to_data='./data/u2.jsonl', template='rel-same')
+    main(path_to_data='./data/u4.jsonl', template='what-is-to')

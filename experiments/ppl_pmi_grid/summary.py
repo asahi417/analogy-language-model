@@ -44,12 +44,8 @@ if __name__ == '__main__':
     for i in glob('./{}/outputs/*'.format(export_dir)):
         with open(os.path.join(i, 'config.json'), 'r') as f:
             config = json.load(f)
-            if config['ppl_pmi_lambda'] not in lambdas:
-                print(config['ppl_pmi_lambda'])
-                continue
-            if config['ppl_pmi_alpha'] not in alphas:
-                print(config['ppl_pmi_alpha'])
-                continue
+            if config['ppl_pmi_lambda'] not in lambdas or config['ppl_pmi_alpha'] not in alphas:
+                print(config['ppl_pmi_lambda'], config['ppl_pmi_alpha'])
 
         with open(os.path.join(i, 'accuracy.json'), 'r') as f:
             accuracy = json.load(f)

@@ -21,7 +21,6 @@ def main(path_to_data, template, aggregation_positive, ppl_pmi_aggregation):
                 ppl_pmi_lambda=lam,
                 ppl_pmi_alpha=alpha,
                 no_inference=True,
-                overwrite_output=False,
                 export_dir=export_dir
             )
 

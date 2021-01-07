@@ -4,7 +4,7 @@ import json
 from glob import glob
 import pandas as pd
 
-export_dir='./experiments/ppl_pmi_grid/results'
+export_dir = './experiments/ppl_pmi_grid_close/results'
 
 
 def main(path_to_data, template, aggregation_positive, ppl_pmi_aggregation):

@@ -3,11 +3,13 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-def main(export_dir):
+def main(export_dir, ppl_pmi_aggregation='p_0'):
 
     df = pd.read_csv('{}/summary.csv'.format(export_dir), index_col=0)
     df['aggregation_positive'] = ['P'+i.replace('p_', '') if 'p_' in i else i
-                                      for i in df['aggregation_positive'].values.tolist()]
+                                  for i in df['aggregation_positive'].values.tolist()]
+    # df['ppl_pmi_aggregation'] = ['P' + i.replace('p_', '') if 'p_' in i else i
+    #                              for i in df['ppl_pmi_aggregation'].values.tolist()]
     sns.set_theme(style="darkgrid")
 
     for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
@@ -33,20 +35,22 @@ def main(export_dir):
         # Line plot with individual result
         fig = plt.figure()
         fig.clear()
+        # TODO
         sns_plot = sns.lineplot(x=i, y="accuracy", data=tmp_df, hue='aggregation_positive')
         sns_plot.set_xlabel(n, fontsize=15)
         sns_plot.set_ylabel("Accuracy", fontsize=15)
         sns_plot.tick_params(labelsize=10)
-        plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+        # plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         fig = sns_plot.get_figure()
         plt.tight_layout()
         fig.savefig('{}/plot.{}.png'.format(export_dir, i))
         fig.clear()
 
     for i in list(set(list(df['aggregation_positive'].values))):
+
         fig = plt.figure()
         fig.clear()
-        tmp = df[df['aggregation_positive'] == i]
+        tmp = df[df['aggregation_positive'] == i][df['ppl_pmi_aggregation'] == ppl_pmi_aggregation]
         result = tmp.pivot(index='ppl_pmi_lambda', columns='ppl_pmi_alpha', values='accuracy')
         sns_plot = sns.heatmap(result, annot=True, fmt="g", cmap='viridis', cbar=False)
         sns_plot.set_xlabel("Alpha", fontsize=15)

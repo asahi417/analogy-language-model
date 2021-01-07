@@ -4,7 +4,7 @@ import json
 from glob import glob
 import pandas as pd
 
-export_dir = './experiments/ppl_pmi_grid_close/results'
+export_dir = './experiments/ppl_pmi_grid/results'
 
 
 def main(path_to_data, template, aggregation_positive, ppl_pmi_aggregation):
@@ -38,7 +38,7 @@ def main(path_to_data, template, aggregation_positive, ppl_pmi_aggregation):
 
     df = df.T
     df = df.sort_values(by=index, ignore_index=True)
-    df.to_csv('{}/summary.csv'.format(export_dir))
+    df.to_csv('{}/summary.close.csv'.format(export_dir))
 
 
 if __name__ == '__main__':

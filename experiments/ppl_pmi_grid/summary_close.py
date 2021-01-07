@@ -49,6 +49,7 @@ if __name__ == '__main__':
             config = json.load(f)
             if config['ppl_pmi_lambda'] not in lambdas or config['ppl_pmi_alpha'] not in alphas:
                 print(config['ppl_pmi_lambda'], config['ppl_pmi_alpha'])
+                continue
 
         with open(os.path.join(i, 'accuracy.json'), 'r') as f:
             accuracy = json.load(f)

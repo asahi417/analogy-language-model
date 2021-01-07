@@ -72,6 +72,6 @@ def main(path_to_data, ppl_pmi_aggregation=None, aggregation_positive=None):
 
 
 if __name__ == '__main__':
-    main(path_to_data='./data/sat_package_v3.jsonl', ppl_pmi_aggregation='mean', aggregation_positive='p_2')
-    main(path_to_data='./data/u2.jsonl', ppl_pmi_aggregation='mean', aggregation_positive='p_0')
-    main(path_to_data='./data/u4.jsonl', ppl_pmi_aggregation='mean', aggregation_positive='p_0')
+    main(path_to_data='./data/sat_package_v3.jsonl', ppl_pmi_aggregation='p_1', aggregation_positive='p_2')
+    main(path_to_data='./data/u2.jsonl', ppl_pmi_aggregation='p_0', aggregation_positive='p_0')
+    main(path_to_data='./data/u4.jsonl', ppl_pmi_aggregation='max', aggregation_positive='p_0')

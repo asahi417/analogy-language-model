@@ -25,7 +25,8 @@ def main(path_to_data, template, aggregation_positive, ppl_pmi_aggregation):
             )
 
     # export as a csv
-    index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive', 'ppl_pmi_lambda', 'ppl_pmi_alpha']
+    index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive', 'ppl_pmi_lambda',
+             'ppl_pmi_alpha', 'ppl_pmi_aggregation']
     df = pd.DataFrame(index=index + ['accuracy'])
 
     for i in glob('./{}/outputs/*'.format(export_dir)):

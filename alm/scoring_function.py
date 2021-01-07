@@ -191,6 +191,7 @@ class RelationScorer:
         # ppl_pmi aggregation
         if scoring_method == 'ppl_pmi':
             # TODO: validate on multiple templates
+            assert ppl_pmi_aggregation is not None
 
             aggregator = AGGREGATOR[pmi_aggregation]
 

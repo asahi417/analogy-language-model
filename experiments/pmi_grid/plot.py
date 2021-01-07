@@ -17,6 +17,8 @@ def main(path_to_data):
     df = df_all[df_all['path_to_data'] == path_to_data]
 
     # Line plot with 95% interval
+    fig = plt.figure()
+    fig.clear()
     sns.set_theme(style="darkgrid")
     sns_plot = sns.lineplot(x="pmi_lambda", y="accuracy", data=df)
     sns_plot.set_xlabel("Lambda", fontsize=15)
@@ -25,8 +27,11 @@ def main(path_to_data):
     fig = sns_plot.get_figure()
     plt.tight_layout()
     fig.savefig('{}/plot.mean.{}.pmi_lambda.png'.format(export_dir, data_name))
+    fig.clear()
 
-    # # Line plot with individual result
+    # Line plot with individual result
+    fig = plt.figure()
+    fig.clear()
     sns_plot = sns.lineplot(x="pmi_lambda", y="accuracy", data=df, hue='cond', legend=None)
     sns_plot.set_xlabel("Lambda", fontsize=15)
     sns_plot.set_ylabel("Accuracy", fontsize=15)
@@ -34,6 +39,7 @@ def main(path_to_data):
     fig = sns_plot.get_figure()
     plt.tight_layout()
     fig.savefig('{}/plot.all.{}.pmi_lambda.png'.format(export_dir, data_name))
+    fig.clear()
 
 
 if __name__ == '__main__':

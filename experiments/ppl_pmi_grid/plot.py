@@ -48,7 +48,7 @@ def main(path_to_data, ppl_pmi_aggregation=None, aggregation_positive=None):
         # plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
         fig = sns_plot.get_figure()
         plt.tight_layout()
-        fig.savefig('{}/plot.{}.png'.format(export_dir, i))
+        fig.savefig('{}/plot.all.{}.{}.png'.format(export_dir, data_name, i))
         fig.clear()
 
     for i in list(set(list(df['aggregation_positive'].values))):
@@ -68,7 +68,7 @@ def main(path_to_data, ppl_pmi_aggregation=None, aggregation_positive=None):
             sns_plot.tick_params(labelsize=10)
             fig = sns_plot.get_figure()
             plt.tight_layout()
-            fig.savefig('{}/plot.heatmap.{}.{}.png'.format(export_dir, i, _i))
+            fig.savefig('{}/plot.heatmap.{}.{}.{}.png'.format(export_dir, data_name, i, _i))
 
 
 if __name__ == '__main__':

@@ -3,13 +3,16 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-export_dir_root = './experiments/ppl_pmi_grid/results'
-df_main = pd.read_csv('{}/summary.close.csv'.format(export_dir_root), index_col=0)
+export_dir = './experiments/ppl_pmi_grid/results'
+df_main = pd.read_csv('{}/summary.close.csv'.format(export_dir), index_col=0)
+export_dir = '{}/figure'.format(export_dir)
+if not os.path.exists(export_dir):
+    os.makedirs(export_dir, exist_ok=True)
 
 
 def main(path_to_data, ppl_pmi_aggregation, aggregation_positive):
     data_name = os.path.basename(path_to_data).split('.')[0]
-    export_dir = '{}/figure'.format(export_dir_root)
+
     df = df_main[df_main['path_to_data'] == path_to_data]
     df = df[df['ppl_pmi_aggregation'] == ppl_pmi_aggregation][df['aggregation_positive'] == aggregation_positive]
 

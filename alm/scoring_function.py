@@ -84,7 +84,7 @@ class RelationScorer:
         """
         start = time()
         # sanity check
-        assert permutation_negative == (aggregation_negative != 'none'), 'permutation/aggregation mismatch (neg)'
+        # assert permutation_negative == (aggregation_negative != 'none'), 'permutation/aggregation mismatch (neg)'
         assert aggregation_positive in AGGREGATOR.keys()
         assert aggregation_negative in AGGREGATOR.keys()
         aggregator_pos = AGGREGATOR[aggregation_positive]

@@ -193,7 +193,7 @@ class RelationScorer:
             # TODO: validate on multiple templates
             assert ppl_pmi_aggregation is not None
 
-            aggregator = AGGREGATOR[pmi_aggregation]
+            aggregator = AGGREGATOR[ppl_pmi_aggregation]
 
             def compute_pmi(ppl_scores):
                 opt_length = len(ppl_scores) ** 0.5

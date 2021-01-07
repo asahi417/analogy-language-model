@@ -3,8 +3,10 @@ import alm
 all_templates = [['is-to-what'], ['is-to-as'], ['rel-same'], ['what-is-to'], ['she-to-as'], ['as-what-same']]
 data = ['./data/sat_package_v3.jsonl', './data/u2.jsonl', './data/u4.jsonl']
 
+export_dir = './experiments/baseline/results'
 
-def main(lm, export_dir):
+
+def main(lm):
     for _model, _max_length, _batch in lm:
         scorer = alm.RelationScorer(model=_model, max_length=_max_length)
         for _data in data:
@@ -33,5 +35,5 @@ def main(lm, export_dir):
 
 
 if __name__ == '__main__':
-    # main(lm=[('roberta-large', 32, 512), ('gpt2-xl', 32, 512)], export_dir='./experiments/baseline/results')
-    main(lm=[('bert-large-cased', 64, 512), ('gpt2-large', 32, 512)], export_dir='./experiments/baseline/results_sub')
+    # main(lm=[('roberta-large', 32, 512), ('gpt2-xl', 32, 512)])
+    main(lm=[('bert-large-cased', 64, 512), ('gpt2-large', 32, 512)])

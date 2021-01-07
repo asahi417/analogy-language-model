@@ -33,7 +33,7 @@ def main(path_to_data):
     sns_plot.tick_params(labelsize=10)
     fig = sns_plot.get_figure()
     plt.tight_layout()
-    fig.savefig('{}/figure/plot.all.{}.pmi_lambda.png'.format(export_dir, data_name))
+    fig.savefig('{}/plot.all.{}.pmi_lambda.png'.format(export_dir, data_name))
 
 
 if __name__ == '__main__':

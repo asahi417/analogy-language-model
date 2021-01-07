@@ -6,9 +6,9 @@ import pandas as pd
 
 aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
 aggregation_ppl_pmi = ['max', 'mean', 'min', 'p_0', 'p_1']
+export_dir='./experiments/ppl_pmi_grid/results'
 
-
-def main(export_dir, path_to_data, template):
+def main(path_to_data, template):
     # get accuracy
     scorer = alm.RelationScorer(model='roberta-large', max_length=32)
     for i in [-2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2.0]:
@@ -46,9 +46,6 @@ def main(export_dir, path_to_data, template):
 
 
 if __name__ == '__main__':
-    main(export_dir='./experiments/ppl_pmi_grid/results', path_to_data='./data/sat_package_v3.jsonl',
-         template='as-what-same')  # p_2
-    main(export_dir='./experiments/ppl_pmi_grid/results_u2', path_to_data='./data/u2.jsonl',
-         template='she-to-as')  # min
-    main(export_dir='./experiments/ppl_pmi_grid/results_u4', path_to_data='./data/u4.jsonl',
-         template='what-is-to')  # p_0
+    # main(path_to_data='./data/sat_package_v3.jsonl', template='as-what-same')  # p_2
+    main(path_to_data='./data/u2.jsonl', template='she-to-as')  # min
+    main(path_to_data='./data/u4.jsonl', template='what-is-to')  # p_0

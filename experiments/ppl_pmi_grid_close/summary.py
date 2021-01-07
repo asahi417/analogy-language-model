@@ -4,8 +4,10 @@ import json
 from glob import glob
 import pandas as pd
 
+export_dir='./experiments/ppl_pmi_grid/results'
 
-def main(export_dir, path_to_data, template, aggregation_positive):
+
+def main(path_to_data, template, aggregation_positive, ppl_pmi_aggregation):
     # get accuracy
     scorer = alm.RelationScorer(model='roberta-large', max_length=32)
     for lam in map(lambda x: x/10, range(10, 21)):
@@ -13,6 +15,7 @@ def main(export_dir, path_to_data, template, aggregation_positive):
             scorer.analogy_test(
                 scoring_method='ppl_pmi',
                 path_to_data=path_to_data,
+                ppl_pmi_aggregation=ppl_pmi_aggregation,
                 template_types=[template],
                 aggregation_positive=aggregation_positive,
                 ppl_pmi_lambda=lam,
@@ -40,9 +43,9 @@ def main(export_dir, path_to_data, template, aggregation_positive):
 
 
 if __name__ == '__main__':
-    # main(export_dir='./experiments/ppl_pmi_grid/results', path_to_data='./data/sat_package_v3.jsonl',
-    #      template='as-what-same', aggregation_positive='p_2')
-    main(export_dir='./experiments/ppl_pmi_grid/results_u2', path_to_data='./data/u2.jsonl',
-         template='she-to-as', aggregation_positive='min')
-    main(export_dir='./experiments/ppl_pmi_grid/results_u4', path_to_data='./data/u4.jsonl',
-         template='what-is-to', aggregation_positive='p_0')
+    main(path_to_data='./data/sat_package_v3.jsonl',
+         template='as-what-same', aggregation_positive='p_2', ppl_pmi_aggregation='mean')
+    main(path_to_data='./data/u2.jsonl',
+         template='she-to-as', aggregation_positive='p_0', ppl_pmi_aggregation='mean')
+    main(path_to_data='./data/u4.jsonl',
+         template='what-is-to', aggregation_positive='p_0', ppl_pmi_aggregation='mean')

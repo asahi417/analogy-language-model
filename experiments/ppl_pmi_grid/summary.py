@@ -6,7 +6,8 @@ import pandas as pd
 
 aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
 aggregation_ppl_pmi = ['max', 'mean', 'min', 'p_0', 'p_1']
-export_dir='./experiments/ppl_pmi_grid/results'
+export_dir = './experiments/ppl_pmi_grid/results'
+
 
 def main(path_to_data, template):
     # get accuracy

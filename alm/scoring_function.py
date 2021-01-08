@@ -229,8 +229,8 @@ class RelationScorer:
                 return neg_pmi
 
             # loop over all positive/negative permutations
-            print(list(map(lambda o: list(map(lambda x: len(x[1]), o)), score)))
-            print(list(map(lambda o: list(map(lambda x: len(x[0]), o)), score)))
+            print(all(list(map(lambda o: all(list(map(lambda x: len(x[1]) == 16, o))), score))))
+
             print(list(map(lambda o: (
                 list(map(lambda x: list(map(lambda s: len(s[1]), o)), range(16)))
             ), score)))

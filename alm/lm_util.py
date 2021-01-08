@@ -63,6 +63,7 @@ class TransformersLM:
         if self.num_worker == 1:
             os.environ["OMP_NUM_THREADS"] = "1"  # to turn off warning message
 
+        self.model_type = None
         self.model_name = model
         self.cache_dir = cache_dir
         self.device = 'cpu'
@@ -90,10 +91,13 @@ class TransformersLM:
         params = dict(config=self.config, cache_dir=self.cache_dir)
         if lm_head and self.is_causal:
             self.model = transformers.AutoModelForCausalLM.from_pretrained(self.model_name, **params)
+            self.model_type = 'causal_lm'
         elif lm_head:
             self.model = transformers.AutoModelForMaskedLM.from_pretrained(self.model_name, **params)
+            self.model_type = 'masked_lm'
         else:
             self.model = transformers.AutoModel.from_pretrained(self.model_name, **params)
+            self.model_type = 'embedding'
         self.model.eval()
         # gpu
         n_gpu = torch.cuda.device_count()
@@ -328,6 +332,7 @@ class TransformersLM:
         assert type(texts) is list and type(tokens_to_mask) is list, 'type error'
         if not self.model:
             self.load_model()
+        assert self.model_type != 'embedding'
         weight = 1 if weight is None else weight
 
         def decode_score(_nested_score, total_score: float = 0.0):
@@ -437,6 +442,7 @@ class TransformersLM:
         assert type(texts) is list, 'type error'
         if not self.model:
             self.load_model()
+        assert self.model_type != 'embedding'
 
         data_loader, partition = self.batch_encode_plus_perplexity(texts, batch_size=batch_size)
         logging.info('inference')
@@ -515,6 +521,7 @@ class TransformersLM:
         assert type(texts) is list, 'type error'
         if not self.model:
             self.load_model(lm_head=False)
+        assert self.model_type == 'embedding'
 
         data_loader = self.batch_encode_plus_embedding(
             texts, batch_size=batch_size, batch_token_to_embed=tokens_to_embed)

@@ -1,4 +1,4 @@
-""" compile txt based dataset into jsonlines """
+""" compile txt based dataset into jsonlines (duplication is also dropped)"""
 import re
 import json
 import string

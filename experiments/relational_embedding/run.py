@@ -7,7 +7,9 @@ import json
 from typing import List
 from gensim.models import KeyedVectors
 
-path = './cache/relative_wikipedia_en_300d.bin'  # relative-init_wikipedia_en_300d.bin
+path = './cache/relative_wikipedia_en_300d.bin'
+# path = './cache/fasttext_wikipedia_en_300d.bin
+# path = './cache/relative-init_wikipedia_en_300d.bin'
 model = KeyedVectors.load_word2vec_format(path, binary=True)
 datasets = ['./data/sat_package_v3.jsonl', './data/u2.jsonl', './data/u4.jsonl']
 
@@ -31,8 +33,8 @@ def get_rel_similarity(stem: List, choice: List):
 
 def process_single(stem: List, choice: List):
     similarities = list(map(lambda x: get_rel_similarity(stem, x), choice))
-    # if all(map(lambda x: x is None, similarities)):
-    if any(map(lambda x: x is None, similarities)):
+    if all(map(lambda x: x is None, similarities)):
+    # if any(map(lambda x: x is None, similarities)):
         return None
     else:
         return similarities
@@ -50,7 +52,8 @@ if __name__ == '__main__':
         out = get_dataset(_data)
         answers = list(map(lambda x: x['answer'], out))
         scores = list(map(lambda x: process_single(x['stem'], x['choice']), out))
-        print(len(list(filter(None, scores))))
+        in_vocab_n = len(list(filter(None, scores)))
+        print('{}/{}'.format(in_vocab_n, len(out)))
 
 
 

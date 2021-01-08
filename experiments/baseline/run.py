@@ -8,28 +8,25 @@ export_dir = './experiments/baseline/results'
 
 def main(lm):
     for _model, _max_length, _batch in lm:
-        scorer = alm.RelationScorer(model=_model, max_length=_max_length)
-        for _data in data:
-            for _temp in all_templates:
+        for scoring_method in ['ppl', 'embedding_similarity', 'ppl_pmi', 'pmi']:
+            if scoring_method in ['pmi']:
+                continue
+            scorer = alm.RelationScorer(model=_model, max_length=_max_length)
+            for _data in data:
+                for _temp in all_templates:
+                    if (_model == 'bert-large-cased' and scoring_method in ['ppl', 'embedding_similarity']) or \
+                            (_model == 'gpt2-large' and scoring_method in ['ppl_pmi']):
+                        scorer.analogy_test(
+                            scoring_method=scoring_method,
+                            path_to_data=_data,
+                            template_types=_temp,
+                            batch_size=_batch,
+                            export_dir=export_dir,
+                            permutation_negative=False,
+                            skip_scoring_prediction=True
+                        )
+                        scorer.release_cache()
 
-                def run(scoring_method):
-                    scorer.analogy_test(
-                        scoring_method=scoring_method,
-                        path_to_data=_data,
-                        template_types=_temp,
-                        batch_size=_batch,
-                        export_dir=export_dir,
-                        permutation_negative=False,
-                        skip_scoring_prediction=True,
-                        overwrite_output=True
-                    )
-                    scorer.release_cache()
-
-                if _model == 'bert-large-cased':
-                    run('ppl')
-                    run('embedding_similarity')
-                if _model == 'gpt2-large':
-                    run('ppl_pmi')
                 # if 'gpt' not in _model:
                 #     run('pmi')
 

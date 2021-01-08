@@ -1,10 +1,11 @@
+""" convert data from jsonl to csv """
 import json
-from itertools import chain
 import pandas as pd
 
 data = ['data/sat_package_v3.jsonl', 'data/u2.jsonl', 'data/u4.jsonl']
 
 
+# format preserved
 for i in data:
     with open(i, 'r') as f:
         jsons = list(map(lambda x: json.loads(x), f.read().split('\n')))

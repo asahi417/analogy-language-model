@@ -1,7 +1,7 @@
 import logging
 from typing import List
 from time import time
-from itertools import permutations
+from itertools import permutations, product
 from math import log
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -53,14 +53,14 @@ class RelationScorer:
                      batch_size: int = 4,
                      scoring_method: str = 'ppl',
                      pmi_aggregation: str = None,
-                     ppl_pmi_aggregation: str = None,  # p_0: head, p_1 tail
+                     ppl_pmi_aggregation: (str, List) = None,  # p_0: head, p_1 tail
                      pmi_lambda: float = 1.0,
-                     ppl_pmi_lambda: float = 1.0,
-                     ppl_pmi_alpha: float = 1.0,
+                     ppl_pmi_lambda: (float, List) = 1.0,
+                     ppl_pmi_alpha: (float, List) = 1.0,
                      template_types: List = None,
                      permutation_negative: bool = False,
-                     aggregation_positive: str = 'mean',
-                     aggregation_negative: str = 'none',
+                     aggregation_positive: (str, List) = 'mean',
+                     aggregation_negative: (str, List) = 'none',
                      skip_scoring_prediction: bool = False,
                      export_dir: str = './results',
                      no_inference: bool = False,
@@ -85,29 +85,10 @@ class RelationScorer:
         :return:
         """
         start = time()
-        # sanity check
-        # assert permutation_negative == (aggregation_negative != 'none'), 'permutation/aggregation mismatch (neg)'
-        assert aggregation_positive in AGGREGATOR.keys()
-        assert aggregation_negative in AGGREGATOR.keys()
-        aggregator_pos = AGGREGATOR[aggregation_positive]
-        aggregator_neg = AGGREGATOR[aggregation_negative]
 
-        # configuration manager
-        config = ConfigManager(
-            export_dir=export_dir,
-            pmi_aggregation=pmi_aggregation,
-            ppl_pmi_aggregation=ppl_pmi_aggregation,
-            pmi_lambda=pmi_lambda,
-            model=self.model_name, max_length=self.lm.max_length, path_to_data=path_to_data,
-            scoring_method=scoring_method, template_types=template_types, permutation_negative=permutation_negative,
-            aggregation_positive=aggregation_positive, aggregation_negative=aggregation_negative,
-            ppl_pmi_lambda=ppl_pmi_lambda, ppl_pmi_alpha=ppl_pmi_alpha
-        )
-        if config.output_exist and not overwrite_output:
-            logging.info('skip as the output is already produced: {}'.format(config.export_dir))
-            return
-
-        # fetch data
+        ##############
+        # fetch data #
+        ##############
         logging.info('fetch data and templating: {}'.format(path_to_data))
         # get data with all permutation regardless of the configuration
         permutation_marginalize = scoring_method in ['ppl_pmi']
@@ -115,19 +96,186 @@ class RelationScorer:
                                     permutation_negative=permutation_negative,
                                     permutation_marginalize=permutation_marginalize)
 
-        # create batch
-        logging.info('creating batch (data size: {})'.format(len(data_instance.flatten_prompt_pos)))
+        ##############
+        # get scores #
+        ##############
+        score_pos, score_neg = self.get_score(
+            export_dir=export_dir,
+            path_to_data=path_to_data,
+            template_types=template_types,
+            data_instance=data_instance,
+            batch_size=batch_size,
+            scoring_method=scoring_method,
+            pmi_lambda=pmi_lambda,
+            permutation_negative=permutation_negative,
+            no_inference=no_inference)
+        if skip_scoring_prediction:
+            return
+
+        ##################
+        # restore scores #
+        ##################
+        # negative pmi score aggregation
+        if scoring_method == 'pmi':
+            assert pmi_aggregation, 'undefined pmi aggregation'
+            # we use same aggregation method for both positive/negative permutations
+            logging.info("PMI aggregator: {}".format(pmi_aggregation))
+            aggregator = AGGREGATOR[pmi_aggregation]
+            score_pos = list(map(lambda x: aggregator(x), score_pos))
+            if score_neg:
+                score_neg = list(map(lambda x: aggregator(x), score_neg))
+        else:
+            assert pmi_lambda == 1.0 and pmi_aggregation is None, 'pmi_lambda/pmi_aggregation should be default'
+
+        # restore the nested structure
+        logging.info('restore batch structure')
+        score = data_instance.insert_score(score_pos, score_neg)
+
+        ##############
+        # get output #
+        ##############
+        # get all outputs from any combinations
+        if type(ppl_pmi_aggregation) is not list:
+            ppl_pmi_aggregation = [ppl_pmi_aggregation]
+        if type(ppl_pmi_lambda) is not list:
+            ppl_pmi_lambda = [ppl_pmi_lambda]
+        if type(ppl_pmi_alpha) is not list:
+            ppl_pmi_alpha = [ppl_pmi_alpha]
+        if type(aggregation_positive) is not list:
+            aggregation_positive = [aggregation_positive]
+        if type(aggregation_negative) is not list:
+            aggregation_negative = [aggregation_negative]
+        all_config = list(
+            product(ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, aggregation_positive, aggregation_negative))
+        logging.info('configuration size: {}'.format(all_config))
+        for n, (ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, aggregation_positive, aggregation_negative) in \
+                enumerate(all_config):
+            logging.info('##### CONFIG {}/{} #####'.format(n, len(all_config)))
+            assert aggregation_positive in AGGREGATOR.keys()
+            assert aggregation_negative in AGGREGATOR.keys()
+            aggregator_pos = AGGREGATOR[aggregation_positive]
+            aggregator_neg = AGGREGATOR[aggregation_negative]
+
+            # configuration manager
+            config = ConfigManager(
+                skip_flatten_score=True,
+                export_dir=export_dir,
+                pmi_aggregation=pmi_aggregation,
+                ppl_pmi_aggregation=ppl_pmi_aggregation,
+                pmi_lambda=pmi_lambda,
+                model=self.model_name,
+                max_length=self.lm.max_length,
+                path_to_data=path_to_data,
+                scoring_method=scoring_method,
+                template_types=template_types,
+                permutation_negative=permutation_negative,
+                aggregation_positive=aggregation_positive,
+                aggregation_negative=aggregation_negative,
+                ppl_pmi_lambda=ppl_pmi_lambda,
+                ppl_pmi_alpha=ppl_pmi_alpha
+            )
+            if config.output_exist and not overwrite_output:
+                logging.info('skip: output file is found at {}'.format(config.export_dir))
+                continue
+
+            # ppl_pmi aggregation
+            if scoring_method == 'ppl_pmi':
+                # TODO: validate on multiple templates
+                assert ppl_pmi_aggregation is not None
+
+                aggregator = AGGREGATOR[ppl_pmi_aggregation]
+
+                def compute_pmi(ppl_scores):
+                    opt_length = len(ppl_scores) ** 0.5
+                    assert opt_length.is_integer(), 'something wrong'
+                    opt_length = int(opt_length)
+
+                    if all(s == 0 for s in ppl_scores):
+                        return [0] * opt_length
+
+                    # conditional negative log likelihood (fixed head and tail tokens)
+                    ppl_in_option = list(map(lambda x: ppl_scores[opt_length * x + x], range(opt_length)))
+                    negative_log_likelihood_cond = list(map(lambda x: log(x / sum(ppl_in_option)), ppl_in_option))
+
+                    # marginal negative log likelihood (tail token)
+                    ppl_out_option = list(map(
+                        lambda x: sum(map(lambda y: ppl_scores[x + opt_length * y], range(opt_length))),
+                        range(opt_length)))
+                    negative_log_likelihood_mar_t = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
+
+                    # marginal negative log likelihood (head token)
+                    ppl_out_option = list(map(
+                        lambda x: sum(ppl_scores[x * opt_length: (x + 1) * opt_length]),
+                        range(opt_length)))
+                    negative_log_likelihood_mar_h = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
+
+                    # negative pmi approx by perplexity difference: higher is better
+                    neg_pmi = list(map(
+                        lambda x: x[0] * ppl_pmi_lambda - aggregator([x[1], x[2]]) * ppl_pmi_alpha,
+                        zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
+                    return neg_pmi
+
+                pmi = list(map(lambda o: (
+                    list(map(lambda x: compute_pmi(list(map(lambda s: s[0][x], o))), range(8))),
+                    list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))), range(16)))
+                ), score))
+
+                logit_pn = list(map(
+                    lambda s: (
+                        list(zip(
+                            list(map(lambda o: aggregator_pos(o), list(zip(*s[0])))),
+                            list(map(lambda o: aggregator_neg(o), list(zip(*s[1]))))
+                        ))
+                    ),
+                    pmi))
+
+            else:
+                logit_pn = list(map(
+                    lambda o: list(map(
+                        lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])),
+                        o)),
+                    score))
+            logit = list(map(lambda o: list(map(lambda s: s[1] - s[0], o)), logit_pn))
+            pred = list(map(lambda x: x.index(max(x)), logit))
+
+            # compute accuracy
+            assert len(pred) == len(data_instance.answer)
+            accuracy = sum(map(lambda x: int(x[0] == x[1]), zip(pred, data_instance.answer))) / len(data_instance.answer)
+            logging.info('accuracy: {}'.format(accuracy))
+            config.save(accuracy=accuracy, logit_pn=logit_pn, logit=logit, prediction=pred)
+        logging.info('experiment completed: {} sec in total'.format(time()-start))
+
+    def get_score(self,
+                  export_dir,
+                  path_to_data,
+                  template_types,
+                  data_instance,
+                  batch_size,
+                  scoring_method,
+                  pmi_lambda,
+                  permutation_negative,
+                  no_inference):
+        config = ConfigManager(
+            export_dir=export_dir,
+            model=self.model_name,
+            max_length=self.lm.max_length,
+            path_to_data=path_to_data,
+            template_types=template_types,
+            scoring_method=scoring_method,
+            pmi_lambda=pmi_lambda,
+            permutation_negative=permutation_negative,
+        )
 
         def prediction(positive: bool = True):
             prefix = 'positive' if positive else 'negative'
-            logging.info('{} permutation'.format(prefix))
-            prompt, relation = data_instance.get_prompt(positive=positive)
             cached_score = config.flatten_score[prefix]
-            assert prompt
-
+            logging.info('{} permutation'.format(prefix))
             if cached_score:
                 logging.info(' * load score')
                 return cached_score
+
+            prompt, relation = data_instance.get_prompt(positive=positive)
+            assert prompt
 
             assert not no_inference, '"no_inference==True" but no cache found'
             logging.info('# run scoring: {}'.format(scoring_method))
@@ -170,118 +318,4 @@ class RelationScorer:
             config.cache_scores(score_neg, positive=False)
         else:
             score_neg = None
-
-        if skip_scoring_prediction:
-            return
-
-        # negative pmi score aggregation
-        if scoring_method == 'pmi':
-            assert pmi_aggregation, 'undefined pmi aggregation'
-            # we use same aggregation method for both positive/negative permutations
-            logging.info("PMI aggregator: {}".format(pmi_aggregation))
-            aggregator = AGGREGATOR[pmi_aggregation]
-            score_pos = list(map(lambda x: aggregator(x), score_pos))
-            if score_neg:
-                score_neg = list(map(lambda x: aggregator(x), score_neg))
-        else:
-            assert pmi_lambda == 1.0 and pmi_aggregation is None, 'pmi_lambda/pmi_aggregation should be default'
-
-        # restore the nested structure
-        logging.info('restore batch structure')
-        score = data_instance.insert_score(score_pos, score_neg)
-
-        # ppl_pmi aggregation
-        if scoring_method == 'ppl_pmi':
-            # TODO: validate on multiple templates
-            assert ppl_pmi_aggregation is not None
-
-            aggregator = AGGREGATOR[ppl_pmi_aggregation]
-
-            def compute_pmi(ppl_scores):
-                opt_length = len(ppl_scores) ** 0.5
-                assert opt_length.is_integer(), 'something wrong'
-                opt_length = int(opt_length)
-
-                if all(s == 0 for s in ppl_scores):
-                    return [0] * opt_length
-
-                # conditional negative log likelihood (fixed head and tail tokens)
-                ppl_in_option = list(map(lambda x: ppl_scores[opt_length * x + x], range(opt_length)))
-                negative_log_likelihood_cond = list(map(lambda x: log(x / sum(ppl_in_option)), ppl_in_option))
-
-                # marginal negative log likelihood (tail token)
-                ppl_out_option = list(map(
-                    lambda x: sum(map(lambda y: ppl_scores[x + opt_length * y], range(opt_length))),
-                    range(opt_length)))
-                negative_log_likelihood_mar_t = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
-
-                # marginal negative log likelihood (head token)
-                ppl_out_option = list(map(
-                    lambda x: sum(ppl_scores[x * opt_length: (x + 1) * opt_length]),
-                    range(opt_length)))
-                negative_log_likelihood_mar_h = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
-
-                # negative pmi approx by perplexity difference: higher is better
-                # neg_pmi = list(map(
-                #     lambda x: x[0] * ppl_pmi_lambda - x[1] * ppl_pmi_alpha,
-                #     zip(negative_log_likelihood_cond, negative_log_likelihood_mar)))
-                neg_pmi = list(map(
-                    lambda x: x[0] * ppl_pmi_lambda - aggregator([x[1], x[2]]) * ppl_pmi_alpha,
-                    zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
-                return neg_pmi
-
-            # loop over all positive/negative permutations
-            # print(all(list(map(lambda o: all(list(map(lambda x: len(x[1]) == 16, o))), score))))
-
-            # print(list(map(lambda o: (
-            #     list(map(lambda x: list(map(lambda s: len(s[1]), o)), range(16)))
-            # ), score)))
-            # print(score[0][0])
-            # list(map(lambda o: (
-            #     list(map(lambda x: list(map(lambda s: s[1][x], o)), range(8)))
-            # ), score))
-            # list(map(lambda o: (
-            #     list(map(lambda x: list(map(lambda s: s[1][x], o)), range(14)))
-            # ), score))
-            #
-            # list(map(lambda o: (
-            #     list(map(lambda x: list(map(lambda s: s[1][x], o)), range(16)))
-            # ), score))
-            # a = list(map(lambda o: (
-            #     list(filter(None, map(lambda s: len(s[1]) if len(s[1]) != 16 else None, o))),
-            #              ), score))
-            # print(a)
-            # # list(map(lambda o: (
-            # #     list(map(lambda x: list(map(lambda s: s[1][x] if len(s[1]) >= x else 0, o)), range(16)))
-            # # ), score))
-            # # input()
-
-            pmi = list(map(lambda o: (
-                list(map(lambda x: compute_pmi(list(map(lambda s: s[0][x], o))), range(8))),
-                list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))), range(16)))
-            ), score))
-
-            logit_pn = list(map(
-                lambda s: (
-                    list(zip(
-                        list(map(lambda o: aggregator_pos(o), list(zip(*s[0])))),
-                        list(map(lambda o: aggregator_neg(o), list(zip(*s[1]))))
-                    ))
-                ),
-                pmi))
-
-        else:
-            logit_pn = list(map(
-                lambda o: list(map(
-                    lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])),
-                    o)),
-                score))
-        logit = list(map(lambda o: list(map(lambda s: s[1] - s[0], o)), logit_pn))
-        pred = list(map(lambda x: x.index(max(x)), logit))
-
-        # compute accuracy
-        assert len(pred) == len(data_instance.answer)
-        accuracy = sum(map(lambda x: int(x[0] == x[1]), zip(pred, data_instance.answer))) / len(data_instance.answer)
-        logging.info('accuracy: {}'.format(accuracy))
-        config.save(accuracy=accuracy, logit_pn=logit_pn, logit=logit, prediction=pred)
-        logging.info('experiment completed: {} sec in total'.format(time()-start))
+        return score_pos, score_neg

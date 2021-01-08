@@ -7,7 +7,7 @@ import string
 import logging
 import pickle
 from glob import glob
-from typing import List
+from typing import List, Dict
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
 
@@ -27,7 +27,10 @@ def safe_open(_file):
 class ConfigManager:
     """ configuration manager for `scoring_function.RelationScorer` """
 
-    def __init__(self, export_dir: str, **kwargs):
+    def __init__(self,
+                 export_dir: str,
+                 skip_flatten_score: bool = False,
+                 **kwargs):
         """ configuration manager for `scoring_function.RelationScorer` """
         self.config = kwargs
         logging.info('*** setting up a config manager ***\n' +
@@ -35,8 +38,6 @@ class ConfigManager:
         cache_dir = os.path.join(export_dir, 'flatten_scores')
         export_dir = os.path.join(export_dir, 'outputs')
         self.output_exist = False
-        self.flatten_score = {'positive': None, 'negative': None}
-        self.flatten_score_mar = {'positive': None, 'negative': None}
         self.pmi_logits = {'positive': None, 'negative': None}
         if not os.path.exists(export_dir):
             self.export_dir = os.path.join(export_dir, get_random_string())
@@ -53,49 +54,60 @@ class ConfigManager:
                 ex = list(map(lambda x: x.replace('/config.json', '').split('/')[-1], ex_configs.keys()))
                 self.export_dir = os.path.join(export_dir, get_random_string(exclude=ex))
 
-        # load model prediction if the model config is at least same, enabling to skip model inference in case
-        cond = ['model', 'max_length', 'path_to_data', 'template_types', 'scoring_method']
-        if self.config['scoring_method'] == 'pmi':
-            cond.append('pmi_lambda')
-        self.config_cache = {k: v for k, v in self.config.items() if k in cond}
-        ex_configs = {i: safe_open(i) for i in glob('{}/*/config.json'.format(cache_dir))}
-        same_config = list(filter(lambda x: x[1] == self.config_cache, ex_configs.items()))
-        if len(same_config) != 0:
-            self.cache_dir = same_config[0][0].replace('config.json', '')
-
-            # load intermediate score
-            for i in ['positive', 'negative']:
-                _file = os.path.join(self.cache_dir, 'flatten_score_{}.pkl'.format(i))
-                if os.path.exists(_file):
-                    with open(_file, "rb") as fp:  # Unpickling
-                        self.flatten_score[i] = pickle.load(fp)
-                    logging.info('load flatten_score_{} from {}'.format(i, _file))
-
-                # load stats for ppl_pmi
-                _file = os.path.join(self.cache_dir, 'flatten_score_mar_{}.pkl'.format(i))
-                if os.path.exists(_file):
-                    with open(_file, "rb") as fp:  # Unpickling
-                        self.flatten_score_mar[i] = pickle.load(fp)
-                    logging.info('load flatten_score_mar_{} from {}'.format(i, _file))
-
-            # load intermediate score for PMI specific
-            if self.config['scoring_method'] in ['pmi']:
-                for i in ['positive', 'negative']:
-                    # skip if full score is loaded
-                    if i in self.flatten_score.keys():
-                        continue
-                    self.pmi_logits[i] = {}
-                    for _file in glob(os.path.join(self.cache_dir, 'pmi_{}_*.pkl'.format(i))):
-                        if os.path.exists(_file):
-                            k = _file.split('pmi_{}_'.format(i))[-1].replace('.pkl', '')
-                            with open(_file, "rb") as fp:  # Unpickling
-                                self.pmi_logits[i][k] = pickle.load(fp)
-                            logging.info('load pmi_{} from {}'.format(i, _file))
-
+        if skip_flatten_score:
+            self.flatten_score = None
+            self.flatten_score_mar = None
+            self.cache_dir = None
         else:
-            self.cache_dir = os.path.join(cache_dir, get_random_string())
+            self.flatten_score = {'positive': None, 'negative': None}
+            self.flatten_score_mar = {'positive': None, 'negative': None}
+
+            # load model prediction if the model config is at least same, enabling to skip model inference in case
+            cond = ['model', 'max_length', 'path_to_data', 'template_types', 'scoring_method']
+            if self.config['scoring_method'] == 'pmi':
+                cond.append('pmi_lambda')
+            self.config_cache = {k: v for k, v in self.config.items() if k in cond}
+            ex_configs = {i: safe_open(i) for i in glob('{}/*/config.json'.format(cache_dir))}
+            same_config = list(filter(lambda x: x[1] == self.config_cache, ex_configs.items()))
+            if len(same_config) != 0:
+                self.cache_dir = same_config[0][0].replace('config.json', '')
+
+                # load intermediate score
+                for i in ['positive', 'negative']:
+                    _file = os.path.join(self.cache_dir, 'flatten_score_{}.pkl'.format(i))
+                    if os.path.exists(_file):
+                        if not skip_loading_flatten_score:
+                            with open(_file, "rb") as fp:  # Unpickling
+                                self.flatten_score[i] = pickle.load(fp)
+                        logging.info('load flatten_score_{} from {}'.format(i, _file))
+
+                    # load stats for ppl_pmi
+                    _file = os.path.join(self.cache_dir, 'flatten_score_mar_{}.pkl'.format(i))
+                    if os.path.exists(_file):
+                        if not skip_loading_flatten_score:
+                            with open(_file, "rb") as fp:  # Unpickling
+                                self.flatten_score_mar[i] = pickle.load(fp)
+                        logging.info('load flatten_score_mar_{} from {}'.format(i, _file))
+
+                # load intermediate score for PMI specific
+                if self.config['scoring_method'] in ['pmi']:
+                    for i in ['positive', 'negative']:
+                        # skip if full score is loaded
+                        if i in self.flatten_score.keys():
+                            continue
+                        self.pmi_logits[i] = {}
+                        for _file in glob(os.path.join(self.cache_dir, 'pmi_{}_*.pkl'.format(i))):
+                            if os.path.exists(_file):
+                                k = _file.split('pmi_{}_'.format(i))[-1].replace('.pkl', '')
+                                with open(_file, "rb") as fp:  # Unpickling
+                                    self.pmi_logits[i][k] = pickle.load(fp)
+                                logging.info('load pmi_{} from {}'.format(i, _file))
+
+            else:
+                self.cache_dir = os.path.join(cache_dir, get_random_string())
 
     def __cache_init(self):
+        assert self.cache_dir is not None
         os.makedirs(self.cache_dir, exist_ok=True)
         if not os.path.exists('{}/config.json'.format(self.cache_dir)):
             with open('{}/config.json'.format(self.cache_dir), 'w') as f:

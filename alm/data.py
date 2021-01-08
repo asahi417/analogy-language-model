@@ -31,14 +31,16 @@ def get_dataset_prompt(path_to_data: str,
         template_types = list(TEMPLATES.keys())
 
     def sampling_permutation(a, b, c, d):
-        all_permutations = list(permutations([a, b, c, d]))
         positive = [(a, b, c, d), (b, a, d, c), (c, d, a, b), (d, c, b, a),
                     (a, c, b, d), (c, a, d, b), (b, d, a, c), (d, b, c, a)]
+        negative = [(a, b, d, c), (a, c, d, b), (a, d, b, c), (a, d, c, b), (b, a, c, d), (b, c, a, d), (b, c, d, a),
+                    (b, d, a, c), (b, d, c, a), (c, a, b, d), (c, b, a, d), (c, b, d, a), (c, d, b, a), (d, a, b, c),
+                    (d, a, c, b), (d, b, a, c), (d, c, a, b)]
+
         if permutation_negative:
-            negative = list(filter(lambda x: x not in positive, all_permutations))
+            return positive, negative
         else:
-            negative = []
-        return positive, negative
+            return positive, []
 
     def single_entry(dictionary):
         a = dictionary['stem'][0]
@@ -129,15 +131,23 @@ class AnalogyData:
 
     def insert_score(self, score_positive: List, score_negative: List = None):
         """ restore the nested structure from a flatten list """
-        print(list(map(
-            lambda x: list(map(
-                lambda y: (
-                    len(self.list_nested_sentence[x[0]][y][0]),
-                    len(self.list_nested_sentence[x[0]][y][1])
-                ),
-                range(len(x[1])))),
-            enumerate(self.list_nested_sentence))))
-        input()
+        # print(list(map(
+        #     lambda x: list(map(
+        #         lambda y: (
+        #             len(data.list_nested_sentence[x[0]][y][0]),
+        #             len(data.list_nested_sentence[x[0]][y][1])
+        #         ),
+        #         range(len(x[1])))),
+        #     enumerate(data.list_nested_sentence))))
+        # print(list(map(
+        #     lambda x: list(map(
+        #         lambda y: (
+        #             len(self.list_nested_sentence[x[0]][y][0]),
+        #             len(self.list_nested_sentence[x[0]][y][1])
+        #         ),
+        #         range(len(x[1])))),
+        #     enumerate(self.list_nested_sentence))))
+        # input()
 
         list_placeholder = list(map(
             lambda x: list(map(

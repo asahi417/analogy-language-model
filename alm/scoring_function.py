@@ -69,14 +69,15 @@ class RelationScorer:
 
         :param path_to_data:
         :param scoring_method:
-        :param pmi_aggregation:
+        :param ppl_pmi_aggregation: upto p_1
+        :param pmi_aggregation: upto p_11
+        :param aggregation_positive: upto p_7
+        :param aggregation_negative: upto p_15
         :param pmi_lambda:
         :param ppl_pmi_lambda:
         :param batch_size:
         :param template_types: a list of templates for prompting
         :param permutation_negative: if utilize negative permutation
-        :param aggregation_positive: aggregation method for positive permutations (`mean`, `max`, `min`)
-        :param aggregation_negative: aggregation method for negative permutations (`mean`, `max`, `min`)
         :param skip_scoring_prediction:
         :param no_inference: use only cached score
         :param export_dir: directory to export the result
@@ -235,33 +236,31 @@ class RelationScorer:
             # print(list(map(lambda o: (
             #     list(map(lambda x: list(map(lambda s: len(s[1]), o)), range(16)))
             # ), score)))
-            print(score[0][0])
-            list(map(lambda o: (
-                list(map(lambda x: list(map(lambda s: s[1][x], o)), range(8)))
-            ), score))
-            list(map(lambda o: (
-                list(map(lambda x: list(map(lambda s: s[1][x], o)), range(14)))
-            ), score))
-
-            list(map(lambda o: (
-                list(map(lambda x: list(map(lambda s: s[1][x], o)), range(16)))
-            ), score))
-            a = list(map(lambda o: (
-                list(filter(None, map(lambda s: len(s[1]) if len(s[1]) != 16 else None, o))),
-                         ), score))
-            print(a)
+            # print(score[0][0])
             # list(map(lambda o: (
-            #     list(map(lambda x: list(map(lambda s: s[1][x] if len(s[1]) >= x else 0, o)), range(16)))
+            #     list(map(lambda x: list(map(lambda s: s[1][x], o)), range(8)))
             # ), score))
-            # input()
+            # list(map(lambda o: (
+            #     list(map(lambda x: list(map(lambda s: s[1][x], o)), range(14)))
+            # ), score))
+            #
+            # list(map(lambda o: (
+            #     list(map(lambda x: list(map(lambda s: s[1][x], o)), range(16)))
+            # ), score))
+            # a = list(map(lambda o: (
+            #     list(filter(None, map(lambda s: len(s[1]) if len(s[1]) != 16 else None, o))),
+            #              ), score))
+            # print(a)
+            # # list(map(lambda o: (
+            # #     list(map(lambda x: list(map(lambda s: s[1][x] if len(s[1]) >= x else 0, o)), range(16)))
+            # # ), score))
+            # # input()
 
             pmi = list(map(lambda o: (
                 list(map(lambda x: compute_pmi(list(map(lambda s: s[0][x], o))), range(8))),
-                list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) == 16 else 0, o))), range(16)))
+                list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))), range(16)))
             ), score))
 
-            print(list(zip(*pmi[0][1])))
-            input()
             logit_pn = list(map(
                 lambda s: (
                     list(zip(

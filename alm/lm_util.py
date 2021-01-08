@@ -168,8 +168,6 @@ class TransformersLM:
                 encode = {k: v.to(self.device) for k, v in encode.items()}
                 labels = encode.pop('labels')
                 output = self.model(**encode, return_dict=True)
-                print(output)
-                input()
                 prediction_scores = output['logits']
                 loss = loss_fct(prediction_scores.view(-1, self.config.vocab_size), labels.view(-1))
                 loss = loss.view(len(prediction_scores), -1)

@@ -129,6 +129,16 @@ class AnalogyData:
 
     def insert_score(self, score_positive: List, score_negative: List = None):
         """ restore the nested structure from a flatten list """
+        print(list(map(
+            lambda x: list(map(
+                lambda y: (
+                    len(self.list_nested_sentence[x[0]][y][0]),
+                    len(self.list_nested_sentence[x[0]][y][1])
+                ),
+                range(len(x[1])))),
+            enumerate(self.list_nested_sentence))))
+        input()
+
         list_placeholder = list(map(
             lambda x: list(map(
                 lambda y: (

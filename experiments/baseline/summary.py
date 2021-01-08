@@ -6,7 +6,6 @@ import pandas as pd
 
 pmi_aggregations = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7', 'p_8', 'p_9', 'p_10', 'p_11']
 aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
-
 all_templates = [['is-to-what'], ['is-to-as'], ['rel-same'], ['what-is-to'], ['she-to-as'], ['as-what-same']]
 data = ['./data/sat_package_v3.jsonl', './data/u2.jsonl', './data/u4.jsonl']
 export_dir = './experiments/baseline/results'
@@ -19,7 +18,7 @@ def main(lm):
         for _data in data:
             for _temp in all_templates:
 
-                def run(scoring_method, pmi_aggregation=None):
+                def run(scoring_method, pmi_aggregation=None, ppl_pmi_aggregation=None):
                     scorer.analogy_test(
                         scoring_method=scoring_method,
                         path_to_data=_data,
@@ -29,19 +28,20 @@ def main(lm):
                         permutation_negative=False,
                         no_inference=True,
                         aggregation_positive=aggregation_positives,
-                        pmi_aggregation=pmi_aggregation
+                        pmi_aggregation=pmi_aggregation,
+                        ppl_pmi_aggregation=ppl_pmi_aggregation
                     )
                     scorer.release_cache()
 
                 run('ppl')
                 run('embedding_similarity')
-                run('ppl_pmi')
+                run('ppl_pmi', ppl_pmi_aggregation=['max', 'mean', 'min', 'p_0', 'p_1'])
                 if 'gpt' not in _model:
-                    for _pmi_aggregation in pmi_aggregations:
-                        run('pmi', _pmi_aggregation)
+                    [run('pmi', pmi_aggregation=_pmi_aggregation) for _pmi_aggregation in pmi_aggregations]
 
     # export as a csv
-    index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive', 'pmi_aggregation', 'pmi_lambda', 'ppl_pmi_lambda']
+    index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive', 'pmi_aggregation',
+             'pmi_lambda', 'ppl_pmi_lambda', 'ppl_pmi_aggregation']
     df = pd.DataFrame(index=index + ['accuracy'])
 
     for i in glob('./{}/outputs/*'.format(export_dir)):
@@ -58,5 +58,4 @@ def main(lm):
 
 
 if __name__ == '__main__':
-    # main(lm=[('roberta-large', 32, 512), ('gpt2-xl', 32, 512)])
-    main(lm=[('bert-large-cased', 64, 512), ('gpt2-large', 32, 512)])
+    main([('roberta-large', 32, 512), ('gpt2-xl', 32, 512), ('bert-large-cased', 64, 512), ('gpt2-large', 32, 512)])

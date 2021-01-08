@@ -18,29 +18,27 @@ def main(lm):
         scorer = alm.RelationScorer(model=_model, max_length=_max_length)
         for _data in data:
             for _temp in all_templates:
-                for aggregation_positive in aggregation_positives:
 
-                    def run(scoring_method, pmi_aggregation=None):
-                        scorer.analogy_test(
-                            scoring_method=scoring_method,
-                            path_to_data=_data,
-                            template_types=_temp,
-                            batch_size=_batch,
-                            export_dir=export_dir,
-                            permutation_negative=False,
-                            no_inference=True,
-                            overwrite_output=True,
-                            aggregation_positive=aggregation_positive,
-                            pmi_aggregation=pmi_aggregation
-                        )
-                        scorer.release_cache()
+                def run(scoring_method, pmi_aggregation=None):
+                    scorer.analogy_test(
+                        scoring_method=scoring_method,
+                        path_to_data=_data,
+                        template_types=_temp,
+                        batch_size=_batch,
+                        export_dir=export_dir,
+                        permutation_negative=False,
+                        no_inference=True,
+                        aggregation_positive=aggregation_positives,
+                        pmi_aggregation=pmi_aggregation
+                    )
+                    scorer.release_cache()
 
-                    run('ppl')
-                    run('embedding_similarity')
-                    run('ppl_pmi')
-                    if 'gpt' not in _model:
-                        for _pmi_aggregation in pmi_aggregations:
-                            run('pmi', _pmi_aggregation)
+                run('ppl')
+                run('embedding_similarity')
+                run('ppl_pmi')
+                if 'gpt' not in _model:
+                    for _pmi_aggregation in pmi_aggregations:
+                        run('pmi', _pmi_aggregation)
 
     # export as a csv
     index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive', 'pmi_aggregation', 'pmi_lambda', 'ppl_pmi_lambda']

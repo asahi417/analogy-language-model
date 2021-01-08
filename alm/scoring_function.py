@@ -59,6 +59,7 @@ class RelationScorer:
                      ppl_pmi_alpha: (float, List) = 1.0,
                      template_types: List = None,
                      permutation_negative: bool = False,
+                     permutation_negative_weight: (float, List) = 1.0,
                      aggregation_positive: (str, List) = 'mean',
                      aggregation_negative: (str, List) = 'none',
                      skip_scoring_prediction: bool = False,
@@ -145,11 +146,13 @@ class RelationScorer:
             aggregation_positive = [aggregation_positive]
         if type(aggregation_negative) is not list:
             aggregation_negative = [aggregation_negative]
+        if type(permutation_negative_weight) is not list:
+            permutation_negative_weight = [permutation_negative_weight]
         all_config = list(
-            product(ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, aggregation_positive, aggregation_negative))
-        logging.info('configuration size: {}'.format(all_config))
-        for n, (ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, aggregation_positive, aggregation_negative) in \
-                enumerate(all_config):
+            product(ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, aggregation_positive, aggregation_negative,
+                    permutation_negative_weight))
+        for n, (ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, aggregation_positive, aggregation_negative,
+                permutation_negative_weight) in enumerate(all_config):
             logging.info('##### CONFIG {}/{} #####'.format(n, len(all_config)))
             assert aggregation_positive in AGGREGATOR.keys()
             assert aggregation_negative in AGGREGATOR.keys()
@@ -172,7 +175,8 @@ class RelationScorer:
                 aggregation_positive=aggregation_positive,
                 aggregation_negative=aggregation_negative,
                 ppl_pmi_lambda=ppl_pmi_lambda,
-                ppl_pmi_alpha=ppl_pmi_alpha
+                ppl_pmi_alpha=ppl_pmi_alpha,
+                permutation_negative_weight=permutation_negative_weight
             )
             if config.output_exist and not overwrite_output:
                 logging.info('skip: output file is found at {}'.format(config.export_dir))
@@ -235,7 +239,8 @@ class RelationScorer:
                         lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])),
                         o)),
                     score))
-            logit = list(map(lambda o: list(map(lambda s: s[1] - s[0], o)), logit_pn))
+            permutation_negative_weight = 1 if permutation_negative_weight is None else permutation_negative_weight
+            logit = list(map(lambda o: list(map(lambda s: permutation_negative_weight * s[1] - s[0], o)), logit_pn))
             pred = list(map(lambda x: x.index(max(x)), logit))
 
             # compute accuracy

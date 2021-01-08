@@ -5,7 +5,7 @@ from glob import glob
 import pandas as pd
 
 aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
-aggregation_ppl_pmi = ['max', 'mean', 'min', 'p_0', 'p_1']
+ppl_pmi_aggregation = ['max', 'mean', 'min', 'p_0', 'p_1']
 export_dir = './experiments/ppl_pmi_grid/results'
 lambdas = [-2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2.0]
 alphas = [-2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2.0]
@@ -14,21 +14,17 @@ alphas = [-2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2.0]
 def main(path_to_data, template):
     # get accuracy
     scorer = alm.RelationScorer(model='roberta-large', max_length=32)
-    for i in lambdas:
-        for _i in alphas:
-            for __i in aggregation_ppl_pmi:
-                list(map(lambda x: scorer.analogy_test(
-                    scoring_method='ppl_pmi',
-                    path_to_data=path_to_data,
-                    template_types=[template],
-                    aggregation_positive=x,
-                    ppl_pmi_lambda=i,
-                    ppl_pmi_alpha=_i,
-                    ppl_pmi_aggregation=__i,
-                    no_inference=True,
-                    overwrite_output=False,
-                    export_dir=export_dir
-                    ),  aggregation_positives))
+    scorer.analogy_test(
+        scoring_method='ppl_pmi',
+        path_to_data=path_to_data,
+        template_types=[template],
+        aggregation_positive=aggregation_positives,
+        ppl_pmi_lambda=lambdas,
+        ppl_pmi_alpha=alphas,
+        ppl_pmi_aggregation=ppl_pmi_aggregation,
+        no_inference=True,
+        export_dir=export_dir
+    )
 
 
 if __name__ == '__main__':

@@ -5,29 +5,25 @@ from glob import glob
 import pandas as pd
 
 export_dir = './experiments/ppl_pmi_grid/results'
-aggregation_ppl_pmi_whole = ['max', 'mean', 'min', 'p_0', 'p_1']
+ppl_pmi_aggregation = ['max', 'mean', 'min', 'p_0', 'p_1']
 lambdas = list(map(lambda x: x/10, range(10, 21)))
 alphas = list(map(lambda x: x / 10, range(-10, 1)))
 
 
 def main(path_to_data, template, aggregation_positive):
-
-    for ppl_pmi_aggregation in aggregation_ppl_pmi_whole:
-        # get accuracy
-        scorer = alm.RelationScorer(model='roberta-large', max_length=32)
-        for lam in lambdas:
-            for alpha in alphas:
-                scorer.analogy_test(
-                    scoring_method='ppl_pmi',
-                    path_to_data=path_to_data,
-                    ppl_pmi_aggregation=ppl_pmi_aggregation,
-                    template_types=[template],
-                    aggregation_positive=aggregation_positive,
-                    ppl_pmi_lambda=lam,
-                    ppl_pmi_alpha=alpha,
-                    no_inference=True,
-                    export_dir=export_dir
-                )
+    # get accuracy
+    scorer = alm.RelationScorer(model='roberta-large', max_length=32)
+    scorer.analogy_test(
+        scoring_method='ppl_pmi',
+        path_to_data=path_to_data,
+        ppl_pmi_aggregation=ppl_pmi_aggregation,
+        template_types=[template],
+        aggregation_positive=aggregation_positive,
+        ppl_pmi_lambda=lambdas,
+        ppl_pmi_alpha=alphas,
+        no_inference=True,
+        export_dir=export_dir
+    )
 
 
 if __name__ == '__main__':

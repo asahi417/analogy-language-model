@@ -14,16 +14,15 @@ def main(path_to_data, template):
     # get accuracy
     scorer = alm.RelationScorer(model='roberta-large', max_length=32)
     for i in [-2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2.0]:
-        for pmi_aggregation in pmi_aggregations:
-            list(map(lambda x: scorer.analogy_test(
-                scoring_method='pmi',
-                pmi_aggregation=pmi_aggregation,
-                path_to_data=path_to_data,
-                template_types=[template],
-                aggregation_positive=x,
-                pmi_lambda=i,
-                no_inference=True,
-                export_dir=export_dir), aggregation_positives))
+        list(map(lambda x: scorer.analogy_test(
+            scoring_method='pmi',
+            pmi_aggregation=x,
+            path_to_data=path_to_data,
+            template_types=[template],
+            aggregation_positive=aggregation_positives,
+            pmi_lambda=i,
+            no_inference=True,
+            export_dir=export_dir), pmi_aggregations))
 
     # export as a csv
     index = ['model', 'max_length', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive',

@@ -231,6 +231,16 @@ class RelationScorer:
             # loop over all positive/negative permutations
             print(list(map(lambda o: list(map(lambda x: len(x[1]), o)), score)))
             print(list(map(lambda o: list(map(lambda x: len(x[0]), o)), score)))
+            a = list(map(lambda o: (
+                list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) < x else 0, o))), range(16)))
+            ), score))
+            print(a[0])
+            a = list(map(lambda o: (
+                list(map(lambda x: compute_pmi(list(map(lambda s: s[0][x], o))), range(8))),
+            ), score))
+            print(a[0])
+            input()
+
             pmi = list(map(lambda o: (
                 list(map(lambda x: compute_pmi(list(map(lambda s: s[0][x], o))), range(8))),
                 list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) < x else 0, o))), range(16)))

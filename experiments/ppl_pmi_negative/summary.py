@@ -24,6 +24,7 @@ def main(path_to_data, template, aggregation_positive):
                     template_types=[template],
                     aggregation_positive=aggregation_positive,
                     aggregation_negative=x,
+                    permutation_negative=True,
                     ppl_pmi_lambda=i,
                     ppl_pmi_alpha=_i,
                     ppl_pmi_aggregation=__i,

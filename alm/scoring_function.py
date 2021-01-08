@@ -234,6 +234,8 @@ class RelationScorer:
                 list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))), range(8)))
             ), score))
 
+            print(list(zip(*pmi[0][1])))
+            input()
             logit_pn = list(map(
                 lambda s: (
                     list(zip(

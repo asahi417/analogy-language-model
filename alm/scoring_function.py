@@ -235,9 +235,16 @@ class RelationScorer:
             # print(list(map(lambda o: (
             #     list(map(lambda x: list(map(lambda s: len(s[1]), o)), range(16)))
             # ), score)))
-            # list(map(lambda o: (
-            #     list(map(lambda x: list(map(lambda s: s[1], o)), range(16)))
-            # ), score))
+            list(map(lambda o: (
+                list(map(lambda x: list(map(lambda s: s[1][x], o)), range(8)))
+            ), score))
+            list(map(lambda o: (
+                list(map(lambda x: list(map(lambda s: s[1][x], o)), range(14)))
+            ), score))
+
+            list(map(lambda o: (
+                list(map(lambda x: list(map(lambda s: s[1][x], o)), range(16)))
+            ), score))
             a = list(map(lambda o: (
                 list(filter(None, map(lambda s: len(s[1]) if len(s[1]) != 16 else None, o))),
                          ), score))
@@ -249,7 +256,7 @@ class RelationScorer:
 
             pmi = list(map(lambda o: (
                 list(map(lambda x: compute_pmi(list(map(lambda s: s[0][x], o))), range(8))),
-                list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) > x else 0, o))), range(16)))
+                list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) == 16 else 0, o))), range(16)))
             ), score))
 
             print(list(zip(*pmi[0][1])))

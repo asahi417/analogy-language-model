@@ -149,6 +149,7 @@ class AnalogyData:
             list_score_neg = score_negative.copy()
             for n_q, n_o, n_perm in self.structure_id_neg:
                 list_placeholder[n_q][n_o][1][n_perm] = list_score_neg.pop(0)
-        print('pos: {}'.format(len(score_positive)))
-        print('neg: {}'.format(len(score_negative)))
+        print('pos: {}'.format(len(list_score_pos)))
+        print('neg: {}'.format(len(list_score_neg)))
+        input()
         return list_placeholder

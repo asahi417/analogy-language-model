@@ -228,10 +228,10 @@ class RelationScorer:
                     zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
                 return neg_pmi
 
-            # loop over all positive permutations
+            # loop over all positive/negative permutations
             pmi = list(map(lambda o: (
                 list(map(lambda x: compute_pmi(list(map(lambda s: s[0][x], o))), range(8))),
-                list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))), range(8)))
+                list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))), range(16)))
             ), score))
 
             print(list(zip(*pmi[0][1])))

@@ -239,7 +239,7 @@ class RelationScorer:
             #     list(map(lambda x: list(map(lambda s: s[1], o)), range(16)))
             # ), score))
             a = list(map(lambda o: (
-                list(filter(None, map(lambda s: len(s[1]) if len(s[1]) <= 16 else None, o))),
+                list(filter(None, map(lambda s: len(s[1]) if len(s[1]) != 16 else None, o))),
                          ), score))
             print(a)
             # list(map(lambda o: (

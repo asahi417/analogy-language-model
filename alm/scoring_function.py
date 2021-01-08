@@ -15,6 +15,7 @@ AGGREGATOR = {
     'p_0': lambda x: x[0], 'p_1': lambda x: x[1], 'p_2': lambda x: x[2], 'p_3': lambda x: x[3],
     'p_4': lambda x: x[4], 'p_5': lambda x: x[5], 'p_6': lambda x: x[6], 'p_7': lambda x: x[7],
     'p_8': lambda x: x[8], 'p_9': lambda x: x[9], 'p_10': lambda x: x[10], 'p_11': lambda x: x[11],
+    'p_12': lambda x: x[12], 'p_13': lambda x: x[13], 'p_14': lambda x: x[14], 'p_15': lambda x: x[15],
     'none': lambda x: 0
 }
 
@@ -237,9 +238,10 @@ class RelationScorer:
             # list(map(lambda o: (
             #     list(map(lambda x: list(map(lambda s: s[1], o)), range(16)))
             # ), score))
-            # list(map(lambda o: (
-            #     list(map(lambda x: list(map(lambda s: s[1][x] if len(s[1]) > x else 0, o)), range(16)))
-            # ), score))
+            a = list(map(lambda o: (
+                list(map(lambda x: filter(None, map(lambda s: len(s[1][x]) if len(s[1]) <= x else None, o)), range(16)))
+            ), score))
+            print(a)
             # list(map(lambda o: (
             #     list(map(lambda x: list(map(lambda s: s[1][x] if len(s[1]) >= x else 0, o)), range(16)))
             # ), score))

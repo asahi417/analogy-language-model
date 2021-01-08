@@ -76,17 +76,15 @@ class ConfigManager:
                 for i in ['positive', 'negative']:
                     _file = os.path.join(self.cache_dir, 'flatten_score_{}.pkl'.format(i))
                     if os.path.exists(_file):
-                        if not skip_loading_flatten_score:
-                            with open(_file, "rb") as fp:  # Unpickling
-                                self.flatten_score[i] = pickle.load(fp)
+                        with open(_file, "rb") as fp:  # Unpickling
+                            self.flatten_score[i] = pickle.load(fp)
                         logging.info('load flatten_score_{} from {}'.format(i, _file))
 
                     # load stats for ppl_pmi
                     _file = os.path.join(self.cache_dir, 'flatten_score_mar_{}.pkl'.format(i))
                     if os.path.exists(_file):
-                        if not skip_loading_flatten_score:
-                            with open(_file, "rb") as fp:  # Unpickling
-                                self.flatten_score_mar[i] = pickle.load(fp)
+                        with open(_file, "rb") as fp:  # Unpickling
+                            self.flatten_score_mar[i] = pickle.load(fp)
                         logging.info('load flatten_score_mar_{} from {}'.format(i, _file))
 
                 # load intermediate score for PMI specific

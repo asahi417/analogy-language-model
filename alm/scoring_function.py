@@ -235,6 +235,7 @@ class RelationScorer:
             # print(list(map(lambda o: (
             #     list(map(lambda x: list(map(lambda s: len(s[1]), o)), range(16)))
             # ), score)))
+            print(score[0][0])
             list(map(lambda o: (
                 list(map(lambda x: list(map(lambda s: s[1][x], o)), range(8)))
             ), score))

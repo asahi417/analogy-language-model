@@ -139,6 +139,7 @@ class AnalogyData:
                 ),
                 range(len(x[1])))),
             enumerate(self.list_nested_sentence)))
+        print(list_placeholder[0])
 
         list_score_pos = score_positive.copy()
 
@@ -151,5 +152,4 @@ class AnalogyData:
                 list_placeholder[n_q][n_o][1][n_perm] = list_score_neg.pop(0)
         print('pos: {}'.format(len(list_score_pos)))
         print('neg: {}'.format(len(list_score_neg)))
-        input()
         return list_placeholder

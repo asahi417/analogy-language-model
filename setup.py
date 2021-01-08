@@ -20,6 +20,8 @@ setup(
     install_requires=[
         "transformers",
         "torch",
-        "tqdm"
+        "tqdm",
+        "pandas",
+        "gensim"
     ]
 )

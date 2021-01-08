@@ -1,5 +1,4 @@
 import json
-import os
 from typing import List
 from itertools import permutations, chain
 
@@ -10,8 +9,6 @@ __all__ = 'AnalogyData'
 
 def get_dataset(path_to_data: str):
     """ Get prompted SAT-type dataset: a list of (answer: int, prompts: list, stem: list, choice: list)"""
-    assert os.path.exists(path_to_data)
-
     with open(path_to_data, 'r') as f:
         return list(filter(None, map(lambda x: json.loads(x) if len(x) > 0 else None, f.read().split('\n'))))
 

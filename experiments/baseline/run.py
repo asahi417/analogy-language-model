@@ -21,7 +21,7 @@ def main(lm):
                         export_dir=export_dir,
                         permutation_negative=False,
                         skip_scoring_prediction=True,
-                        overwrite_output=False
+                        overwrite_output=True
                     )
                     scorer.release_cache()
 

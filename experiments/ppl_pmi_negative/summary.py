@@ -27,7 +27,6 @@ def main(path_to_data, template, aggregation_positive):
         ppl_pmi_alpha=alphas,
         ppl_pmi_aggregation=aggregation_ppl_pmi,
         no_inference=True,
-        overwrite_output=False,
         export_dir=export_dir,
         permutation_negative_weight=permutation_negative_weight
     )

@@ -7,7 +7,7 @@ import string
 import logging
 import pickle
 from glob import glob
-from typing import List, Dict
+from typing import List
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
 
@@ -33,8 +33,8 @@ class ConfigManager:
                  **kwargs):
         """ configuration manager for `scoring_function.RelationScorer` """
         self.config = kwargs
-        logging.info('*** setting up a config manager ***\n' +
-                     '\n'.join(list(map(lambda x: '{} : {}'.format(x[0], x[1]), self.config.items()))))
+        logging.debug('*** setting up a config manager ***\n' +
+                      '\n'.join(list(map(lambda x: '{} : {}'.format(x[0], x[1]), self.config.items()))))
         cache_dir = os.path.join(export_dir, 'flatten_scores')
         export_dir = os.path.join(export_dir, 'outputs')
         self.output_exist = False
@@ -46,7 +46,7 @@ class ConfigManager:
             # check duplication
             same_config = list(filter(lambda x: x[1] == self.config, ex_configs.items()))
             if len(same_config) != 0:
-                logging.info("found same configuration: {}".format(same_config[0][0]))
+                logging.debug("found same configuration: {}".format(same_config[0][0]))
                 self.output_exist = True
                 self.export_dir = same_config[0][0].replace('/config.json', '')
             else:
@@ -78,14 +78,14 @@ class ConfigManager:
                     if os.path.exists(_file):
                         with open(_file, "rb") as fp:  # Unpickling
                             self.flatten_score[i] = pickle.load(fp)
-                        logging.info('load flatten_score_{} from {}'.format(i, _file))
+                        logging.debug('load flatten_score_{} from {}'.format(i, _file))
 
                     # load stats for ppl_pmi
                     _file = os.path.join(self.cache_dir, 'flatten_score_mar_{}.pkl'.format(i))
                     if os.path.exists(_file):
                         with open(_file, "rb") as fp:  # Unpickling
                             self.flatten_score_mar[i] = pickle.load(fp)
-                        logging.info('load flatten_score_mar_{} from {}'.format(i, _file))
+                        logging.debug('load flatten_score_mar_{} from {}'.format(i, _file))
 
                 # load intermediate score for PMI specific
                 if self.config['scoring_method'] in ['pmi']:
@@ -99,7 +99,7 @@ class ConfigManager:
                                 k = _file.split('pmi_{}_'.format(i))[-1].replace('.pkl', '')
                                 with open(_file, "rb") as fp:  # Unpickling
                                     self.pmi_logits[i][k] = pickle.load(fp)
-                                logging.info('load pmi_{} from {}'.format(i, _file))
+                                logging.debug('load pmi_{} from {}'.format(i, _file))
 
             else:
                 self.cache_dir = os.path.join(cache_dir, get_random_string())
@@ -135,7 +135,7 @@ class ConfigManager:
             json.dump(self.config, f)
         with open('{}/output.json'.format(self.export_dir), 'w') as f:
             json.dump({"logit": logit, "logit_pn": logit_pn, "prediction": prediction}, f)
-        logging.info('saved at {}'.format(self.export_dir))
+        logging.debug('saved at {}'.format(self.export_dir))
 
 
 

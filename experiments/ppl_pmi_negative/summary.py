@@ -5,7 +5,6 @@ from glob import glob
 import pandas as pd
 
 export_dir = './experiments/ppl_pmi_negative/results'
-ind = int(os.getenv('EXPERIMENT', '0'))
 
 aggregation_negatives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7',
                          'p_8', 'p_9', 'p_10', 'p_11']
@@ -36,12 +35,9 @@ def main(path_to_data, template, aggregation_positive):
 
 
 if __name__ == '__main__':
-    if ind == 0:
-        main(path_to_data='./data/sat_package_v3.jsonl', template='as-what-same', aggregation_positive='p_2')
-    if ind == 1:
-        main(path_to_data='./data/u2.jsonl', template='she-to-as', aggregation_positive='min')
-    if ind == 2:
-        main(path_to_data='./data/u4.jsonl', template='what-is-to', aggregation_positive='p_0')
+    # main(path_to_data='./data/sat_package_v3.jsonl', template='as-what-same', aggregation_positive='p_2')
+    # main(path_to_data='./data/u2.jsonl', template='she-to-as', aggregation_positive='min')
+    # main(path_to_data='./data/u4.jsonl', template='what-is-to', aggregation_positive='p_0')
 
     # export as a csv
     index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive',

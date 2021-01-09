@@ -184,19 +184,19 @@ class RelationScorer:
 
         for n, config in enumerate(all_config):
             logging.info('##### CONFIG {}/{} #####'.format(n, len(all_config)))
-            assert aggregation_positive in AGGREGATOR.keys()
-            assert aggregation_negative in AGGREGATOR.keys()
-            aggregator_pos = AGGREGATOR[aggregation_positive]
-            aggregator_neg = AGGREGATOR[aggregation_negative]
+            assert config.config['aggregation_positive'] in AGGREGATOR.keys()
+            assert config.config['aggregation_negative'] in AGGREGATOR.keys()
+            aggregator_pos = AGGREGATOR[config.config['aggregation_positive']]
+            aggregator_neg = AGGREGATOR[config.config['aggregation_negative']]
             if not overwrite_output:
                 assert not config.output_exist
 
             # ppl_pmi aggregation
             if scoring_method == 'ppl_pmi':
                 # TODO: validate on multiple templates
-                assert ppl_pmi_aggregation is not None
+                assert config.config['ppl_pmi_aggregation'] is not None
 
-                aggregator = AGGREGATOR[ppl_pmi_aggregation]
+                aggregator = AGGREGATOR[config.config['ppl_pmi_aggregation']]
 
                 def compute_pmi(ppl_scores):
                     opt_length = len(ppl_scores) ** 0.5
@@ -224,7 +224,7 @@ class RelationScorer:
 
                     # negative pmi approx by perplexity difference: higher is better
                     neg_pmi = list(map(
-                        lambda x: x[0] * ppl_pmi_lambda - aggregator([x[1], x[2]]) * ppl_pmi_alpha,
+                        lambda x: x[0] * config.config['ppl_pmi_lambda'] - aggregator([x[1], x[2]]) * config.config['ppl_pmi_alpha'],
                         zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
                     return neg_pmi
 
@@ -248,7 +248,7 @@ class RelationScorer:
                         lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])),
                         o)),
                     score))
-            permutation_negative_weight = 1 if permutation_negative_weight is None else permutation_negative_weight
+            permutation_negative_weight = 1 if config.config['permutation_negative_weight'] is None else config.config['permutation_negative_weight']
             logit = list(map(lambda o: list(map(lambda s: permutation_negative_weight * s[1] - s[0], o)), logit_pn))
             pred = list(map(lambda x: x.index(max(x)), logit))
 

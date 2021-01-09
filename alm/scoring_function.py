@@ -151,20 +151,15 @@ class RelationScorer:
         all_config = list(
             product(ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, aggregation_positive, aggregation_negative,
                     permutation_negative_weight))
-        for n, (ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, aggregation_positive, aggregation_negative,
-                permutation_negative_weight) in enumerate(all_config):
-            logging.info('##### CONFIG {}/{} #####'.format(n, len(all_config)))
-            assert aggregation_positive in AGGREGATOR.keys()
-            assert aggregation_negative in AGGREGATOR.keys()
-            aggregator_pos = AGGREGATOR[aggregation_positive]
-            aggregator_neg = AGGREGATOR[aggregation_negative]
 
+        def get_config(_ppl_pmi_aggregation, _ppl_pmi_lambda, _ppl_pmi_alpha, _aggregation_positive,
+                       _aggregation_negative, _permutation_negative_weight):
             # configuration manager
-            config = ConfigManager(
+            return ConfigManager(
                 skip_flatten_score=True,
                 export_dir=export_dir,
                 pmi_aggregation=pmi_aggregation,
-                ppl_pmi_aggregation=ppl_pmi_aggregation,
+                ppl_pmi_aggregation=_ppl_pmi_aggregation,
                 pmi_lambda=pmi_lambda,
                 model=self.model_name,
                 max_length=self.lm.max_length,
@@ -172,15 +167,25 @@ class RelationScorer:
                 scoring_method=scoring_method,
                 template_types=template_types,
                 permutation_negative=permutation_negative,
-                aggregation_positive=aggregation_positive,
-                aggregation_negative=aggregation_negative,
-                ppl_pmi_lambda=ppl_pmi_lambda,
-                ppl_pmi_alpha=ppl_pmi_alpha,
-                permutation_negative_weight=permutation_negative_weight
+                aggregation_positive=_aggregation_positive,
+                aggregation_negative=_aggregation_negative,
+                ppl_pmi_lambda=_ppl_pmi_lambda,
+                ppl_pmi_alpha=_ppl_pmi_alpha,
+                permutation_negative_weight=_permutation_negative_weight
             )
-            if config.output_exist and not overwrite_output:
-                logging.info('skip: output file is found at {}'.format(config.export_dir))
-                continue
+
+        logging.info('aggregate configuration: {}'.format(len(all_config)))
+        all_config = [get_config(*c) for c in all_config]
+        if not overwrite_output:
+            all_config = [c for c in all_config if not c.output_exist]
+            logging.info('remaining configurations: {}'.format(len(all_config)))
+
+        for n, config in enumerate(all_config):
+            logging.info('##### CONFIG {}/{} #####'.format(n, len(all_config)))
+            assert aggregation_positive in AGGREGATOR.keys()
+            assert aggregation_negative in AGGREGATOR.keys()
+            aggregator_pos = AGGREGATOR[aggregation_positive]
+            aggregator_neg = AGGREGATOR[aggregation_negative]
 
             # ppl_pmi aggregation
             if scoring_method == 'ppl_pmi':

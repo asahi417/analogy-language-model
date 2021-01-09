@@ -2,6 +2,7 @@ import alm
 import os
 import json
 from glob import glob
+from tqdm import tqdm
 import pandas as pd
 
 export_dir = './experiments/ppl_pmi_negative/results'
@@ -41,10 +42,11 @@ if __name__ == '__main__':
 
     # export as a csv
     index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive',
-             'aggregation_negative', 'ppl_pmi_lambda', 'ppl_pmi_alpha', 'ppl_pmi_aggregation']
+             'aggregation_negative', 'ppl_pmi_lambda', 'ppl_pmi_alpha', 'ppl_pmi_aggregation',
+             'permutation_negative_weight']
     df = pd.DataFrame(index=index + ['accuracy'])
 
-    for i in glob('./{}/outputs/*'.format(export_dir)):
+    for i in tqdm(glob('./{}/outputs/*'.format(export_dir))):
         with open(os.path.join(i, 'config.json'), 'r') as f:
             config = json.load(f)
             if config['ppl_pmi_lambda'] not in lambdas or config['ppl_pmi_alpha'] not in alphas:

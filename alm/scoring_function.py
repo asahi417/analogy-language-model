@@ -175,9 +175,9 @@ class RelationScorer:
             )
 
         logging.info('aggregate configuration: {}'.format(len(all_config)))
-        all_config = [get_config(*c) for c in all_config]
+        all_config = list(map(lambda c: get_config(*c), all_config))
         if not overwrite_output:
-            all_config = [c for c in all_config if not c.output_exist]
+            all_config = list(filter(lambda c: not c.output_exist, all_config))
             logging.info('remaining configurations: {}'.format(len(all_config)))
 
         for n, config in enumerate(all_config):
@@ -186,6 +186,8 @@ class RelationScorer:
             assert aggregation_negative in AGGREGATOR.keys()
             aggregator_pos = AGGREGATOR[aggregation_positive]
             aggregator_neg = AGGREGATOR[aggregation_negative]
+            if not overwrite_output:
+                assert not config.output_exist
 
             # ppl_pmi aggregation
             if scoring_method == 'ppl_pmi':

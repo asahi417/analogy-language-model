@@ -5,9 +5,11 @@ from glob import glob
 import pandas as pd
 
 export_dir = './experiments/ppl_pmi_negative/results'
+ind = int(os.getenv('EXPERIMENT', '0'))
+
 aggregation_negatives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7',
                          'p_8', 'p_9', 'p_10', 'p_11']
-aggregation_ppl_pmi = ['max', 'mean', 'min', 'p_0', 'p_1']
+ppl_pmi_aggregation = ['max', 'mean', 'min', 'p_0', 'p_1']
 lambdas = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
 alphas = [-0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5]
 permutation_negative_weight = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
@@ -17,6 +19,7 @@ def main(path_to_data, template, aggregation_positive):
     # get accuracy
     scorer = alm.RelationScorer(model='roberta-large', max_length=32)
     scorer.analogy_test(
+        skip_duplication_check=True,
         scoring_method='ppl_pmi',
         path_to_data=path_to_data,
         template_types=[template],
@@ -25,7 +28,7 @@ def main(path_to_data, template, aggregation_positive):
         aggregation_negative=aggregation_negatives,
         ppl_pmi_lambda=lambdas,
         ppl_pmi_alpha=alphas,
-        ppl_pmi_aggregation=aggregation_ppl_pmi,
+        ppl_pmi_aggregation=ppl_pmi_aggregation,
         no_inference=True,
         export_dir=export_dir,
         permutation_negative_weight=permutation_negative_weight
@@ -33,7 +36,6 @@ def main(path_to_data, template, aggregation_positive):
 
 
 if __name__ == '__main__':
-    ind = int(os.getenv('EXPERIMENT', '0'))
     if ind == 0:
         main(path_to_data='./data/sat_package_v3.jsonl', template='as-what-same', aggregation_positive='p_2')
     if ind == 1:

@@ -65,7 +65,8 @@ class RelationScorer:
                      skip_scoring_prediction: bool = False,
                      export_dir: str = './results',
                      no_inference: bool = False,
-                     overwrite_output: bool = False):
+                     overwrite_output: bool = False,
+                     skip_duplication_check: bool = False):
         """ relation scoring test on analogy dataset
 
         :param path_to_data:
@@ -156,6 +157,7 @@ class RelationScorer:
                        _aggregation_negative, _permutation_negative_weight):
             # configuration manager
             return ConfigManager(
+                skip_duplication_check=skip_duplication_check,
                 skip_flatten_score=True,
                 export_dir=export_dir,
                 pmi_aggregation=pmi_aggregation,

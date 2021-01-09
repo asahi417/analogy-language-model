@@ -30,6 +30,7 @@ class ConfigManager:
     def __init__(self,
                  export_dir: str,
                  skip_flatten_score: bool = False,
+                 skip_duplication_check: bool = False,
                  **kwargs):
         """ configuration manager for `scoring_function.RelationScorer` """
         self.config = kwargs
@@ -39,9 +40,10 @@ class ConfigManager:
         export_dir = os.path.join(export_dir, 'outputs')
         self.output_exist = False
         self.pmi_logits = {'positive': None, 'negative': None}
-        if not os.path.exists(export_dir):
+        if not os.path.exists(export_dir) or skip_duplication_check:
             self.export_dir = os.path.join(export_dir, get_random_string())
         else:
+            # this is going to be very large loop
             ex_configs = {i: safe_open(i) for i in glob('{}/*/config.json'.format(export_dir))}
             # check duplication
             same_config = list(filter(lambda x: x[1] == self.config, ex_configs.items()))

@@ -31,11 +31,14 @@ def get_dataset_prompt(path_to_data: str,
         template_types = list(TEMPLATES.keys())
 
     def sampling_permutation(a, b, c, d):
-        positive = [(a, b, c, d), (b, a, d, c), (c, d, a, b), (d, c, b, a),
-                    (a, c, b, d), (c, a, d, b), (b, d, a, c), (d, b, c, a)]
-        negative = [(a, b, d, c), (a, c, d, b), (a, d, b, c), (a, d, c, b), (b, a, c, d), (b, c, a, d), (b, c, d, a),
-                    (b, d, a, c), (b, d, c, a), (c, a, b, d), (c, b, a, d), (c, b, d, a), (c, d, b, a), (d, a, b, c),
-                    (d, a, c, b), (d, b, a, c), (d, c, a, b)]
+        positive = [(a, b, c, d), (a, c, b, d),
+                    (b, a, d, c), (b, d, a, c),
+                    (c, d, a, b), (c, a, d, b),
+                    (d, c, b, a), (d, b, c, a)]
+        negative = [(a, b, d, c), (a, c, d, b), (a, d, b, c), (a, d, c, b),
+                    (b, a, c, d), (b, c, a, d), (b, c, d, a), (b, d, c, a),
+                    (c, a, b, d), (c, b, a, d), (c, b, d, a), (c, d, b, a),
+                    (d, a, b, c), (d, a, c, b), (d, b, a, c), (d, c, a, b)]
 
         if permutation_negative:
             return positive, negative

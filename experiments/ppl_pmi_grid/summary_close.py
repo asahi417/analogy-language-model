@@ -6,7 +6,7 @@ import pandas as pd
 
 export_dir = './experiments/ppl_pmi_grid/results'
 ppl_pmi_aggregation = ['max', 'mean', 'min', 'p_0', 'p_1']
-lambdas = list(map(lambda x: x/10, range(10, 21)))
+lambdas = list(map(lambda x: x / 10, range(10, 21)))
 alphas = list(map(lambda x: x / 10, range(-10, 1)))
 
 

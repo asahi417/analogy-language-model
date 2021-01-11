@@ -134,24 +134,6 @@ class AnalogyData:
 
     def insert_score(self, score_positive: List, score_negative: List = None):
         """ restore the nested structure from a flatten list """
-        # print(list(map(
-        #     lambda x: list(map(
-        #         lambda y: (
-        #             len(data.list_nested_sentence[x[0]][y][0]),
-        #             len(data.list_nested_sentence[x[0]][y][1])
-        #         ),
-        #         range(len(x[1])))),
-        #     enumerate(data.list_nested_sentence))))
-        # print(list(map(
-        #     lambda x: list(map(
-        #         lambda y: (
-        #             len(self.list_nested_sentence[x[0]][y][0]),
-        #             len(self.list_nested_sentence[x[0]][y][1])
-        #         ),
-        #         range(len(x[1])))),
-        #     enumerate(self.list_nested_sentence))))
-        # input()
-
         list_placeholder = list(map(
             lambda x: list(map(
                 lambda y: (
@@ -161,11 +143,7 @@ class AnalogyData:
                 range(len(x[1])))),
             enumerate(self.list_nested_sentence)))
         list_score_pos = score_positive.copy()
-
-        print(len(self.structure_id_pos))
         for n_q, n_o, n_perm in self.structure_id_pos:
-            if len(list_score_pos) == 0:
-                print(n_q, n_o, n_perm)
             list_placeholder[n_q][n_o][0][n_perm] = list_score_pos.pop(0)
 
         if score_negative is not None and self.structure_id_neg is not None:

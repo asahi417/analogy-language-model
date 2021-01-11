@@ -163,6 +163,8 @@ class AnalogyData:
         list_score_pos = score_positive.copy()
 
         for n_q, n_o, n_perm in self.structure_id_pos:
+            if len(list_score_pos) == 0:
+                print(n_q, n_o, n_perm)
             list_placeholder[n_q][n_o][0][n_perm] = list_score_pos.pop(0)
 
         if score_negative is not None and self.structure_id_neg is not None:

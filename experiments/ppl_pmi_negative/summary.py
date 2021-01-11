@@ -36,7 +36,7 @@ def main(path_to_data, template, aggregation_positive):
 
 
 if __name__ == '__main__':
-    experiment = os.getenv('EXPERIMENT', '0')
+    experiment = int(os.getenv('EXPERIMENT', '0'))
     if experiment == 0:
         main(path_to_data='./data/sat_package_v3.jsonl', template='as-what-same', aggregation_positive='p_2')
     if experiment == 1:

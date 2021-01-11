@@ -36,9 +36,14 @@ def main(path_to_data, template, aggregation_positive):
 
 
 if __name__ == '__main__':
-    # main(path_to_data='./data/sat_package_v3.jsonl', template='as-what-same', aggregation_positive='p_2')
-    # main(path_to_data='./data/u2.jsonl', template='she-to-as', aggregation_positive='min')
-    # main(path_to_data='./data/u4.jsonl', template='what-is-to', aggregation_positive='p_0')
+    experiment = os.getenv('EXPERIMENT', '0')
+    if experiment == 0:
+        main(path_to_data='./data/sat_package_v3.jsonl', template='as-what-same', aggregation_positive='p_2')
+    if experiment == 1:
+        main(path_to_data='./data/u2.jsonl', template='she-to-as', aggregation_positive='min')
+        exit()
+    if experiment == 2:
+        main(path_to_data='./data/u4.jsonl', template='what-is-to', aggregation_positive='p_0')
 
     # export as a csv
     index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive',

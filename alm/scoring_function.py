@@ -133,6 +133,7 @@ class RelationScorer:
         logging.info('restore batch structure')
         print(len(score_pos))
         score = data_instance.insert_score(score_pos, score_neg)
+        return
 
         ##############
         # get output #

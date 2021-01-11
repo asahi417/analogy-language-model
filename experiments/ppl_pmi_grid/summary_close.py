@@ -27,9 +27,9 @@ def main(path_to_data, template, aggregation_positive):
 
 
 if __name__ == '__main__':
-    main(path_to_data='./data/u4.jsonl', template='what-is-to', aggregation_positive='p_0')
-    main(path_to_data='./data/sat_package_v3.jsonl', template='as-what-same', aggregation_positive='p_2')
-    main(path_to_data='./data/u2.jsonl', template='she-to-as', aggregation_positive='p_0')
+    # main(path_to_data='./data/u4.jsonl', template='what-is-to', aggregation_positive='p_0')
+    # main(path_to_data='./data/sat_package_v3.jsonl', template='as-what-same', aggregation_positive='p_2')
+    # main(path_to_data='./data/u2.jsonl', template='she-to-as', aggregation_positive='p_0')
 
     # always test the configuration of u4 dataset
     main(path_to_data='./data/sat_package_v3.jsonl', template='what-is-to', aggregation_positive='p_0')

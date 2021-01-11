@@ -8,7 +8,8 @@ pmi_aggregations = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_
 aggregation_positives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
 all_templates = [['is-to-what'], ['is-to-as'], ['rel-same'], ['what-is-to'], ['she-to-as'], ['as-what-same']]
 # data = ['./data/sat_package_v3.jsonl', './data/u2.jsonl', './data/u4.jsonl']
-data = ['./data/u2_raw.jsonl']
+# data = ['./data/u2_raw.jsonl']
+data = ['./data/u4.jsonl']
 export_dir = './experiments/baseline/results'
 
 
@@ -40,6 +41,7 @@ def main(lm):
                 if 'gpt' not in _model:
                     [run('pmi', pmi_aggregation=_pmi_aggregation) for _pmi_aggregation in pmi_aggregations]
 
+    input()
     # export as a csv
     index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive', 'pmi_aggregation',
              'pmi_lambda', 'ppl_pmi_lambda', 'ppl_pmi_aggregation']

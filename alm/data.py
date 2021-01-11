@@ -162,6 +162,7 @@ class AnalogyData:
             enumerate(self.list_nested_sentence)))
         list_score_pos = score_positive.copy()
 
+        print(len(self.structure_id_pos))
         for n_q, n_o, n_perm in self.structure_id_pos:
             if len(list_score_pos) == 0:
                 print(n_q, n_o, n_perm)

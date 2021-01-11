@@ -1,9 +1,11 @@
 import alm
 
 data = [
-    ('./data/sat_package_v3.jsonl', 'as-what-same'),
-    ('./data/u2.jsonl', 'she-to-as'),
-    ('./data/u4.jsonl', 'what-is-to')
+    # ('./data/u4.jsonl', 'what-is-to'),
+    # ('./data/sat_package_v3.jsonl', 'as-what-same'),
+    # ('./data/u2.jsonl', 'she-to-as'),
+    ('./data/sat_package_v3.jsonl', 'what-is-to'),
+    ('./data/u2.jsonl', 'what-is-to'),
 ]
 lm = ('roberta-large', 32, 512)
 export_dir = './experiments/ppl_pmi_negative/results'

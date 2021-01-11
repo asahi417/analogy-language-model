@@ -15,7 +15,7 @@ def main(path_to_data, template):
     # get accuracy
     scorer = alm.RelationScorer(model='roberta-large', max_length=32)
     scorer.analogy_test(
-        skip_duplication_check=False,
+        skip_duplication_check=True,
         scoring_method='ppl_pmi',
         path_to_data=path_to_data,
         template_types=[template],

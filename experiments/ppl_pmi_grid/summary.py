@@ -24,14 +24,17 @@ def main(path_to_data, template):
         ppl_pmi_alpha=alphas,
         ppl_pmi_aggregation=ppl_pmi_aggregation,
         no_inference=True,
+        skip_scoring_prediction=True,
         export_dir=export_dir
     )
 
 
 if __name__ == '__main__':
+
+    main(path_to_data='./data/sat_package_v3.jsonl', template='as-what-same')  # p_2
+    main(path_to_data='./data/u2.jsonl', template='she-to-as')  # min
+    input()
     main(path_to_data='./data/u4.jsonl', template='what-is-to')  # p_0
-    # main(path_to_data='./data/sat_package_v3.jsonl', template='as-what-same')  # p_2
-    # main(path_to_data='./data/u2.jsonl', template='she-to-as')  # min
 
     # always test the configuration of u4 dataset
     main(path_to_data='./data/sat_package_v3.jsonl', template='what-is-to')  # p_2

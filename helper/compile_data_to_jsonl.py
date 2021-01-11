@@ -15,7 +15,7 @@ EXPORT_FILES = {
         "low-advanced": "./data/original/u4/low-advanced*.txt",
         "low-intermediate": "./data/original/u4/low-intermediate*.txt",
     },
-    './data/u2.jsonl': {
+    './data/u2_raw.jsonl': {
         "grade4": "./data/original/u2/grade4*.txt",
         "grade5": "./data/original/u2/grade5*.txt",
         "grade6": "./data/original/u2/grade6*.txt",
@@ -41,7 +41,7 @@ def process_single_entry_sat(single_entry: str):
     return {"stem": target, "answer": answer_id, "choice": choice_list, "prefix": prefix}
 
 
-def process_single_entry(single_entry: str, level: str, path: str):
+def process_single_entry(single_entry: str, level: str):
     lines = [re.sub(r'\s\Z', '', t).replace('\u0301', '').replace('\\', '') for t in single_entry.split('\n')]
     lines = list(filter(lambda x: len(x) > 0, lines))
     target = (lines[0].split(' ')[1].lower(), lines[0].split(' ')[-1].lower())
@@ -58,13 +58,14 @@ def format_data(txt_dir):
 
     for _k, _v in txt_dir.items():
         _all_data += list(chain(*[
-            [process_single_entry(s, _k, _i) for s in re.split(r'\n[\s]*\n', open(_i, "r").read())]
+            [process_single_entry(s, _k) for s in re.split(r'\n[\s]*\n', open(_i, "r").read())]
             for _i in glob(_v)]))
 
     return _all_data
 
 
 if __name__ == '__main__':
+    drop_duplication = False
     all_data = []
     dup = 0
     for k, v in EXPORT_FILES.items():
@@ -73,7 +74,7 @@ if __name__ == '__main__':
         for __k in jsonl_file:
             i = deepcopy(__k)
             i.pop('prefix')
-            if i in all_data:
+            if drop_duplication and i in all_data:
                 dup += 1
             else:
                 all_data.append(i)
@@ -86,5 +87,5 @@ if __name__ == '__main__':
 
     for k, v in EXPORT_FILES_SAT.items():
         processed = [json.dumps(process_single_entry_sat(i)) for i in re.split(r'\n[\s]*\n', open(v, "r").read())[1:]]
-        with open(k, 'w') as writer:
-            writer.write('\n'.join(processed))
+        # with open(k, 'w') as writer:
+        #     writer.write('\n'.join(processed))

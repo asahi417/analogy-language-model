@@ -8,14 +8,14 @@ from itertools import chain
 
 ALPHABET_LIST = list(string.ascii_lowercase)
 EXPORT_FILES = {
-    './data/u4.jsonl': {
+    './data/u4_raw.jsonl': {
         "high-advanced": "./data/original/u4/high-advanced*.txt",
         "high-beginning": "./data/original/u4/high-beginning*.txt",
         "high-intermediate": "./data/original/u4/high-intermediate*.txt",
         "low-advanced": "./data/original/u4/low-advanced*.txt",
         "low-intermediate": "./data/original/u4/low-intermediate*.txt",
     },
-    './data/u2_raw.jsonl': {
+    './data/u2.jsonl': {
         "grade4": "./data/original/u2/grade4*.txt",
         "grade5": "./data/original/u2/grade5*.txt",
         "grade6": "./data/original/u2/grade6*.txt",
@@ -65,7 +65,7 @@ def format_data(txt_dir):
 
 
 if __name__ == '__main__':
-    drop_duplication = False
+    drop_duplication = True
     all_data = []
     dup = 0
     for k, v in EXPORT_FILES.items():
@@ -87,5 +87,5 @@ if __name__ == '__main__':
 
     for k, v in EXPORT_FILES_SAT.items():
         processed = [json.dumps(process_single_entry_sat(i)) for i in re.split(r'\n[\s]*\n', open(v, "r").read())[1:]]
-        # with open(k, 'w') as writer:
-        #     writer.write('\n'.join(processed))
+        with open(k, 'w') as writer:
+            writer.write('\n'.join(processed))

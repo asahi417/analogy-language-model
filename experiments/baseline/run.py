@@ -1,9 +1,11 @@
 import alm
 
 all_templates = [['is-to-what'], ['is-to-as'], ['rel-same'], ['what-is-to'], ['she-to-as'], ['as-what-same']]
-methods = ['ppl', 'embedding_similarity', 'ppl_pmi', 'pmi']
+# methods = ['ppl', 'embedding_similarity', 'ppl_pmi', 'pmi']
+methods = ['embedding_similarity']
 # data = ['./data/sat_package_v3.jsonl', './data/u2.jsonl', './data/u4.jsonl']
-data = ['./data/u2_raw.jsonl', './data/u4_raw.jsonl']
+# data = ['./data/u2_raw.jsonl', './data/u4_raw.jsonl']
+data = ['./data/u4_raw.jsonl']
 
 export_dir = './experiments/baseline/results'
 

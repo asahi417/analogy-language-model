@@ -13,7 +13,7 @@ for d in glob('./experiments/baseline/results/flatten_scores/*'):
     model = config['model']
     data = config['path_to_data'].split('/')[-1].replace('.jsonl', '').replace('_', '-')
     template_types = config['template_types'][0]
-    base_name = d.split('/')[-1]
+    base_name = d.split('/')[-1].split('_')[-1]
     folder_name = '{}_{}_{}_{}_{}'.format(scoring_method, model, data, template_types, base_name)
 
     print('move {} to {}'.format(d, './experiments/baseline/results/flatten_scores/{}'.format(folder_name)))

@@ -1,11 +1,11 @@
 import alm
 
 all_templates = [['is-to-what'], ['is-to-as'], ['rel-same'], ['what-is-to'], ['she-to-as'], ['as-what-same']]
-# methods = ['ppl', 'embedding_similarity', 'ppl_pmi', 'pmi']
-methods = ['embedding_similarity']
+methods = ['ppl', 'embedding_similarity', 'ppl_pmi', 'pmi']
+# methods = ['embedding_similarity']
 # data = ['./data/sat_package_v3.jsonl', './data/u2.jsonl', './data/u4.jsonl']
-# data = ['./data/u2_raw.jsonl', './data/u4_raw.jsonl']
-data = ['./data/u4_raw.jsonl']
+data = ['./data/u2_raw.jsonl', './data/u4_raw.jsonl']
+# data = ['./data/u4_raw.jsonl']
 
 export_dir = './experiments/baseline/results'
 
@@ -17,6 +17,9 @@ def main(lm):
                 continue
             scorer = alm.RelationScorer(model=_model, max_length=_max_length)
             for _data in data:
+                if _data == './data/u2_raw.jsonl' and scoring_method in ['ppl', 'embedding_similarity']:
+                    continue
+
                 for _temp in all_templates:
                     scorer.analogy_test(
                         scoring_method=scoring_method,

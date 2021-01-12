@@ -4,7 +4,7 @@ import os
 from glob import glob
 
 # for m in ['baseline', 'pmi_grid']:
-for m in ['pmi_grid']:
+for m in ['baseline']:
     for d in glob('./experiments/{}/results/flatten_scores/*'.format(m)):
         i = '{}/config.json'.format(d)
         if not os.path.exists(i):

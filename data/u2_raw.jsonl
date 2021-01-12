@@ -9,7 +9,7 @@
 {"stem": ["hammer", "hit"], "answer": 0, "choice": [["knife", "cut"], ["table", "eat"], ["pen", "build"], ["wheel", "race"]], "prefix": "grade4"}
 {"stem": ["shield", "protect"], "answer": 1, "choice": [["computer", "talk"], ["vehicle", "transport"], ["pencil", "make"], ["song", "sing"]], "prefix": "grade4"}
 {"stem": ["musician", "music"], "answer": 1, "choice": [["shower", "water"], ["chef", "food"], ["machine", "snow"], ["child", "art"]], "prefix": "grade4"}
-{"stem": ["whale", "ocean"], "answer": 2, "choice": [["car", "garage"], ["snake", "ocean"], ["tiger", "jungle"], ["chair", "table"]], "prefix": "grade4"}
+{"stem": ["whale", "ocean"], "answer": 1, "choice": [["car", "garage"], ["tiger", "jungle"], ["chair", "table"]], "prefix": "grade4"}
 {"stem": ["terrified", "scared"], "answer": 2, "choice": [["quiet", "secret"], ["sweet", "rich"], ["obsessed", "interested"], ["funny", "serious"]], "prefix": "grade4"}
 {"stem": ["sad", "happiness"], "answer": 0, "choice": [["weak", "strength"], ["sweet", "flavor"], ["fast", "time"], ["pretty", "beauty"]], "prefix": "grade4"}
 {"stem": ["tongue", "taste"], "answer": 3, "choice": [["boat", "swim"], ["bed", "sit"], ["bag", "buy"], ["nose", "smell"]], "prefix": "grade4"}

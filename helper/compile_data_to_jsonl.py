@@ -15,7 +15,7 @@ EXPORT_FILES = {
         "low-advanced": "./data/original/u4/low-advanced*.txt",
         "low-intermediate": "./data/original/u4/low-intermediate*.txt",
     },
-    './data/u2.jsonl': {
+    './data/u2_raw.jsonl': {
         "grade4": "./data/original/u2/grade4*.txt",
         "grade5": "./data/original/u2/grade5*.txt",
         "grade6": "./data/original/u2/grade6*.txt",
@@ -64,28 +64,54 @@ def format_data(txt_dir):
     return _all_data
 
 
-if __name__ == '__main__':
-    drop_duplication = True
-    all_data = []
-    dup = 0
-    for k, v in EXPORT_FILES.items():
-        jsonl_file = format_data(v)
-        tmp = []
-        for __k in jsonl_file:
-            i = deepcopy(__k)
-            i.pop('prefix')
-            if drop_duplication and i in all_data:
-                dup += 1
+def check_validity(json_data):
+    tmp = deepcopy(json_data)
+    for t, i in enumerate(json_data):
+        a = i['answer']
+        choice = []
+        for n, (c_h, c_t) in enumerate(i['choice']):
+            if c_h in i['stem'] or c_t in i['stem']:
+                print("found duplication: {} \n {}".format((c_h, c_t), i))
+                if a == n:
+                    raise ValueError('answer would be dropped')
+                if a > n:
+                    a = a - 1
             else:
-                all_data.append(i)
-                tmp.append(__k)
+                choice.append((c_h, c_t))
+        tmp[t]['answer'] = a
+        tmp[t]['choice'] = choice
+        assert tmp[t]['choice'][tmp[t]['answer']] == i['choice'][i['answer']], str((
+                tmp[t]['choice'][tmp[t]['answer']], i['choice'][i['answer']]
+        ))
 
-        print('dataset: {}, length: {}'.format(k, len(tmp)))
-        with open(k, 'w') as writer:
-            writer.write('\n'.join([json.dumps(d) for d in tmp]))
-    print('duplication:', dup)
+    return tmp
+
+
+def main(export, files, all_data=None, dup: int = 0):
+    all_data = [] if all_data is None else all_data
+    jsonl_file = format_data(files)
+    tmp = []
+    for __k in jsonl_file:
+        i = deepcopy(__k)
+        i.pop('prefix')
+        if i in all_data:
+            dup += 1
+        else:
+            all_data.append(i)
+            tmp.append(__k)
+
+    print('dataset: {}, length: {}, duplicate: {}'.format(export, len(tmp), dup))
+    tmp = check_validity(tmp)
+    with open(export, 'w') as writer:
+        writer.write('\n'.join([json.dumps(d) for d in tmp]))
+    return all_data, dup
+
+
+if __name__ == '__main__':
+    all_data_, dup_ = main('./data/u2_raw.jsonl', EXPORT_FILES['./data/u2_raw.jsonl'])
+    main('./data/u4_raw.jsonl', EXPORT_FILES['./data/u4_raw.jsonl'], all_data_, dup_)
 
     for k, v in EXPORT_FILES_SAT.items():
         processed = [json.dumps(process_single_entry_sat(i)) for i in re.split(r'\n[\s]*\n', open(v, "r").read())[1:]]
-        with open(k, 'w') as writer:
-            writer.write('\n'.join(processed))
+        with open(k, 'w') as writer_:
+            writer_.write('\n'.join(processed))

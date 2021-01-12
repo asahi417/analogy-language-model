@@ -38,7 +38,20 @@ def get_accuracy(dataset, pmi):
     return accuracy, none_index
 
 
+def load_relative(path_to_relative):
+    with open(path_to_relative, 'r') as f:
+        tmp = [v.split(' ') for v in f.read().split('\n')[1:]]
+        relative_dict = {v[0].replace('__', '-'): list(map(float, v)) for v in tmp}
+        print(relative_dict)
+        input()
+
+
+
 if __name__ == '__main__':
+    relatives = ['./cache/relative/relative_sat.txt', './cache/relative/relative_u2.txt', './cache/relative/relative_u4.txt']
+    for r in relatives:
+        load_relative(r)
+
     result = {}
     for path in ['./data/sat_package_v3.jsonl', './data/u2_raw.jsonl', './data/u4_raw.jsonl']:
         data = get_dataset(path)

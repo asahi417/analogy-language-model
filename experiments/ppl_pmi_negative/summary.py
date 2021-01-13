@@ -1,12 +1,19 @@
 import alm
 import os
 import json
+import argparse
 from glob import glob
 from tqdm import tqdm
 import pandas as pd
 
 export_dir = './experiments/ppl_pmi_negative/results'
-
+templates = [
+    ['what-is-to'],  # u2/u4 first, sat second
+    ['she-to-as'],  # u2 second
+    ['as-what-same']  # u4 second, sat first
+]
+# u4 ('p_0', 'min'), u2 ('p_4', 'p_0'), sat ('p_2', 'min')
+aggregation_positive = ['min', 'p_0', 'p_4', 'p_2']
 aggregation_negatives = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7',
                          'p_8', 'p_9', 'p_10', 'p_11']
 ppl_pmi_aggregation = ['max', 'mean', 'min', 'p_0', 'p_1']
@@ -15,30 +22,42 @@ alphas = [-0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5]
 permutation_negative_weight = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
 
 
-def main(path_to_data, template, aggregation_positive):
+def get_options():
+    parser = argparse.ArgumentParser(description='command line tool to test finetuned NER model',)
+    parser.add_argument('-e', '--experiment', default=0, type=int)
+
+    return parser.parse_args()
+
+
+def main(path_to_data):
     # get accuracy
-    scorer = alm.RelationScorer(model='roberta-large', max_length=32)
-    scorer.analogy_test(
-        skip_duplication_check=True,
-        scoring_method='ppl_pmi',
-        path_to_data=path_to_data,
-        template_types=[template],
-        aggregation_positive=aggregation_positive,
-        permutation_negative=True,
-        aggregation_negative=aggregation_negatives,
-        ppl_pmi_lambda=lambdas,
-        ppl_pmi_alpha=alphas,
-        ppl_pmi_aggregation=ppl_pmi_aggregation,
-        no_inference=True,
-        export_dir=export_dir,
-        permutation_negative_weight=permutation_negative_weight
-    )
+    for template in templates:
+        scorer = alm.RelationScorer(model='roberta-large', max_length=32)
+        scorer.analogy_test(
+            skip_duplication_check=True,
+            scoring_method='ppl_pmi',
+            path_to_data=path_to_data,
+            template_types=template,
+            aggregation_positive=aggregation_positive,
+            permutation_negative=True,
+            aggregation_negative=aggregation_negatives,
+            ppl_pmi_lambda=lambdas,
+            ppl_pmi_alpha=alphas,
+            ppl_pmi_aggregation=ppl_pmi_aggregation,
+            no_inference=True,
+            export_dir=export_dir,
+            permutation_negative_weight=permutation_negative_weight
+        )
 
 
 if __name__ == '__main__':
-    main(path_to_data='./data/sat_package_v3.jsonl', template='as-what-same', aggregation_positive='p_2')
-    main(path_to_data='./data/u2.jsonl', template='she-to-as', aggregation_positive='min')
-    main(path_to_data='./data/u4.jsonl', template='what-is-to', aggregation_positive='p_0')
+    opt = get_options()
+    if opt.experiment == 0:
+        main(path_to_data='./data/sat_package_v3.jsonl')
+    if opt.experiment == 1:
+        main(path_to_data='./data/u2_raw.jsonl')
+    if opt.experiment == 2:
+        main(path_to_data='./data/u4_raw.jsonl')
 
     # export as a csv
     index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive',

@@ -22,9 +22,9 @@ def main(path_to_data, template: str):
 if __name__ == '__main__':
     # tuning on each config
     # main(path_to_data='./data/sat_package_v3.jsonl', template='rel-same')
-    main(path_to_data='./data/u2.jsonl', template=)
-    main(path_to_data='./data/u4.jsonl', template=)
+    main(path_to_data='./data/u2_raw.jsonl', template=)
+    main(path_to_data='./data/u4_raw.jsonl', template=)
 
     # tuning on u4's config
     main(path_to_data='./data/sat_package_v3.jsonl', template=)
-    main(path_to_data='./data/u2.jsonl', template=)
+    main(path_to_data='./data/u2_raw.jsonl', template=)

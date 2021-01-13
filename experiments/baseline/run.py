@@ -17,9 +17,6 @@ def main(lm):
                 continue
             scorer = alm.RelationScorer(model=_model, max_length=_max_length)
             for _data in data:
-                if _data == './data/u2_raw.jsonl' and scoring_method in ['ppl', 'embedding_similarity']:
-                    continue
-
                 for _temp in all_templates:
                     scorer.analogy_test(
                         scoring_method=scoring_method,
@@ -34,5 +31,6 @@ def main(lm):
 
 
 if __name__ == '__main__':
-    main(lm=[('roberta-large', 32, 512)])
+    # main(lm=[('roberta-large', 32, 512)])
+    main(lm=[('gpt2-xl', 32, 512)])
     # main(lm=[('bert-large-cased', 64, 512), ('gpt2-large', 32, 512), ('gpt2-xl', 32, 512)])

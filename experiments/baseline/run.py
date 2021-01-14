@@ -32,5 +32,5 @@ def main(lm):
 
 if __name__ == '__main__':
     # main(lm=[('roberta-large', 32, 512)])
-    main(lm=[('gpt2-xl', 32, 512)])
+    main(lm=[('gpt2-xl', 32, 128)])
     # main(lm=[('bert-large-cased', 64, 512), ('gpt2-large', 32, 512), ('gpt2-xl', 32, 512)])

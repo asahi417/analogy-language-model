@@ -84,4 +84,7 @@ if __name__ == '__main__':
         out = pool.map(get_result, total_files)
         # export as a csv
         df = pd.DataFrame(out, columns=index + ['accuracy'])
-        df.to_csv('{}/summary.csv'.format(export_dir))
+        df[df.path_to_data == './data/sat_package_v3.jsonl'].to_csv('{}/summary.sat_package_v3.csv'.format(export_dir))
+        df[df.path_to_data == './data/u2_raw.jsonl'].to_csv('{}/summary.u2_raw.csv'.format(export_dir))
+        df[df.path_to_data == './data/u4_raw.jsonl'].to_csv('{}/summary.u4_raw.csv'.format(export_dir))
+

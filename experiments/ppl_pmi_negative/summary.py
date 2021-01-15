@@ -26,7 +26,7 @@ index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregati
          'aggregation_negative', 'ppl_pmi_lambda', 'ppl_pmi_alpha', 'ppl_pmi_aggregation',
          'permutation_negative_weight']
 total_files = glob('./{}/outputs/*'.format(export_dir))
-pbar = tqdm.tqdm(total=len(total_files))
+pbar = tqdm.tqdm(total=int(len(total_files)/os.cpu_count()))
 
 
 def get_options():
@@ -82,13 +82,6 @@ if __name__ == '__main__':
         print('total file: {}'.format(len(total_files)))
 
         out = pool.map(get_result, total_files)
-        print(out[:10])
         # export as a csv
-        try:
-            print('well-done')
-            df = pd.DataFrame(out, columns=index + ['accuracy'])
-        except Exception:
-            print('need to fix as below')
-            df = pd.DataFrame(out, index=index + ['accuracy'])
-            df = df.T
+        df = pd.DataFrame(out, columns=index + ['accuracy'])
         df.to_csv('{}/summary.csv'.format(export_dir))

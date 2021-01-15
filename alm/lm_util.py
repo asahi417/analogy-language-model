@@ -454,8 +454,8 @@ class TransformersLM:
 
         data_loader, partition = self.batch_encode_plus_perplexity(
             texts,
-            batch_size=batch_size,
-            batch_token_to_mask=tokens_to_mask)
+            batch_token_to_mask=tokens_to_mask,
+            batch_size=batch_size)
         logging.info('inference')
         nll = self.__get_nll(data_loader)
         # for pseudo likelihood aggregation

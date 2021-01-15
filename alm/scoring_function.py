@@ -302,7 +302,7 @@ class RelationScorer:
             elif scoring_method == 'ppl_tail_masked':
                 logging.info(' * ppl computation (tail masked)')
                 tokens_to_mask = list(map(lambda x: x[-1], relation))
-                full_score = self.lm.get_perplexity(prompt, tokens_to_mask)
+                full_score = self.lm.get_perplexity(prompt, tokens_to_mask=tokens_to_mask, batch_size=batch_size)
             elif scoring_method == 'pmi':
                 score_list = []
                 for n, (i, k) in enumerate(list(permutations(range(4), 2))):

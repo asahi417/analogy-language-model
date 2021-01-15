@@ -9,7 +9,7 @@ pbar = tqdm.tqdm(total=100)
 def function(val):
     pbar.update(1)
     time.sleep(0.5)
-    return -1 * val
+    return [-1 * val]
 
 
 if __name__ == '__main__':

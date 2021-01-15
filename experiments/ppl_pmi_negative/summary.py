@@ -55,6 +55,16 @@ def main(path_to_data):
         )
 
 
+def get_result(_file):
+    with open(os.path.join(_file, 'config.json'), 'r') as f:
+        config = json.load(f)
+    with open(os.path.join(_file, 'accuracy.json'), 'r') as f:
+        accuracy = json.load(f)
+    pbar.update(1)
+    return [','.join(config[i]) if type(config[i]) is list else config[i] for i in index] + \
+           [round(accuracy['accuracy'] * 100, 2)]
+
+
 if __name__ == '__main__':
     opt = get_options()
     if opt.experiment == 'sat_package_v3':
@@ -69,18 +79,6 @@ if __name__ == '__main__':
     total_files = glob('./{}/outputs/*'.format(export_dir))
     print('total file: {}'.format(len(total_files)))
     pbar = tqdm.tqdm(total=len(total_files))
-
-
-    def get_result(_file):
-        with open(os.path.join(_file, 'config.json'), 'r') as f:
-            config = json.load(f)
-        with open(os.path.join(_file, 'accuracy.json'), 'r') as f:
-            accuracy = json.load(f)
-        pbar.update(1)
-        return [','.join(config[i]) if type(config[i]) is list else config[i] for i in index] + \
-               [round(accuracy['accuracy'] * 100, 2)]
-
-
     out = pool.map(get_result, total_files)
     print(out[:10])
     # export as a csv

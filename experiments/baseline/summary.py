@@ -34,6 +34,7 @@ def main(lm):
                     )
                     scorer.release_cache()
 
+                run('ppl_tail_masked')
                 run('ppl')
                 run('embedding_similarity')
                 run('ppl_pmi', ppl_pmi_aggregation=['max', 'mean', 'min', 'p_0', 'p_1'])

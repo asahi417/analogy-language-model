@@ -25,7 +25,8 @@ permutation_negative_weight = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
 index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive',
          'aggregation_negative', 'ppl_pmi_lambda', 'ppl_pmi_alpha', 'ppl_pmi_aggregation',
          'permutation_negative_weight']
-pbar = tqdm.tqdm()
+total_files = glob('./{}/outputs/*'.format(export_dir))
+pbar = tqdm.tqdm(total=len(total_files))
 
 
 def get_options():
@@ -70,21 +71,24 @@ if __name__ == '__main__':
     opt = get_options()
     if opt.experiment == 'sat_package_v3':
         main(path_to_data='./data/sat_package_v3.jsonl')
-    if opt.experiment == 'u2_raw':
+    elif opt.experiment == 'u2_raw':
         main(path_to_data='./data/u2_raw.jsonl')
-    if opt.experiment == 'u4_raw':
+    elif opt.experiment == 'u4_raw':
         main(path_to_data='./data/u4_raw.jsonl')
+    else:
+        print('CPU count: {}'.format(os.cpu_count()))
+        pool = Pool()  # Create a multiprocessing Pool
+        total_files = glob('./{}/outputs/*'.format(export_dir))
+        print('total file: {}'.format(len(total_files)))
 
-    print('CPU count: {}'.format(os.cpu_count()))
-    pool = Pool()  # Create a multiprocessing Pool
-    total_files = glob('./{}/outputs/*'.format(export_dir))
-    print('total file: {}'.format(len(total_files)))
-    pbar = tqdm.tqdm(total=len(total_files))
-    out = pool.map(get_result, total_files)
-    print(out[:10])
-    # export as a csv
-    try:
-        df = pd.DataFrame(get_result, columns=index + ['accuracy'])
-    except Exception:
-        df = pd.DataFrame(get_result, index=index + ['accuracy'])
-    df.to_csv('{}/summary.csv'.format(export_dir))
+        out = pool.map(get_result, total_files)
+        print(out[:10])
+        # export as a csv
+        try:
+            print('well-done')
+            df = pd.DataFrame(out, columns=index + ['accuracy'])
+        except Exception:
+            print('need to fix as below')
+            df = pd.DataFrame(out, index=index + ['accuracy'])
+            df = df.T
+        df.to_csv('{}/summary.csv'.format(export_dir))

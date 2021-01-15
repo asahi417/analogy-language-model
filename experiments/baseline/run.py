@@ -1,7 +1,8 @@
 import alm
 
 all_templates = [['is-to-what'], ['is-to-as'], ['rel-same'], ['what-is-to'], ['she-to-as'], ['as-what-same']]
-methods = ['ppl', 'embedding_similarity', 'ppl_pmi', 'pmi']
+# methods = ['ppl', 'embedding_similarity', 'ppl_pmi', 'pmi']
+methods = ['ppl_tail_masked']
 data = ['./data/sat_package_v3.jsonl', './data/u2_raw.jsonl', './data/u4_raw.jsonl']
 
 export_dir = './experiments/baseline/results'
@@ -29,3 +30,4 @@ def main(lm):
 
 if __name__ == '__main__':
     main(lm=[('roberta-large', 32, 512), ('gpt2-large', 32, 512), ('gpt2-xl', 32, 512), ('bert-large-cased', 64, 512)])
+    # main(lm=[('roberta-large', 32, 512), ('gpt2-large', 32, 512), ('gpt2-xl', 32, 512), ('bert-large-cased', 64, 512)])

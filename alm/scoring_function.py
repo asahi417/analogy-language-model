@@ -133,7 +133,6 @@ class RelationScorer:
         logging.info('restore batch structure')
         score = data_instance.insert_score(score_pos, score_neg)
 
-
         ##############
         # get output #
         ##############
@@ -298,7 +297,12 @@ class RelationScorer:
                 logging.info(' * ppl computation')
                 full_score = self.lm.get_perplexity(prompt, batch_size=batch_size)
             elif scoring_method == 'embedding_similarity':
+                logging.info(' * embedding similarity')
                 full_score = self.lm.get_embedding_similarity(prompt, tokens_to_embed=relation, batch_size=batch_size)
+            elif scoring_method == 'ppl_tail_masked':
+                logging.info(' * ppl computation (tail masked)')
+                tokens_to_mask = list(map(lambda x: x[-1], relation))
+                full_score = self.lm.get_perplexity(prompt, tokens_to_mask)
             elif scoring_method == 'pmi':
                 score_list = []
                 for n, (i, k) in enumerate(list(permutations(range(4), 2))):

@@ -293,11 +293,6 @@ class TransformersLM:
             tmp_data_dk = self.encode_plus_mask(text=x[0], token_to_mask=x[1], token_to_mask_no_label=x[2])
             data_dk.append(tmp_data_dk)
             data_flat.append(tmp_data_dk.flat_values)
-        # data_dk = list(map(
-        #     lambda x: self.encode_plus_mask(text=x[0], token_to_mask=x[1], token_to_mask_no_label=x[2]),
-        #     zip(batch_text, batch_token_to_mask, batch_token_to_mask_no_label)
-        # ))
-        # data_flat = list(map(lambda x: x.flat_values, data_dk))
 
         partition = get_partition(data_flat)
 
@@ -378,7 +373,7 @@ class TransformersLM:
     ######################################
     # Modules for perplexity computation #
     ######################################
-    def encode_plus_perplexity(self, text: str):
+    def encode_plus_perplexity(self, text: str, token_to_mask: str = None):
         """ An output from `encode_plus` for perplexity computation
         * for pseudo perplexity, encode all text with mask on every token one by one
         :param str text: a text to encode
@@ -394,13 +389,17 @@ class TransformersLM:
             return [encode]
         else:
             token_list = self.tokenizer.tokenize(text)
+            if token_to_mask is not None:
+                s, e = self.find_position(token_to_mask, text, token_list)
+                token_list[s:e] = [self.tokenizer.mask_token] * (e-s)
+            else:
+                s = e = -100
 
             def encode_with_single_mask_id(mask_position: int):
                 _token_list = token_list.copy()  # can not be encode outputs because of prefix
                 masked_token_id = self.tokenizer.convert_tokens_to_ids(_token_list[mask_position])
                 _token_list[mask_position] = self.tokenizer.mask_token
                 tmp_string = self.tokenizer.convert_tokens_to_string(_token_list)
-                # _encode = self.tokenizer.encode_plus(_token_list, **param)
                 _encode = self.tokenizer.encode_plus(tmp_string, **param)
                 _encode['labels'] = self.input_ids_to_labels(
                     _encode['input_ids'],
@@ -408,9 +407,12 @@ class TransformersLM:
                     label_id=[masked_token_id])
                 return _encode
 
-            return [encode_with_single_mask_id(i) for i in range(len(token_list))]
+            return [encode_with_single_mask_id(i) for i in range(len(token_list)) if i not in list(range(s, e))]
 
-    def batch_encode_plus_perplexity(self, batch_text: List, batch_size: int = None):
+    def batch_encode_plus_perplexity(self,
+                                     batch_text: List,
+                                     batch_token_to_mask: List = None,
+                                     batch_size: int = None):
         """ Batch version of `self.encode_plus_perplexity`
 
         :param batch_text: a batch of `text`
@@ -422,7 +424,10 @@ class TransformersLM:
         # data = list(map(lambda x: self.encode_plus_perplexity(x), batch_text))
         data = []
         for x in tqdm(batch_text):
-            data.append(self.encode_plus_perplexity(x))
+            if batch_token_to_mask is not None:
+                data.append(self.encode_plus_perplexity(x, batch_token_to_mask.pop(0)))
+            else:
+                data.append(self.encode_plus_perplexity(x))
 
         partition = get_partition(data)
 
@@ -432,7 +437,10 @@ class TransformersLM:
         )
         return data_loader, partition
 
-    def get_perplexity(self, texts: List, batch_size: int = None):
+    def get_perplexity(self,
+                       texts: List,
+                       tokens_to_mask: List = None,
+                       batch_size: int = None):
         """ (pseudo) Perplexity
 
         :param texts:
@@ -444,7 +452,10 @@ class TransformersLM:
             self.load_model()
         assert self.model_type != 'embedding'
 
-        data_loader, partition = self.batch_encode_plus_perplexity(texts, batch_size=batch_size)
+        data_loader, partition = self.batch_encode_plus_perplexity(
+            texts,
+            batch_size=batch_size,
+            batch_token_to_mask=tokens_to_mask)
         logging.info('inference')
         nll = self.__get_nll(data_loader)
         # for pseudo likelihood aggregation

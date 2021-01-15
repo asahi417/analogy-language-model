@@ -103,10 +103,32 @@ class Test(unittest.TestCase):
     #         aggregation_negative='mean')
     #     logging.info(s)
 
-    def test_ppl_pmi(self):
+    # def test_ppl_pmi(self):
+    #     s = scorer.analogy_test(
+    #         export_dir='./tests/results',
+    #         scoring_method='ppl_pmi',
+    #         path_to_data='./data/sample.jsonl',
+    #         template_types=['rel-same'],
+    #         batch_size=4,
+    #         aggregation_positive='mean')
+    #     logging.info(s)
+    #
+    #     # negative
+    #     s = scorer.analogy_test(
+    #         export_dir='./tests/results',
+    #         scoring_method='ppl_pmi',
+    #         path_to_data='./data/sample.jsonl',
+    #         template_types=['rel-same'],
+    #         batch_size=4,
+    #         aggregation_positive='mean',
+    #         permutation_negative=True,
+    #         aggregation_negative='mean')
+    #     logging.info(s)
+    #
+    def test_ppl_tail_masked(self):
         s = scorer.analogy_test(
             export_dir='./tests/results',
-            scoring_method='ppl_pmi',
+            scoring_method='ppl_tail_masked',
             path_to_data='./data/sample.jsonl',
             template_types=['rel-same'],
             batch_size=4,
@@ -116,7 +138,7 @@ class Test(unittest.TestCase):
         # negative
         s = scorer.analogy_test(
             export_dir='./tests/results',
-            scoring_method='ppl_pmi',
+            scoring_method='ppl_tail_masked',
             path_to_data='./data/sample.jsonl',
             template_types=['rel-same'],
             batch_size=4,

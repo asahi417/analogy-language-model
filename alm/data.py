@@ -1,6 +1,6 @@
 import json
 from typing import List
-from itertools import permutations, chain
+from itertools import chain
 
 from .prompting_relation import prompting_relation, TEMPLATES
 

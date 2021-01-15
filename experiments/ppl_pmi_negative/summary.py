@@ -24,7 +24,7 @@ permutation_negative_weight = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
 
 def get_options():
     parser = argparse.ArgumentParser(description='command line tool to test finetuned NER model',)
-    parser.add_argument('-e', '--experiment', default=0, type=int)
+    parser.add_argument('-e', '--experiment', default=3, type=int)
 
     return parser.parse_args()
 
@@ -65,18 +65,32 @@ if __name__ == '__main__':
              'permutation_negative_weight']
     df = pd.DataFrame(index=index + ['accuracy'])
 
+    chunk_n = 150000
+    pointer = 0
+    chunk_pointer = 0
     for i in tqdm(glob('./{}/outputs/*'.format(export_dir))):
+        pointer += 1
+
         with open(os.path.join(i, 'config.json'), 'r') as f:
             config = json.load(f)
-            if config['ppl_pmi_lambda'] not in lambdas or config['ppl_pmi_alpha'] not in alphas:
-                print(config['ppl_pmi_lambda'], config['ppl_pmi_alpha'])
-                continue
+            # if config['scoring_method'] != 'ppl_pmi':
+            #     continue
+            # if config['ppl_pmi_lambda'] not in lambdas or config['ppl_pmi_alpha'] not in alphas:
+            #     continue
 
         with open(os.path.join(i, 'accuracy.json'), 'r') as f:
             accuracy = json.load(f)
+        if chunk_n == pointer:
+            pointer = 0
+            df = df.T.sort_values(by=index, ignore_index=True)
+            df.to_csv('{}/summary.{}.csv'.format(export_dir, chunk_pointer))
+
+            chunk_pointer += 1
+            df = pd.DataFrame(index=index + ['accuracy'])
+
         df[len(df.T)] = [','.join(config[i]) if type(config[i]) is list else config[i] for i in index] + \
                         [round(accuracy['accuracy'] * 100, 2)]
+    if pointer != 0:
+        df = df.T.sort_values(by=index, ignore_index=True)
+        df.to_csv('{}/summary.{}.csv'.format(export_dir, chunk_pointer))
 
-    df = df.T
-    df = df.sort_values(by=index, ignore_index=True)
-    df.to_csv('{}/summary.csv'.format(export_dir))

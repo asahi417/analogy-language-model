@@ -3,7 +3,9 @@ import os
 import json
 import argparse
 from glob import glob
-from tqdm import tqdm
+import tqdm
+from multiprocessing import Pool
+
 import pandas as pd
 
 export_dir = './experiments/ppl_pmi_negative/results'
@@ -20,6 +22,9 @@ ppl_pmi_aggregation = ['max', 'mean', 'min', 'p_0', 'p_1']
 lambdas = [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.3, 1.4, 1.5]
 alphas = [-0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5]
 permutation_negative_weight = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
+index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive',
+         'aggregation_negative', 'ppl_pmi_lambda', 'ppl_pmi_alpha', 'ppl_pmi_aggregation',
+         'permutation_negative_weight']
 
 
 def get_options():
@@ -59,34 +64,28 @@ if __name__ == '__main__':
     if opt.experiment == 2:
         main(path_to_data='./data/u4_raw.jsonl')
 
-    # export as a csv
-    index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive',
-             'aggregation_negative', 'ppl_pmi_lambda', 'ppl_pmi_alpha', 'ppl_pmi_aggregation',
-             'permutation_negative_weight']
-    df = pd.DataFrame(index=index + ['accuracy'])
+    print('CPU count: {}'.format(os.cpu_count()))
+    pool = Pool()  # Create a multiprocessing Pool
+    total_files = glob('./{}/outputs/*'.format(export_dir))
+    print('total file: {}'.format(len(total_files)))
+    pbar = tqdm.tqdm(total=len(total_files))
 
-    chunk_n = 150000
-    pointer = 0
-    chunk_pointer = 0
-    for i in tqdm(glob('./{}/outputs/*'.format(export_dir))):
-        pointer += 1
 
-        with open(os.path.join(i, 'config.json'), 'r') as f:
+    def get_result(_file):
+        with open(os.path.join(_file, 'config.json'), 'r') as f:
             config = json.load(f)
-
-        with open(os.path.join(i, 'accuracy.json'), 'r') as f:
+        with open(os.path.join(_file, 'accuracy.json'), 'r') as f:
             accuracy = json.load(f)
-        if chunk_n == pointer:
-            pointer = 0
-            df = df.T.sort_values(by=index, ignore_index=True)
-            df.to_csv('{}/summary.{}.csv'.format(export_dir, chunk_pointer))
+        pbar.update(1)
+        return [','.join(config[i]) if type(config[i]) is list else config[i] for i in index] + \
+               [round(accuracy['accuracy'] * 100, 2)]
 
-            chunk_pointer += 1
-            df = pd.DataFrame(index=index + ['accuracy'])
 
-        df[len(df.T)] = [','.join(config[i]) if type(config[i]) is list else config[i] for i in index] + \
-                        [round(accuracy['accuracy'] * 100, 2)]
-    if pointer != 0:
-        df = df.T.sort_values(by=index, ignore_index=True)
-        df.to_csv('{}/summary.{}.csv'.format(export_dir, chunk_pointer))
-
+    out = pool.map(get_result, total_files)
+    print(out[:10])
+    # export as a csv
+    try:
+        df = pd.DataFrame(get_result, columns=index + ['accuracy'])
+    except Exception:
+        df = pd.DataFrame(get_result, index=index + ['accuracy'])
+    df.to_csv('{}/summary.csv'.format(export_dir))

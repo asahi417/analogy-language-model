@@ -29,7 +29,7 @@ index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregati
 
 def get_options():
     parser = argparse.ArgumentParser(description='command line tool to test finetuned NER model',)
-    parser.add_argument('-e', '--experiment', default=3, type=int)
+    parser.add_argument('-e', '--experiment', default=None, type=int)
 
     return parser.parse_args()
 
@@ -57,11 +57,11 @@ def main(path_to_data):
 
 if __name__ == '__main__':
     opt = get_options()
-    if opt.experiment == 0:
+    if opt.experiment == 'sat_package_v3':
         main(path_to_data='./data/sat_package_v3.jsonl')
-    if opt.experiment == 1:
+    if opt.experiment == 'u2_raw':
         main(path_to_data='./data/u2_raw.jsonl')
-    if opt.experiment == 2:
+    if opt.experiment == 'u4_raw':
         main(path_to_data='./data/u4_raw.jsonl')
 
     print('CPU count: {}'.format(os.cpu_count()))

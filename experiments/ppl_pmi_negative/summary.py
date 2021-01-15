@@ -25,6 +25,7 @@ permutation_negative_weight = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
 index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive',
          'aggregation_negative', 'ppl_pmi_lambda', 'ppl_pmi_alpha', 'ppl_pmi_aggregation',
          'permutation_negative_weight']
+pbar = tqdm.tqdm()
 
 
 def get_options():

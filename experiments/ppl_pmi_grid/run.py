@@ -8,7 +8,7 @@ templates = [
 
 data = ['./data/sat_package_v3.jsonl', './data/u4_raw.jsonl', './data/u2_raw.jsonl']
 lm = ('roberta-large', 32, 512)
-export_dir = './experiments/ppl_pmi_negative/results'
+export_dir = './experiments/ppl_pmi_grid/results'
 
 
 def main():

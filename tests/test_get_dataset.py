@@ -24,13 +24,13 @@ class Test(unittest.TestCase):
 
     def test_check_relation_token_uniqueness(self):
         data_instance = AnalogyData(
-            path_to_data='./data/u2.jsonl', template_types=['is-to-as'], permutation_negative=False)
+            path_to_data='./data/u2_raw.jsonl', template_types=['is-to-as'], permutation_negative=False)
         prompt, relation = data_instance.get_prompt()
         for i in relation:
             assert len(list(set(i))) == 4, i
 
         data_instance = AnalogyData(
-            path_to_data='./data/u4.jsonl', template_types=['is-to-as'], permutation_negative=False)
+            path_to_data='./data/u4_raw.jsonl', template_types=['as-what-same'], permutation_negative=False)
         prompt, relation = data_instance.get_prompt()
         for i in relation:
             assert len(list(set(i))) == 4, i

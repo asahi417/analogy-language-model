@@ -6,11 +6,12 @@ templates = [
     ['rel-same'],  # u2 second
     ['as-what-same']  # u4 second, sat first
 ]
+pmi_lambdas = [-2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2.0]
 
 
 def main(path_to_data):
     for template in templates:
-        for i in [-2.0, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2.0]:
+        for pmi_lambda in pmi_lambdas:
             scorer = alm.RelationScorer(model='roberta-large', max_length=32)
             scorer.analogy_test(
                 scoring_method='pmi',
@@ -20,7 +21,7 @@ def main(path_to_data):
                 export_dir=export_dir,
                 permutation_negative=False,
                 skip_scoring_prediction=True,
-                pmi_lambda=i
+                pmi_lambda=pmi_lambda
             )
             scorer.release_cache()
 

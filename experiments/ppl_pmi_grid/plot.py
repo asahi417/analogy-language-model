@@ -72,5 +72,5 @@ def main(path_to_data):
 
 if __name__ == '__main__':
     main(path_to_data='./data/sat_package_v3.jsonl')
-    # main(path_to_data='./data/u2_raw.jsonl')
-    # main(path_to_data='./data/u4_raw.jsonl')
+    main(path_to_data='./data/u2_raw.jsonl')
+    main(path_to_data='./data/u4_raw.jsonl')

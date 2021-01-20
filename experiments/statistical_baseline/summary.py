@@ -4,6 +4,8 @@ from typing import List
 
 import pandas as pd
 
+export_dir = './experiments/statistical_baseline'
+
 
 def cos_similarity(a_: List, b: List):
     assert len(a_) == len(b)
@@ -118,4 +120,5 @@ if __name__ == '__main__':
         result[len(result)] = {'smooth': 1, 'accuracy': a, 'path_to_data': path, 'method': 'pmi'}
 
     df = pd.DataFrame(result).T
+    df.to_csv('{}/summary.stat.csv'.format(export_dir))
     print(df)

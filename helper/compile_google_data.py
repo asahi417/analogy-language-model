@@ -73,7 +73,7 @@ for is_mor in [False, True]:
                                 map(lambda y: y[0][1], relation_list)))
             neg_2 = [neg_2[randint(0, int(len(neg_2) / 2))], neg_2[randint(int(len(neg_2) / 2), len(neg_2) - 1)]]
 
-            # pick up two word randomly from the second word in same relation group
+            # pick up two word randomly from the second word in the other relation group
             rel_neg_type = relation_negative[r][randint(0, len(relation_negative[r]) - 1)]
             relation_negative_list = dict_data[rel_neg_type]
 

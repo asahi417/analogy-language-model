@@ -42,7 +42,7 @@ print('total: {}'.format(n))
 seed(1234)
 analogy_data = []
 for k, v in dict_data.items():
-    negative_high = list(filter(lambda x: x != k, dict_data.keys()))
+    # negative_high = list(filter(lambda x: x != k, dict_data.keys()))
     for k_, v_ in v.items():
         if '4_Lexicographic_semantics' in k:
             _type = k_.split('[')[-1].split(' -')[0]
@@ -66,13 +66,13 @@ for k, v in dict_data.items():
             r_neg_list_l = v[r_neg_type_l]
             neg_3 = r_neg_list_l[randint(0, len(r_neg_list_l) - 1)]
 
-            # pick up two word randomly from the second word in same relation group (high level)
-            r_neg_type_h = negative_high[randint(0, len(negative_high) - 1)]
-            r_neg_list_h = dict_data[r_neg_type_h]
-            r_neg_list_h = r_neg_list_h[list(r_neg_list_h.keys())[randint(0, len(r_neg_list_h) - 1)]]
-            neg_4 = r_neg_list_h[randint(0, len(r_neg_list_h) - 1)]
+            # # pick up two word randomly from the second word in same relation group (high level)
+            # r_neg_type_h = negative_high[randint(0, len(negative_high) - 1)]
+            # r_neg_list_h = dict_data[r_neg_type_h]
+            # r_neg_list_h = r_neg_list_h[list(r_neg_list_h.keys())[randint(0, len(r_neg_list_h) - 1)]]
+            # neg_4 = r_neg_list_h[randint(0, len(r_neg_list_h) - 1)]
 
-            choice = [label, neg_1, neg_2, neg_3, neg_4]
+            choice = [label, neg_1, neg_2, neg_3]
             shuffle(choice)
             answer_id = choice.index(label)
             analogy_data.append({

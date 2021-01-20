@@ -14,10 +14,8 @@ templates = [
 ]
 # u4 ('p_0', 'min'), u2 ('p_4', 'p_0'), sat ('p_2', 'min')
 aggregation_positive = ['p_4']
-aggregation_negative = ['p_11']
-ppl_pmi_aggregation = ['max', 'mean']
-lambdas = [0.8]
-alphas = [-0.4]
+aggregation_negative = ['min']
+ppl_pmi_aggregation = ['mean']
 permutation_negative_weight = [0]
 index = ['model', 'path_to_data', 'scoring_method', 'template_types', 'aggregation_positive',
          'aggregation_negative', 'ppl_pmi_lambda', 'ppl_pmi_alpha', 'ppl_pmi_aggregation',
@@ -45,8 +43,23 @@ def main(path_to_data):
             aggregation_positive=aggregation_positive,
             permutation_negative=True,
             aggregation_negative=aggregation_negative,
-            ppl_pmi_lambda=lambdas,
-            ppl_pmi_alpha=alphas,
+            ppl_pmi_lambda=0.7,
+            ppl_pmi_alpha=0.5,
+            ppl_pmi_aggregation=ppl_pmi_aggregation,
+            no_inference=True,
+            export_dir=export_dir,
+            permutation_negative_weight=permutation_negative_weight
+        )
+        scorer.analogy_test(
+            skip_duplication_check=True,
+            scoring_method='ppl_pmi',
+            path_to_data=path_to_data,
+            template_types=template,
+            aggregation_positive=aggregation_positive,
+            permutation_negative=True,
+            aggregation_negative=aggregation_negative,
+            ppl_pmi_lambda=0.8,
+            ppl_pmi_alpha=0.2,
             ppl_pmi_aggregation=ppl_pmi_aggregation,
             no_inference=True,
             export_dir=export_dir,

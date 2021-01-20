@@ -50,9 +50,9 @@ def main(path_to_data):
         # use the best setting
         for c in condition:
             df = df[df[c] == df_best[c].values[0]]
+            print(c, df_best[c].values[0])
         print(df)
         a = df[df.ppl_pmi_alpha == -0.4]
-        print(a)
         a = a[a.ppl_pmi_lambda == 0.8]
         print(a)
         fig = plt.figure()

@@ -31,7 +31,7 @@ pbar = tqdm.tqdm(total=int(len(total_files)/os.cpu_count()))
 
 def get_options():
     parser = argparse.ArgumentParser(description='command line tool to test finetuned NER model',)
-    parser.add_argument('-e', '--experiment', default=None, type=int)
+    parser.add_argument('-e', '--experiment', default=None, type=str)
 
     return parser.parse_args()
 

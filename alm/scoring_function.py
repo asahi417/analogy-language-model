@@ -111,7 +111,7 @@ class RelationScorer:
             pmi_lambda=pmi_lambda,
             permutation_negative=permutation_negative,
             no_inference=no_inference,
-            skip_duplication_check=skip_duplication_check
+            skip_duplication_check=True
         )
         if skip_scoring_prediction:
             return

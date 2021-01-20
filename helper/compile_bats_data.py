@@ -14,16 +14,28 @@ path_to_file = './cache/BATS_3.0'
 if not os.path.exists(path_to_file):
     raise ValueError('download BATS dataset from \n'
                      'https://u.pcloud.link/publink/show?code=XZOn0J7Z8fzFMt7Tw1mGS6uI1SYfCfTyJQTV\n'
-                     'and locate it at {}'.format(path_to_file))
+                     'unzip, and locate it at {}'.format(path_to_file))
+dict_data = {}
+relation = None
 
-glob('{}/*'.f)
+for d in glob('{}/*'.format(path_to_file)):
+    category = d.split('_')[-1]
+    for t in glob('{}/*.txt'.format(d)):
+        relation = os.path.basename(t)
+        with open(t, 'r') as f:
+            data = list(map(
+                lambda x: x,
+                filter(lambda y: len(y) > 0, f.read().split('\n'))
+            ))
+
+
+
 with open(path_to_file, 'r') as f:
     data = list(map(
         lambda x: x,
         filter(lambda y: len(y) > 0, f.read().split('\n'))
     ))
-dict_data = {}
-relation = None
+
 for d in data:
     if ':' in d:
         relation = d.replace(': ', '')

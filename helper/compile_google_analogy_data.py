@@ -14,10 +14,7 @@ if not os.path.exists(path_to_file):
     os.system('wget -O {} http://download.tensorflow.org/data/questions-words.txt'.format(path_to_file))
 
 with open(path_to_file, 'r') as f:
-    data = list(map(
-        lambda x: x,
-        filter(lambda y: len(y) > 0, f.read().split('\n'))
-    ))
+    data = list(filter(lambda y: len(y) > 0, f.read().split('\n')))
 dict_data = {}
 relation = None
 for d in data:

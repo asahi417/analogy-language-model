@@ -1,18 +1,22 @@
 import os
 import json
 from random import randint, shuffle, seed
+from glob import glob
 
 ##################
 # Format Dataset #
 ##################
 if not os.path.exists('./cache'):
     os.makedirs('./cache')
-path_to_file = './cache/questions-words.txt'
-export_to_file = './data/google.jsonl'
+path_to_file = './cache/BATS_3.0'
+# export_to_file = './data/google.jsonl'
 
 if not os.path.exists(path_to_file):
-    os.system('wget -O {} http://download.tensorflow.org/data/questions-words.txt'.format(path_to_file))
+    raise ValueError('download BATS dataset from \n'
+                     'https://u.pcloud.link/publink/show?code=XZOn0J7Z8fzFMt7Tw1mGS6uI1SYfCfTyJQTV\n'
+                     'and locate it at {}'.format(path_to_file))
 
+glob('{}/*'.f)
 with open(path_to_file, 'r') as f:
     data = list(map(
         lambda x: x,
@@ -59,12 +63,9 @@ for is_mor in [False, True]:
     else:
         relation_type = relation_s
         relation_negative = {i: list(filter(lambda x: x != i, relation_s)) for i in relation_s}
-    existing_stem = []
     for r in relation_type:
         relation_list = dict_data[r]
         for stem, label in relation_list:
-            if stem in existing_stem:
-                continue
 
             # pick up two word randomly from the first word in same relation group
             neg_1 = list(filter(lambda x: x not in stem and x not in label,
@@ -90,7 +91,6 @@ for is_mor in [False, True]:
                 "choice": choice,
                 "prefix": r  # add relation type as a meta information
             })
-            existing_stem.append(stem)
 print('Dataset built: {}, exporting to {}'.format(len(analogy_data), export_to_file))
 with open(export_to_file, 'w') as writer:
     writer.write('\n'.join([json.dumps(d) for d in analogy_data]))

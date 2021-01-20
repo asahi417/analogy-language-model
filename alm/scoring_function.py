@@ -110,7 +110,9 @@ class RelationScorer:
             scoring_method=scoring_method,
             pmi_lambda=pmi_lambda,
             permutation_negative=permutation_negative,
-            no_inference=no_inference)
+            no_inference=no_inference,
+            skip_duplication_check=skip_duplication_check
+        )
         if skip_scoring_prediction:
             return
 
@@ -268,7 +270,8 @@ class RelationScorer:
                   scoring_method,
                   pmi_lambda,
                   permutation_negative,
-                  no_inference):
+                  no_inference,
+                  skip_duplication_check):
         config = ConfigManager(
             export_dir=export_dir,
             model=self.model_name,
@@ -278,6 +281,7 @@ class RelationScorer:
             scoring_method=scoring_method,
             pmi_lambda=pmi_lambda,
             permutation_negative=permutation_negative,
+            skip_duplication_check=skip_duplication_check
         )
 
         def prediction(positive: bool = True):

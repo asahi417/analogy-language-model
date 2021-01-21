@@ -9,7 +9,7 @@ import pandas as pd
 def safe_open(_file, keys):
     with open(_file, 'r') as f:
         d = json.load(f)
-        return {k: d[k_] for k_ in keys}
+        return {k_: d[k_] for k_ in keys}
 
 
 def get_best_config(data):

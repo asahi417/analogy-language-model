@@ -46,6 +46,6 @@ u4_opt['path_to_data'] = './data/u2_raw.jsonl'
 same_config = list(filter(lambda x: x[1] == u4_opt, ex_configs.items()))
 pprint(same_config)
 configs['u2_raw/u4_raw'] = os.path.dirname(same_config[0][0])
-pprint()
+print()
 pprint(configs)
 

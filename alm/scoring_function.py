@@ -303,6 +303,10 @@ class RelationScorer:
             elif scoring_method == 'embedding_similarity':
                 logging.info(' * embedding similarity')
                 full_score = self.lm.get_embedding_similarity(prompt, tokens_to_embed=relation, batch_size=batch_size)
+            # elif scoring_method == 'ppl_head_masked':
+            #     logging.info(' * ppl computation (tail masked)')
+            #     tokens_to_mask = list(map(lambda x: x[-1], relation))
+            #     full_score = self.lm.get_perplexity(prompt, tokens_to_mask=tokens_to_mask, batch_size=batch_size)
             elif scoring_method == 'ppl_tail_masked':
                 logging.info(' * ppl computation (tail masked)')
                 tokens_to_mask = list(map(lambda x: x[-1], relation))

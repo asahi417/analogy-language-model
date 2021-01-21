@@ -30,7 +30,7 @@ for k, v in optimal_configs.items():
         ex_configs = {
             i: safe_open(i, v.keys()) for i in glob('./experiments/ppl_pmi_grid/results/outputs/*/config.json')}
     print(v)
-    print(list(ex_configs.items())[0][1])
+    print(list(ex_configs.items())[0])
     same_config = list(filter(lambda x: x[1] == v, ex_configs.items()))
     pprint(same_config)
     # print("find {} match".format(len(same_config)))

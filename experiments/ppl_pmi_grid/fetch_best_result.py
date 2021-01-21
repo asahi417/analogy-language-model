@@ -2,37 +2,37 @@ import json
 from pprint import pprint
 from glob import glob
 
-[
-    "pmi_aggregation",
-    "ppl_pmi_aggregation",
-    "pmi_lambda",
-    "model",
-    "max_length",
-    "path_to_data",
-    "scoring_method",
-    "template_types",
-    "permutation_negative",
-    "aggregation_positive",
-    "aggregation_negative",
-    "ppl_pmi_lambda",
-    "ppl_pmi_alpha",
-    "permutation_negative_weight"]
+import pandas as pd
 
 
-def fetch_scores(model: str = 'roberta-large',
-                 data: str = './data/sat_package_v3.jsonl',
-                 template: str = 'is-to-as',
+def safe_open(_file):
+    with open(_file, 'r') as f:
+        return json.load(f)
 
-                 ):
 
-    aggregation_positive = 'p_2'
-    template = ['is-to-as']
-    for i in glob('./results/outputs/*/config.json'):
-        with open(i) as f:
-            config = json.load(f)
-        if config['model'] == model and config['path_to_data'] == data and config["template_types"] == template \
-                and config['aggregation_positive'] == aggregation_positive:
-            with open(i.replace('config.json', 'output.json')) as f:
-                output = json.load(f)
+for i in ['sat_package_v3', 'u2_raw', 'u4_raw']:
+    df = pd.read_csv('./experiments/ppl_pmi_grid/results/summary.{}.csv'.format(i), index_col=0)
+    df = df.sort_values(by='accuracy', ascending=False)
+    best = json.loads(df.iloc[0].T.to_json())
+    accuracy = best.pop('accuracy')
+    print("{}: {}".format(i, accuracy))
+    ex_configs = {i: safe_open(i) for i in glob('./experiments/ppl_pmi_grid/results/outputs/*/config.json')}
+    # check duplication
+    same_config = list(filter(lambda x: x[1] == best, ex_configs.items()))
+    print(same_config)
 
-                pprint(output['logit'])
+# [
+#     "pmi_aggregation",
+#     "ppl_pmi_aggregation",
+#     "pmi_lambda",
+#     "model",
+#     "max_length",
+#     "path_to_data",
+#     "scoring_method",
+#     "template_types",
+#     "permutation_negative",
+#     "aggregation_positive",
+#     "aggregation_negative",
+#     "ppl_pmi_lambda",
+#     "ppl_pmi_alpha",
+#     "permutation_negative_weight"]

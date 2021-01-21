@@ -15,6 +15,7 @@ for i in ['sat_package_v3', 'u2_raw', 'u4_raw']:
     df = pd.read_csv('./experiments/ppl_pmi_grid/results/summary.{}.csv'.format(i), index_col=0)
     df = df.sort_values(by='accuracy', ascending=False)
     best = json.loads(df.iloc[0].T.to_json())
+    best['template_types'] = [best['template_types']]
     accuracy = best.pop('accuracy')
     print("{}: {}".format(i, accuracy))
     ex_configs = {

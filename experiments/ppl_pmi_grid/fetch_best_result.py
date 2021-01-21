@@ -21,6 +21,7 @@ def get_best_config(data):
     pprint("{}: {}".format(data, accuracy))
     return best
 
+
 configs = {}
 ex_configs = None
 optimal_configs = {i: get_best_config(i) for i in ['sat_package_v3', 'u2_raw', 'u4_raw']}
@@ -28,6 +29,8 @@ for k, v in optimal_configs.items():
     if ex_configs is None:
         ex_configs = {
             i: safe_open(i, v.keys()) for i in glob('./experiments/ppl_pmi_grid/results/outputs/*/config.json')}
+    print(v)
+    print(list(ex_configs.items())[0][1])
     same_config = list(filter(lambda x: x[1] == v, ex_configs.items()))
     pprint(same_config)
     # print("find {} match".format(len(same_config)))

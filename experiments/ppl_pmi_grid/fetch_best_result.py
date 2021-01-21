@@ -20,8 +20,8 @@ for i in ['sat_package_v3', 'u2_raw', 'u4_raw']:
     ex_configs = {
         i: safe_open(i, best.keys()) for i in glob('./experiments/ppl_pmi_grid/results/outputs/*/config.json')}
     # check duplication
-    print(list(ex_configs.items())[0])
-    print(best)
+    print(list(ex_configs.items())[0][1].keys())
+    print(best.keys())
     same_config = list(filter(lambda x: x[1] == best, ex_configs.items()))
     print(same_config)
 

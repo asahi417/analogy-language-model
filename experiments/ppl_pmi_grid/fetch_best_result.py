@@ -1,5 +1,5 @@
 import json
-from pprint import pprint
+import os
 from glob import glob
 
 import pandas as pd
@@ -17,27 +17,10 @@ for i in ['sat_package_v3', 'u2_raw', 'u4_raw']:
     best = json.loads(df.iloc[0].T.to_json())
     best['template_types'] = [best['template_types']]
     accuracy = best.pop('accuracy')
-    print("{}: {}".format(i, accuracy))
+    print("\n{}: {}".format(i, accuracy))
     ex_configs = {
         i: safe_open(i, best.keys()) for i in glob('./experiments/ppl_pmi_grid/results/outputs/*/config.json')}
-    # check duplication
-    print(list(ex_configs.items())[0][1].keys())
-    print(best.keys())
     same_config = list(filter(lambda x: x[1] == best, ex_configs.items()))
-    print(same_config)
-
-# [
-#     "pmi_aggregation",
-#     "ppl_pmi_aggregation",
-#     "pmi_lambda",
-#     "model",
-#     "max_length",
-#     "path_to_data",
-#     "scoring_method",
-#     "template_types",
-#     "permutation_negative",
-#     "aggregation_positive",
-#     "aggregation_negative",
-#     "ppl_pmi_lambda",
-#     "ppl_pmi_alpha",
-#     "permutation_negative_weight"]
+    print("find {} match".format(len(same_config)))
+    for p in same_config:
+        print(os.path.dirname(p[0]))

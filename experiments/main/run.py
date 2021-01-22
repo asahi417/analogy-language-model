@@ -3,7 +3,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logg
 import alm
 
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
-methods = ['ppl_tail_masked', 'ppl', 'embedding_similarity', 'ppl_pmi', 'pmi']
+methods = ['ppl_tail_masked', 'ppl_head_masked', 'ppl', 'embedding_similarity', 'ppl_pmi', 'pmi' ]
 
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 

@@ -13,6 +13,7 @@ from torch import nn
 from tqdm import tqdm
 
 from .dict_keeper import DictKeeper
+from .prompting_relation import prompting_relation
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"  # to turn off warning message
 PAD_TOKEN_LABEL_ID = nn.CrossEntropyLoss().ignore_index
@@ -24,6 +25,32 @@ __all__ = 'TransformersLM'
 def get_partition(_list):
     length = list(map(lambda x: len(x), _list))
     return list(map(lambda x: [sum(length[:x]), sum(length[:x + 1])], range(len(length))))
+
+
+def find_position(tokenizer, mask_position, text, token: List = None):
+    """ Find masking position in a token-space given a string target
+
+    :param str_to_mask: a string to be masked
+    :param text: source text
+    :param token: (optional) tokenized text
+    :return: [start_position, end_position] in a token-space
+    """
+    if token is None:
+        token = tokenizer.tokenize(text)
+    start, end = mask_position
+    token_to_mask = text[start:end]
+    start = len(re.sub(r'\s*\Z', '', text[:start]))
+    token_before = tokenizer.tokenize(text[:start])
+    assert token[:len(token_before)] == token_before, 'wrong token\n `{}` vs `{}`'.format(
+        token[:len(token_before)], token_before)
+    i = len(token_before)
+    while i < len(token):
+        i += 1
+        decode = tokenizer.convert_tokens_to_string(token[:i])
+        tmp_decode = decode.replace(' ', '')
+        if token_to_mask in tmp_decode:
+            break
+    return [len(token_before), i]
 
 
 class Dataset(torch.utils.data.Dataset):
@@ -106,37 +133,6 @@ class TransformersLM:
         self.model.to(self.device)
         logging.info('running on {} GPU'.format(n_gpu))
 
-    def find_position(self, str_to_mask, text, token: List = None, minimum_length: int = 6):
-        """ Find masking position in a token-space given a string target
-
-        :param str_to_mask: a string to be masked
-        :param text: source text
-        :param token: (optional) tokenized text
-        :return: [start_position, end_position] in a token-space
-        """
-        mask_trg = re.findall(r'\s*\b{}\b'.format(str_to_mask), text)
-        if len(mask_trg) == 0:
-            raise ValueError('mask target {} not found in source {}'.format(str_to_mask, text))
-        if len(mask_trg) > 1:
-            raise ValueError('mask target {} found multiple times in source {}'.format(str_to_mask, text))
-        mask_trg = mask_trg[0]
-        token_before = self.tokenizer.tokenize(text[:text.index(mask_trg)])
-        if token is None:
-            token = self.tokenizer.tokenize(text)
-        assert token[:len(token_before)] == token_before, 'wrong token\n `{}` vs `{}`'.format(token_before, token)
-        i = len(token_before)
-        while i < len(token):
-            i += 1
-            decode = self.tokenizer.convert_tokens_to_string(token[:i])
-            tmp_decode = decode.lower().replace(' ', '')
-            tmp_str_to_mask = str_to_mask.lower().replace(' ', '')
-            if tmp_str_to_mask in tmp_decode:
-                break
-        if i - len(token_before) > minimum_length:
-            raise ValueError('find_position gets too long tokens:\n - source: `{}` \n - string: `{}`\n - found: `{}`'
-                             .format(text, str_to_mask, token[len(token_before):i]))
-        return [len(token_before), i]
-
     def input_ids_to_labels(self, input_ids, label_position: List = None, label_id: List = None):
         """ Labels generation for loss computation
 
@@ -196,29 +192,23 @@ class TransformersLM:
     # Modules for negative PMI computation #
     ########################################
     def encode_plus_mask(self,
-                         text: str,
-                         token_to_mask: str,
-                         token_to_mask_no_label: str = None):
+                         word: List,
+                         template_type: str,
+                         mask_index: int,
+                         mask_index_no_label: int = None):
         """ An output from `encode_plus` with a masked token specified by a string with a `labels` indicating
         the masking position as the masked token id otherwise `PAD_TOKEN_LABEL_ID`
         * Token with multiple sub-words includes all the possible decoding paths
-
-        :param str text: a text to encode
-        :param token_to_mask: a token to be masked
-        :param token_to_mask_no_label: a token to be masked and skip in labels (masked but ignored when computing loss)
-        :return `DictKeeper` object
         """
-        assert type(text) is str
-        assert len(text.replace(' ', '')) != 0, 'found an empty text'
         assert not self.is_causal
-
+        text, position = prompting_relation(word, template_type=template_type)
         token_list = self.tokenizer.tokenize(text)
         token_list_tmp = token_list.copy()
-        if token_to_mask_no_label is not None:
-            s, e = self.find_position(token_to_mask_no_label, text, token_list)
+        if mask_index_no_label is not None:
+            s, e = find_position(self.tokenizer, position[mask_index_no_label], text, token_list)
             token_list_tmp[s:e] = [self.tokenizer.mask_token] * (e - s)
 
-        s, e = self.find_position(token_to_mask, text, token_list)
+        s, e = find_position(self.tokenizer, position[mask_index], text, token_list)
         all_encode = self.encode_combinations(token_list_tmp, list(range(s, e)))
         return DictKeeper(all_encode, target_key='encode')
 
@@ -258,39 +248,36 @@ class TransformersLM:
             label_id.append(self.tokenizer.convert_tokens_to_ids(tmp_token_list[_p]))
             tmp_token_list[_p] = self.tokenizer.mask_token
         tmp_string = self.tokenizer.convert_tokens_to_string(tmp_token_list)
-        # print(tmp_token_list, param, tmp_string)
-        # _encode = self.tokenizer.encode_plus(tmp_token_list, **param)
         _encode = self.tokenizer.encode_plus(tmp_string, **param)
         _encode['labels'] = self.input_ids_to_labels(
             _encode['input_ids'], label_position=position, label_id=label_id)
         return _encode
 
     def batch_encode_plus_mask(self,
-                               batch_text: List,
-                               batch_token_to_mask: List,
-                               batch_token_to_mask_no_label: List = None,
+                               template_type: str,
+                               batch_word: List,
+                               batch_mask_index: List,
+                               batch_mask_index_no_label: List = None,
                                batch_size: int = None):
         """ Batch version of `self.encode_plus_mask`
 
-        :param batch_text: a batch `text`
         :param batch_size: batch size
-        :param batch_token_to_mask: a batch of `token_to_mask`
-        :param batch_token_to_mask_no_label: a batch of `token_to_mask_no_label`
         :return: (`torch.utils.data.DataLoader` class, partition)
         """
 
-        batch_size = len(batch_text) if batch_size is None else batch_size
-        if batch_token_to_mask_no_label is None:
-            batch_token_to_mask_no_label = [None] * len(batch_text)
+        batch_size = len(batch_word) if batch_size is None else batch_size
+        if batch_mask_index_no_label is None:
+            batch_mask_index_no_label = [None] * len(batch_word)
 
-        assert len(batch_text) == len(batch_token_to_mask) == len(batch_token_to_mask_no_label)
+        assert len(batch_word) == len(batch_mask_index) == len(batch_mask_index_no_label)
 
         logging.info('creating data loader')
         data_dk = []
         data_flat = []
         # this can be parallelized, but due to deepcopy at DictKeeper, it may cause memory error in some machine
-        for x in tqdm(list(zip(batch_text, batch_token_to_mask, batch_token_to_mask_no_label))):
-            tmp_data_dk = self.encode_plus_mask(text=x[0], token_to_mask=x[1], token_to_mask_no_label=x[2])
+        for x in tqdm(list(zip(batch_word, batch_mask_index, batch_mask_index_no_label))):
+            tmp_data_dk = self.encode_plus_mask(
+                word=x[0], mask_index=x[1], mask_index_no_label=x[2], template_type=template_type)
             data_dk.append(tmp_data_dk)
             data_flat.append(tmp_data_dk.flat_values)
 
@@ -303,9 +290,10 @@ class TransformersLM:
         return data_loader, partition, data_dk
 
     def get_negative_pmi(self,
-                         texts: List,
-                         tokens_to_mask: List,
-                         tokens_to_condition: List = None,
+                         template_type: str,
+                         word: List,
+                         mask_index: List,
+                         mask_index_condition: List = None,
                          batch_size: int = None,
                          weight: float = None):
         """ Negative Point-wise Mutual Information (PMI)
@@ -317,14 +305,11 @@ class TransformersLM:
         - w: conditional NLL weight
         Sum over (sub) tokens are based on lowest NLL search
 
-        :param texts: a batch of texts
-        :param tokens_to_mask: a batch of objective tokens
-        :param tokens_to_condition: a batch of conditioning tokens
         :param batch_size: batch size
         :param weight: conditional NLL weight
         :return:
         """
-        assert type(texts) is list and type(tokens_to_mask) is list, 'type error'
+        assert type(word) is list and type(mask_index) is list, 'type error'
         if not self.model:
             self.load_model()
         assert self.model_type != 'embedding'
@@ -344,8 +329,9 @@ class TransformersLM:
                 return decode_score(_nested_score['child'][best_i], total_score + best_score)
 
         data_loader, partition, data_dk = self.batch_encode_plus_mask(
-            texts,
-            batch_token_to_mask=tokens_to_mask,
+            template_type=template_type,
+            batch_word=word,
+            batch_mask_index=mask_index,
             batch_size=batch_size)
         logging.info('inference')
         score = self.__get_nll(data_loader, reduce=False)
@@ -353,11 +339,12 @@ class TransformersLM:
             lambda x: decode_score(x[0].restore_structure(score[x[1][0]:x[1][1]], insert_key='score')),
             zip(data_dk, partition)
         ))
-        if tokens_to_condition:
+        if mask_index_condition:
             data_loader, partition, data_dk = self.batch_encode_plus_mask(
-                texts,
-                batch_token_to_mask=tokens_to_mask,
-                batch_token_to_mask_no_label=tokens_to_condition,
+                template_type=template_type,
+                batch_word=word,
+                batch_mask_index=mask_index,
+                batch_mask_index_no_label=mask_index_condition,
                 batch_size=batch_size)
             score = self.__get_nll(data_loader, reduce=False)
             marginal_nll = list(map(
@@ -373,14 +360,16 @@ class TransformersLM:
     ######################################
     # Modules for perplexity computation #
     ######################################
-    def encode_plus_perplexity(self, text: str, token_to_mask: str = None):
+    def encode_plus_perplexity(self,
+                               word: List,
+                               template_type: str,
+                               mask_index_no_label: int = None):
         """ An output from `encode_plus` for perplexity computation
         * for pseudo perplexity, encode all text with mask on every token one by one
         :param str text: a text to encode
         :return a list of encode
         """
-        assert type(text) is str
-        assert len(text.replace(' ', '')) != 0, 'found an empty text'
+        text, position = prompting_relation(word, template_type=template_type)
         param = {'max_length': self.max_length, 'truncation': True, 'padding': 'max_length'}
 
         if self.is_causal:
@@ -389,8 +378,8 @@ class TransformersLM:
             return [encode]
         else:
             token_list = self.tokenizer.tokenize(text)
-            if token_to_mask is not None:
-                s, e = self.find_position(token_to_mask, text, token_list)
+            if mask_index_no_label is not None:
+                s, e = find_position(self.tokenizer, position[mask_index_no_label], text, token_list)
                 token_list[s:e] = [self.tokenizer.mask_token] * (e-s)
             else:
                 s = e = -100
@@ -410,24 +399,24 @@ class TransformersLM:
             return [encode_with_single_mask_id(i) for i in range(len(token_list)) if i not in list(range(s, e))]
 
     def batch_encode_plus_perplexity(self,
-                                     batch_text: List,
-                                     batch_token_to_mask: List = None,
+                                     template_type: str,
+                                     batch_word: List,
+                                     batch_mask_index_no_label: List = None,
                                      batch_size: int = None):
         """ Batch version of `self.encode_plus_perplexity`
 
-        :param batch_text: a batch of `text`
         :param batch_size: batch size
         :return: (`torch.utils.data.DataLoader` class, partition)
         """
-        batch_size = len(batch_text) if batch_size is None else batch_size
+        batch_size = len(batch_word) if batch_size is None else batch_size
         logging.info('creating data loader')
-        # data = list(map(lambda x: self.encode_plus_perplexity(x), batch_text))
         data = []
-        for x in tqdm(batch_text):
-            if batch_token_to_mask is not None:
-                data.append(self.encode_plus_perplexity(x, batch_token_to_mask.pop(0)))
+        for x in tqdm(batch_word):
+            if batch_mask_index_no_label is not None:
+                data.append(self.encode_plus_perplexity(
+                    template_type=template_type, word=x, mask_index_no_label=batch_mask_index_no_label.pop(0)))
             else:
-                data.append(self.encode_plus_perplexity(x))
+                data.append(self.encode_plus_perplexity(template_type=template_type, word=x))
 
         partition = get_partition(data)
 
@@ -438,8 +427,9 @@ class TransformersLM:
         return data_loader, partition
 
     def get_perplexity(self,
-                       texts: List,
-                       tokens_to_mask: List = None,
+                       template_type: str,
+                       word: List,
+                       mask_index_condition: List = None,
                        batch_size: int = None):
         """ (pseudo) Perplexity
 
@@ -447,14 +437,15 @@ class TransformersLM:
         :param batch_size:
         :return: a list of (pseudo) perplexity
         """
-        assert type(texts) is list, 'type error'
+        assert type(word) is list, 'type error'
         if not self.model:
             self.load_model()
         assert self.model_type != 'embedding'
 
         data_loader, partition = self.batch_encode_plus_perplexity(
-            texts,
-            batch_token_to_mask=tokens_to_mask,
+            template_type=template_type,
+            batch_word=word,
+            batch_mask_index_no_label=mask_index_condition,
             batch_size=batch_size)
         logging.info('inference')
         nll = self.__get_nll(data_loader)
@@ -464,34 +455,26 @@ class TransformersLM:
     ###################################
     # Modules for embedding operation #
     ###################################
-    def encode_plus_embedding(self, text: str, token_to_embed: List):
-        """
-
-        :param text:
-        :param token_to_embed:
-        :return:
-        """
-
-        assert type(text) is str
-        assert len(text.replace(' ', '')) != 0, 'found an empty text'
-
+    def encode_plus_embedding(self, word: List, template_type: str):
+        """ encode plus embedding """
+        text, position = prompting_relation(word, template_type=template_type)
         param = {'max_length': self.max_length, 'truncation': True, 'padding': 'max_length'}
         encode = self.tokenizer.encode_plus(text, **param)
-
         token_list = self.tokenizer.tokenize(text)
-        positions = [self.find_position(s, text, token_list) for s in token_to_embed]
+        positions = [find_position(self.tokenizer, s, text, token_list) for s in position]
         pos = [[len(self.sp_token_prefix) + s, len(self.sp_token_prefix) + e] for s, e in positions]
         assert len(pos) == 4, 'token_to_embed is allowed upto 4'
-        # encode['position_to_embed'] = pos + [[0, 0]] * (5 - len(pos))
         encode['position_to_embed'] = pos
         return encode
 
     def batch_encode_plus_embedding(self,
-                                    batch_text: List,
-                                    batch_token_to_embed: List,
+                                    template_type: str,
+                                    batch_word: List,
                                     batch_size: int = None):
-        batch_size = len(batch_text) if batch_size is None else batch_size
-        data = list(map(lambda x: self.encode_plus_embedding(*x), zip(batch_text, batch_token_to_embed)))
+        batch_size = len(batch_word) if batch_size is None else batch_size
+        data = list(map(
+            lambda x: self.encode_plus_embedding(*x, template_type=template_type),
+            batch_word))
         return torch.utils.data.DataLoader(
             Dataset(data),
             num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False
@@ -520,8 +503,9 @@ class TransformersLM:
         return cos_similarity(diff_stem, diff_predict)
 
     def get_embedding_similarity(self,
-                                 texts: List,
-                                 tokens_to_embed: List, batch_size: int = None):
+                                 template_type: str,
+                                 word: List,
+                                 batch_size: int = None):
         """ Similarity of embedding differences over relations
 
         :param texts:
@@ -529,13 +513,14 @@ class TransformersLM:
         :param batch_size:
         :return: embeddings (len(texts), token num, dim)
         """
-        assert type(texts) is list, 'type error'
         if not self.model:
             self.load_model(lm_head=False)
         assert self.model_type == 'embedding'
 
         data_loader = self.batch_encode_plus_embedding(
-            texts, batch_size=batch_size, batch_token_to_embed=tokens_to_embed)
+            template_type=template_type,
+            batch_word=word,
+            batch_size=batch_size)
 
         embeddings = []
 

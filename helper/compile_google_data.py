@@ -1,6 +1,32 @@
 import os
 import json
 from random import randint, shuffle, seed
+from copy import deepcopy
+
+
+def check_validity(json_data):
+    tmp = deepcopy(json_data)
+    for t, i in enumerate(json_data):
+        a = i['answer']
+        choice = []
+        for n, (c_h, c_t) in enumerate(i['choice']):
+            if len(c_h) == 0 or len(c_t) == 0:
+                raise ValueError(i)
+            if c_h in i['stem'] or c_t in i['stem']:
+                print("found duplication: {} \n {}".format((c_h, c_t), i))
+                if a == n:
+                    raise ValueError('answer would be dropped')
+                if a > n:
+                    a = a - 1
+            else:
+                choice.append((c_h, c_t))
+        tmp[t]['answer'] = a
+        tmp[t]['choice'] = choice
+        assert tmp[t]['choice'][tmp[t]['answer']] == i['choice'][i['answer']], str((
+                tmp[t]['choice'][tmp[t]['answer']], i['choice'][i['answer']]
+        ))
+
+    return tmp
 
 ##################
 # Format Dataset #
@@ -8,7 +34,6 @@ from random import randint, shuffle, seed
 if not os.path.exists('./cache'):
     os.makedirs('./cache')
 path_to_file = './cache/questions-words.txt'
-export_to_file = './data/google.jsonl'
 
 if not os.path.exists(path_to_file):
     os.system('wget -O {} http://download.tensorflow.org/data/questions-words.txt'.format(path_to_file))
@@ -49,6 +74,7 @@ relation_s = ['gram1-adjective-to-adverb', 'gram2-opposite', 'gram3-comparative'
 
 seed(1234)
 analogy_data = []
+all_relation = []
 for is_mor in [False, True]:
     if is_mor:
         relation_type = relation_m
@@ -66,11 +92,13 @@ for is_mor in [False, True]:
             # pick up two word randomly from the first word in same relation group
             neg_1 = list(filter(lambda x: x not in stem and x not in label,
                                 map(lambda y: y[0][0], relation_list)))
+            neg_1 = list(set(neg_1))
             neg_1 = [neg_1[randint(0, int(len(neg_1)/2))], neg_1[randint(int(len(neg_1)/2), len(neg_1) - 1)]]
 
             # pick up two word randomly from the second word in same relation group
             neg_2 = list(filter(lambda x: x not in stem and x not in label,
                                 map(lambda y: y[0][1], relation_list)))
+            neg_2 = list(set(neg_2))
             neg_2 = [neg_2[randint(0, int(len(neg_2) / 2))], neg_2[randint(int(len(neg_2) / 2), len(neg_2) - 1)]]
 
             # pick up two word randomly from the second word in the other relation group
@@ -88,6 +116,29 @@ for is_mor in [False, True]:
                 "prefix": r  # add relation type as a meta information
             })
             existing_stem.append(stem)
-print('Dataset built: {}, exporting to {}'.format(len(analogy_data), export_to_file))
-with open(export_to_file, 'w') as writer:
-    writer.write('\n'.join([json.dumps(d) for d in analogy_data]))
+            all_relation.append(r)
+
+#########################
+# validation/test split #
+#########################
+all_relation = list(set(all_relation))
+val = []
+test = []
+ratio = 0.1
+for r in all_relation:
+    sub = list(filter(lambda x: x['prefix'] == r, analogy_data))
+    val_size = int(len(sub) * ratio)
+    print('- relation: {}, val size: {}'.format(r, val_size))
+    shuffle(sub)
+    val += sub[:val_size]
+    test += sub[val_size:]
+print('total     : {}'.format(len(analogy_data)))
+print('validation: {}'.format(len(val)))
+print('test      : {}'.format(len(test)))
+print('Dataset built: {}'.format(len(analogy_data)))
+
+os.makedirs('./data/google', exist_ok=True)
+with open('./data/google/valid.jsonl', 'w') as writer:
+    writer.write('\n'.join([json.dumps(d) for d in val]))
+with open('./data/google/test.jsonl', 'w') as writer:
+    writer.write('\n'.join([json.dumps(d) for d in test]))

@@ -2,21 +2,24 @@ import json
 from typing import List
 from itertools import chain
 
-from .prompting_relation import prompting_relation, TEMPLATES
-
 __all__ = 'AnalogyData'
+VALID_DATA = ['sat', 'u2', 'u4', 'google', 'bats']
 
 
-def get_dataset(path_to_data: str):
+def _get_dataset(data: str):
     """ Get prompted SAT-type dataset: a list of (answer: int, prompts: list, stem: list, choice: list)"""
-    with open(path_to_data, 'r') as f:
-        return list(filter(None, map(lambda x: json.loads(x) if len(x) > 0 else None, f.read().split('\n'))))
+    assert data in VALID_DATA, 'unknown data: {}'.format(data)
+    with open('./data/{}/test.jsonl'.format(data), 'r') as f:
+        test = list(filter(None, map(lambda x: json.loads(x) if len(x) > 0 else None, f.read().split('\n'))))
+    with open('./data/{}/valid.jsonl'.format(data), 'r') as f:
+        val = list(filter(None, map(lambda x: json.loads(x) if len(x) > 0 else None, f.read().split('\n'))))
+    return val, test
 
 
-def get_dataset_prompt(path_to_data: str,
-                       template_types: List = None,
-                       permutation_negative: bool = True,
-                       permutation_marginalize: bool = False):
+def get_dataset(data: str,
+                test_set: bool = True,
+                negative_permutation: bool = True,
+                marginalize_permutation: bool = False):
     """ Get prompted SAT-type dataset
 
     :param path_to_data: path to a SAT-type dataset
@@ -25,10 +28,6 @@ def get_dataset_prompt(path_to_data: str,
     :param permutation_marginalize: for ppl_pmi marginal likelihood
     :return: a list of (answer: int, prompts: list, stem: list, choice: list)
     """
-    if template_types:
-        assert all(t in TEMPLATES.keys() for t in template_types), 'template not found in {}'.format(TEMPLATES.keys())
-    else:
-        template_types = list(TEMPLATES.keys())
 
     def sampling_permutation(a, b, c, d):
         positive = [(a, b, c, d), (a, c, b, d),
@@ -40,84 +39,53 @@ def get_dataset_prompt(path_to_data: str,
                     (c, a, b, d), (c, b, a, d), (c, b, d, a), (c, d, b, a),
                     (d, a, b, c), (d, a, c, b), (d, b, a, c), (d, c, a, b)]
 
-        if permutation_negative:
+        if negative_permutation:
             return positive, negative
         else:
             return positive, []
 
     def single_entry(dictionary):
-        a = dictionary['stem'][0]
-        b = dictionary['stem'][1]
+        a, b = dictionary['stem']
 
-        def single_prompt(c, d):
-            positive, negative = sampling_permutation(a, b, c, d)
-            positive_prompt = list(chain(*map(
-                lambda x: list(map(
-                    lambda t: prompting_relation(
-                        subject_stem=x[0], object_stem=x[1], subject_analogy=x[2], object_analogy=x[3],
-                        template_type=t),
-                    template_types)),
-                positive)))
-            negative_prompt = list(chain(*map(
-                lambda x: list(map(
-                    lambda t: prompting_relation(
-                        subject_stem=x[0], object_stem=x[1], subject_analogy=x[2], object_analogy=x[3],
-                        template_type=t),
-                    template_types)),
-                negative)))
-            # (prompt, (stem pair, option pair))
-            positive_prompt = list(map(lambda x: (x, (a, b, c, d)), positive_prompt))
-            negative_prompt = list(map(lambda x: (x, (a, b, c, d)), negative_prompt))
-            return positive_prompt, negative_prompt
+        def perm(c, d):
+            return sampling_permutation(a, b, c, d)
 
         choice = dictionary['choice']
-        if permutation_marginalize:
+        if marginalize_permutation:
             marginal_choice = list(chain(*[[[i[0], m[1]] for m in choice] for i in choice]))
-            prompts = list(map(lambda x: single_prompt(*x), marginal_choice))
+            permutations = list(map(lambda x: perm(*x), marginal_choice))
         else:
-            prompts = list(map(lambda x: single_prompt(*x), dictionary['choice']))
-        return dictionary['answer'], prompts
+            permutations = list(map(lambda x: perm(*x), dictionary['choice']))
+        return dictionary['answer'], permutations
 
-    data = list(map(lambda x: single_entry(x), get_dataset(path_to_data)))
+    val, test = _get_dataset(data)
+    if test_set:
+        data = list(map(lambda x: single_entry(x), test))
+    else:
+        data = list(map(lambda x: single_entry(x), val))
     list_answer = list(list(zip(*data))[0])
-    list_nested_sentence = list(list(zip(*data))[1])
-    return list_answer, list_nested_sentence
+    list_nested_permutation = list(list(zip(*data))[1])
+    return list_answer, list_nested_permutation
 
 
 class AnalogyData:
 
     def __init__(self,
-                 path_to_data: str,
-                 template_types: List = None,
-                 permutation_negative: bool = True,
-                 permutation_marginalize: bool = True):
+                 data: str,
+                 test: bool = False,
+                 negative_permutation: bool = True,
+                 marginalize_permutation: bool = True):
 
-        self.answer, self.list_nested_sentence = get_dataset_prompt(
-            path_to_data=path_to_data,
-            template_types=template_types,
-            permutation_negative=permutation_negative,
-            permutation_marginalize=permutation_marginalize)
-        self.flatten_prompt_pos, self.structure_id_pos = self.get_structure(self.list_nested_sentence)
-        if permutation_negative:
-            self.flatten_prompt_neg, self.structure_id_neg = self.get_structure(self.list_nested_sentence, False)
+        self.answer, self.list_nested_permutation = get_dataset(
+            data=data,
+            test_set=test,
+            negative_permutation=negative_permutation,
+            marginalize_permutation=marginalize_permutation)
+        self.flatten_pos, self.structure_id_pos = self.get_structure(self.list_nested_permutation)
+        if negative_permutation:
+            self.flatten_neg, self.structure_id_neg = self.get_structure(self.list_nested_permutation, False)
         else:
-            self.flatten_prompt_neg = self.structure_id_neg = None
-
-    def get_prompt(self,
-                   return_relation_pairs: bool = True,
-                   positive: bool = True):
-        if positive:
-            prompt = self.flatten_prompt_pos
-        else:
-            prompt = self.flatten_prompt_neg
-        if not prompt:
-            return None, None
-        prompt_list = list(list(zip(*prompt))[0])
-        if return_relation_pairs:
-            relation_list = list(list(zip(*prompt))[1])
-            return prompt_list, relation_list
-        else:
-            return prompt_list,
+            self.flatten_neg = self.structure_id_neg = None
 
     @staticmethod
     def get_structure(nested_list, positive: bool = True):
@@ -137,11 +105,11 @@ class AnalogyData:
         list_placeholder = list(map(
             lambda x: list(map(
                 lambda y: (
-                    [0] * len(self.list_nested_sentence[x[0]][y][0]),
-                    [0] * len(self.list_nested_sentence[x[0]][y][1])
+                    [0] * len(self.list_nested_permutation[x[0]][y][0]),
+                    [0] * len(self.list_nested_permutation[x[0]][y][1])
                 ),
                 range(len(x[1])))),
-            enumerate(self.list_nested_sentence)))
+            enumerate(self.list_nested_permutation)))
         list_score_pos = score_positive.copy()
         for n_q, n_o, n_perm in self.structure_id_pos:
             list_placeholder[n_q][n_o][0][n_perm] = list_score_pos.pop(0)

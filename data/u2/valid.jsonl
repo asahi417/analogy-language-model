@@ -1,0 +1,24 @@
+{"stem": ["peccadillo", "sin"], "answer": 0, "choice": [["masquerade", "party"], ["peasant", "serf"], ["sarcophagus", "funeral"], ["letdown", "devastation"], ["hex", "wizard"]], "prefix": "grade12"}
+{"stem": ["concession", "placate"], "answer": 2, "choice": [["female", "engender"], ["artillery", "bolster"], ["catalyst", "precipitate"], ["exercise", "enervate"], ["adjudicator", "mitigate"]], "prefix": "grade12"}
+{"stem": ["almond", "nut"], "answer": 1, "choice": [["hill", "mountain"], ["helicopter", "aircraft"], ["sport", "football"], ["lamp", "lightbulb"]], "prefix": "grade6"}
+{"stem": ["newspaper", "inform"], "answer": 3, "choice": [["television", "watch"], ["book", "communicate"], ["movie", "persuade"], ["game", "entertain"]], "prefix": "grade6"}
+{"stem": ["misfortune", "luck"], "answer": 0, "choice": [["victory", "defeat"], ["coffee", "tea"], ["life", "birth"], ["sugar", "salt"]], "prefix": "grade6"}
+{"stem": ["safe", "dangerous"], "answer": 0, "choice": [["silent", "noisy"], ["upset", "late"], ["wise", "smart"], ["fast", "quick"]], "prefix": "grade4"}
+{"stem": ["shoe", "foot"], "answer": 2, "choice": [["boot", "hand"], ["glove", "wrist"], ["hat", "head"], ["sock", "leg"]], "prefix": "grade4"}
+{"stem": ["eyes", "see"], "answer": 1, "choice": [["hands", "cry"], ["ears", "hear"], ["feet", "talk"], ["teeth", "think"]], "prefix": "grade4"}
+{"stem": ["offer", "request"], "answer": 0, "choice": [["damage", "repair"], ["enjoy", "entertain"], ["experience", "participate"], ["endure", "continue"]], "prefix": "grade8"}
+{"stem": ["patience", "virtue"], "answer": 2, "choice": [["essay", "story"], ["currency", "credit"], ["denial", "reaction"], ["faith", "religion"]], "prefix": "grade8"}
+{"stem": ["sunscreen", "sunburn"], "answer": 1, "choice": [["hope", "tornado"], ["vaccination", "disease"], ["carelessness", "accident"], ["dream", "sleep"]], "prefix": "grade8"}
+{"stem": ["neutral", "indifferent"], "answer": 1, "choice": [["exotic", "commonplace"], ["lazy", "indolent"], ["finicky", "relaxed"], ["unsettling", "detached"]], "prefix": "grade9"}
+{"stem": ["conundrum", "puzzle"], "answer": 0, "choice": [["palace", "estate"], ["phenomenon", "science"], ["dynamite", "destruction"], ["actor", "choreographer"]], "prefix": "grade9"}
+{"stem": ["cathedral", "church"], "answer": 0, "choice": [["university", "school"], ["orchestra", "symphony"], ["preamble", "constitution"], ["prefix", "suffix"]], "prefix": "grade9"}
+{"stem": ["boots", "feet"], "answer": 2, "choice": [["socks", "underwear"], ["shorts", "pants"], ["mittens", "hands"], ["braces", "glasses"]], "prefix": "grade5"}
+{"stem": ["teacher", "educate"], "answer": 0, "choice": [["senator", "represent"], ["lawyer", "instruct"], ["coach", "condemn"], ["priest", "annoy"]], "prefix": "grade5"}
+{"stem": ["angry", "mad"], "answer": 3, "choice": [["awake", "alone"], ["depressed", "confused"], ["polite", "rude"], ["nice", "kind"]], "prefix": "grade5"}
+{"stem": ["veil", "enshroud"], "answer": 1, "choice": [["beautician", "paint"], ["lampoon", "mock"], ["laureate", "preside"], ["flare", "locate"], ["lantern", "identify"]], "prefix": "grade11"}
+{"stem": ["heretic", "unorthodox"], "answer": 1, "choice": [["hero", "folksy"], ["braggart", "boastful"], ["javelin", "underhanded"], ["hiatus", "eternal"], ["jinx", "auspicious"]], "prefix": "grade11"}
+{"stem": ["waterway", "navigable"], "answer": 1, "choice": [["farm", "famished"], ["mountain", "surmountable"], ["vault", "unimpressed"], ["fountain", "youthful"], ["judge", "ramshackle"]], "prefix": "grade10"}
+{"stem": ["glutton", "moderation"], "answer": 0, "choice": [["braggart", "humility"], ["professor", "knowledge"], ["sage", "wisdom"], ["lawyer", "prudence"], ["caretaker", "affection"]], "prefix": "grade10"}
+{"stem": ["democracy", "government"], "answer": 2, "choice": [["master", "slave"], ["storm", "blizzard"], ["sonnet", "poem"], ["tribe", "family"]], "prefix": "grade7"}
+{"stem": ["success", "failure"], "answer": 2, "choice": [["grief", "sadness"], ["debt", "loss"], ["virtue", "evil"], ["life", "birth"]], "prefix": "grade7"}
+{"stem": ["buckle", "belt"], "answer": 3, "choice": [["suit", "tie"], ["shovel", "pit"], ["summer", "season"], ["month", "year"]], "prefix": "grade7"}

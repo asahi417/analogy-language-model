@@ -373,6 +373,7 @@ class TransformersLM:
         param = {'max_length': self.max_length, 'truncation': True, 'padding': 'max_length'}
 
         if self.is_causal:
+            assert mask_index_no_label is None, 'mask_index_no_label can not be used in gpt'
             encode = self.tokenizer.encode_plus(text, **param)
             encode['labels'] = self.input_ids_to_labels(encode['input_ids'])
             return [encode]

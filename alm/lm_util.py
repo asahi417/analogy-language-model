@@ -473,7 +473,7 @@ class TransformersLM:
                                     batch_size: int = None):
         batch_size = len(batch_word) if batch_size is None else batch_size
         data = list(map(
-            lambda x: self.encode_plus_embedding(*x, template_type=template_type),
+            lambda x: self.encode_plus_embedding(x, template_type=template_type),
             batch_word))
         return torch.utils.data.DataLoader(
             Dataset(data),

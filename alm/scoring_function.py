@@ -296,7 +296,7 @@ class RelationScorer:
                     word=input_data, mask_index_condition=mask_index_condition, **shared)
             elif scoring_method == 'embedding_similarity':
                 logging.info(' * embedding similarity')
-                full_score = self.lm.get_embedding_similarity(word=input_data)
+                full_score = self.lm.get_embedding_similarity(word=input_data, **shared)
             elif scoring_method == 'pmi':
                 score_list = []
                 for n, (i, k) in enumerate(list(permutations(range(4), 2))):

@@ -103,8 +103,8 @@ class ConfigManager:
     def __cache_init(self):
         assert self.cache_dir is not None
         os.makedirs(self.cache_dir, exist_ok=True)
-        if not os.path.exists('{}/config.{}.json'.format(self.cache_dir, self.prefix)):
-            with open('{}/config.{}.json'.format(self.cache_dir, self.prefix), 'w') as f:
+        if not os.path.exists('{}/config.json'.format(self.cache_dir)):
+            with open('{}/config.json'.format(self.cache_dir), 'w') as f:
                 json.dump(self.config, f)
 
     def cache_scores_pmi(self, logit_name: str, pmi_logit: List, positive: bool = True):

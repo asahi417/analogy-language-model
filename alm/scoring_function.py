@@ -252,10 +252,20 @@ class RelationScorer:
         os.makedirs('{}/summary'.format(export_dir))
         export_prefix = export_prefix + '.test' if test else '.valid'
         # save as a json line
-        with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'w') as writer:
-            writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
+        if os.path.exists('{}/summary/{}.jsonl'.format(export_dir, export_prefix)):
+            with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'a') as writer:
+                writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
+        else:
+            with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'w') as writer:
+                writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
+
         # save as a csv
-        pd.DataFrame(json_line).to_csv('{}/summary/{}.csv'.format(export_dir, export_prefix))
+        if os.path.exists('{}/summary/{}.csv'.format(export_dir, export_prefix)):
+            df = pd.read_csv('{}/summary/{}.csv'.format(export_dir, export_prefix), index_col=0)
+            df_tmp = pd.DataFrame(json_line)
+            pd.concat([df, df_tmp]).to_csv('{}/summary/{}.csv'.format(export_dir, export_prefix))
+        else:
+            pd.DataFrame(json_line).to_csv('{}/summary/{}.csv'.format(export_dir, export_prefix))
 
     def get_score(self, export_dir, test, template_type, data, batch_size, scoring_method, pmi_lambda,
                   negative_permutation, no_inference):

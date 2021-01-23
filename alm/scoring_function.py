@@ -67,11 +67,14 @@ class GridSearch:
     def __len__(self):
         return len(self.all_config)
 
-    def __init__(self, scoring_method, score, data_instance,
+    def __init__(self,
+                 shared_config,
+                 scoring_method, score, data_instance,
                  ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
                  negative_permutation_aggregation, negative_permutation_weight):
         """ Grid Search Aggregator: multiprocessing-oriented """
         # global variables
+        self.shared_config = shared_config
         self.score = score
         self.scoring_method = scoring_method
         self.data_instance = data_instance
@@ -166,13 +169,16 @@ class GridSearch:
         assert len(pred) == len(label)
         accuracy = sum(map(lambda x: int(x[0] == x[1]), zip(pred, label))) / len(label)
         # config.save(accuracy=accuracy, logit_pn=logit_pn, logit=logit, prediction=pred)
-        return {'ppl_pmi_aggregation': ppl_pmi_aggregation,
-                'ppl_pmi_lambda': ppl_pmi_lambda,
-                'ppl_pmi_alpha': ppl_pmi_alpha,
-                'positive_permutation_aggregation': positive_permutation_aggregation,
-                'negative_permutation_aggregation': negative_permutation_aggregation,
-                'negative_permutation_weight': negative_permutation_weight,
-                'accuracy': accuracy}
+        tmp_config = {
+            'ppl_pmi_aggregation': ppl_pmi_aggregation,
+            'ppl_pmi_lambda': ppl_pmi_lambda,
+            'ppl_pmi_alpha': ppl_pmi_alpha,
+            'positive_permutation_aggregation': positive_permutation_aggregation,
+            'negative_permutation_aggregation': negative_permutation_aggregation,
+            'negative_permutation_weight': negative_permutation_weight,
+            'accuracy': accuracy}
+        tmp_config.update(self.shared_config)
+        return tmp_config
 
 
 class RelationScorer:
@@ -192,6 +198,7 @@ class RelationScorer:
         """
         logging.debug('*** setting up a scorer ***')
         # language model setup
+        self.max_length = max_length
         self.lm = TransformersLM(model=model, max_length=max_length, cache_dir=cache_dir, num_worker=num_worker)
         self.model_name = model
 
@@ -276,8 +283,18 @@ class RelationScorer:
         # grid search #
         ###############
         pool = Pool()
+        shared_config = {
+            'model': self.model_name,
+            'max_length': self.max_length,
+            'data': data,
+            'template_type': template_type,
+            'scoring_method': scoring_method,
+            'negative_permutation': negative_permutation,
+            'pmi_aggregation': pmi_aggregation,
+            'pmi_lambda': pmi_lambda
+        }
         searcher = GridSearch(
-            scoring_method, score, data_instance,
+            shared_config, scoring_method, score, data_instance,
             ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
             negative_permutation_aggregation, negative_permutation_weight)
         logging.info('start grid search: {} combinations'.format(len(searcher)))

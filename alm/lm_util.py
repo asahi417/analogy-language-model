@@ -114,7 +114,7 @@ class TransformersLM:
 
     def load_model(self, lm_head: bool = True):
         """ Model setup """
-        logging.info('setting up language model')
+        logging.info('load language model')
         params = dict(config=self.config, cache_dir=self.cache_dir)
         if lm_head and self.is_causal:
             self.model = transformers.AutoModelForCausalLM.from_pretrained(self.model_name, **params)

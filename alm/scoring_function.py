@@ -277,7 +277,7 @@ class RelationScorer:
     def get_score(self, export_dir, test, template_type, data, batch_size, scoring_method, pmi_lambda,
                   negative_permutation, no_inference):
         config = ConfigManager(
-            export_dir='{}/logit'.format(export_dir),
+            export_dir=export_dir,
             test=test,
             model=self.model_name,
             max_length=self.lm.max_length,

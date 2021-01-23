@@ -25,6 +25,7 @@ for _model, _max_length, _batch in models:
                 ppl_pmi_aggregation=ppl_pmi_aggregation,
                 no_inference=True,
                 ppl_pmi_alpha=ppl_pmi_alpha,
+                negative_permutation=True,
                 positive_permutation_aggregation=positive_permutation_aggregation,
                 negative_permutation_aggregation=negative_permutation_aggregation,
                 negative_permutation_weight=negative_permutation_weight

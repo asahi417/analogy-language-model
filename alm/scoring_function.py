@@ -373,11 +373,10 @@ class RelationScorer:
                     if config.pmi_logits[prefix] and key in config.pmi_logits[prefix].keys():
                         _score = config.pmi_logits[prefix][key]
                         continue
-
-                    mask_index = list(map(lambda x: x[i], input_data))
-                    mask_index_condition = list(map(lambda x: x[k], input_data))
                     _score = self.lm.get_negative_pmi(
-                        word=input_data, mask_index=mask_index, mask_index_condition=mask_index_condition,
+                        word=input_data,
+                        mask_index=[i] * len(input_data),
+                        mask_index_condition=[k] * len(input_data),
                         weight=pmi_lambda, **shared)
                     config.cache_scores_pmi(key, _score, positive=positive)
                     score_list.append(_score)

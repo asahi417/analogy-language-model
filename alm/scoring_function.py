@@ -26,6 +26,21 @@ AGGREGATOR = {
 PBAR = tqdm.tqdm()
 
 
+def export_report(export_prefix, export_dir: str = './experiments_results'):
+    # save as a csv
+    with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'r') as f:
+        json_line = list(filter(None, map(lambda x: json.loads(x) if len(x) > 0 else None, f.read().split('\n'))))
+
+    if os.path.exists('{}/summary/{}.csv'.format(export_dir, export_prefix)):
+        df = pd.read_csv('{}/summary/{}.csv'.format(export_dir, export_prefix), index_col=0)
+        df_tmp = pd.DataFrame(json_line)
+        df = pd.concat([df, df_tmp])
+        df = df.drop_duplicates()
+        df.to_csv('{}/summary/{}.csv'.format(export_dir, export_prefix))
+    else:
+        pd.DataFrame(json_line).to_csv('{}/summary/{}.csv'.format(export_dir, export_prefix))
+
+
 class GridSearch:
 
     def __len__(self):
@@ -258,14 +273,6 @@ class RelationScorer:
         else:
             with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'w') as writer:
                 writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
-
-        # save as a csv
-        if os.path.exists('{}/summary/{}.csv'.format(export_dir, export_prefix)):
-            df = pd.read_csv('{}/summary/{}.csv'.format(export_dir, export_prefix), index_col=0)
-            df_tmp = pd.DataFrame(json_line)
-            pd.concat([df, df_tmp]).to_csv('{}/summary/{}.csv'.format(export_dir, export_prefix))
-        else:
-            pd.DataFrame(json_line).to_csv('{}/summary/{}.csv'.format(export_dir, export_prefix))
 
     def get_score(self, export_dir, test, template_type, data, batch_size, scoring_method, pmi_lambda,
                   negative_permutation, no_inference):

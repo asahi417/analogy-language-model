@@ -33,3 +33,6 @@ for _model, _max_length, _batch in models:
                     shared['pmi_aggregation'] = pmi_aggregation
                 scorer.analogy_test(**shared)
                 scorer.release_cache()
+
+
+alm.export_report(export_prefix=export_prefix)

@@ -30,7 +30,7 @@ class ConfigManager:
         """ configuration manager for `scoring_function.RelationScorer` """
         self.config = kwargs
         self.prefix = 'test' if test else 'valid'
-        logging.info(' * configuration' +
+        logging.info(' * configuration\n' +
                      '\n'.join(list(map(lambda x: '{} : {}'.format(x[0], x[1]), self.config.items()))))
         cache_dir = os.path.join(export_dir, kwargs['data'], kwargs['model'], kwargs['scoring_method'])
         self.pmi_logits = {'positive': None, 'negative': None}

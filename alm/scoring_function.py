@@ -169,7 +169,7 @@ class RelationScorer:
         :param cache_dir: LM parameter
         :param num_worker: LM parameter
         """
-        logging.info('*** setting up a scorer ***')
+        logging.debug('*** setting up a scorer ***')
         # language model setup
         self.lm = TransformersLM(model=model, max_length=max_length, cache_dir=cache_dir, num_worker=num_worker)
         self.model_name = model
@@ -265,7 +265,11 @@ class RelationScorer:
         pool.close()
         logging.info('export to {}/summary'.format(export_dir))
         os.makedirs('{}/summary'.format(export_dir), exist_ok=True)
-        export_prefix = export_prefix + '.test' if test else '.valid'
+        if test:
+            export_prefix = export_prefix + '.test'
+        else:
+            export_prefix = export_prefix + '.valid'
+
         # save as a json line
         if os.path.exists('{}/summary/{}.jsonl'.format(export_dir, export_prefix)):
             with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'a') as writer:

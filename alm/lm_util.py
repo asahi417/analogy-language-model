@@ -85,7 +85,7 @@ class TransformersLM:
         :param model: a model name corresponding to a model card in `transformers`
         :param max_length: a model max length if specified, else use model_max_length
         """
-        logging.info('*** setting up a language model ***')
+        logging.debug('*** setting up a language model ***')
         self.num_worker = num_worker
         if self.num_worker == 1:
             os.environ["OMP_NUM_THREADS"] = "1"  # to turn off warning message

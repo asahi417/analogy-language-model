@@ -36,15 +36,15 @@ def export_report(export_prefix, export_dir: str = './experiments_results', test
     logging.info('compile jsonlins `{0}.jsonl` to csv file `{0}.csv`'.format(file))
     # save as a csv
     with open('{}.jsonl'.format(file), 'r') as f:
-        for n, i in enumerate(f.read().split('\n')):
-            if len(i) > 0:
-                try:
-                    json.loads(i)
-                except Exception:
-                    print(n, i)
-                    input()
+        # for n, i in enumerate(f.read().split('\n')):
+        #     if len(i) > 0:
+        #         try:
+        #             json.loads(i)
+        #         except Exception:
+        #             print(n, i)
+        #             input()
         json_line = list(filter(None, map(lambda x: json.loads(x) if len(x) > 0 else None, f.read().split('\n'))))
-
+    logging.info('jsonline with {} lines'.format(len(json_line)))
     if os.path.exists('{}.csv'.format(file)):
         df = pd.read_csv('{}.csv'.format(file), index_col=0)
         df_tmp = pd.DataFrame(json_line)
@@ -52,6 +52,7 @@ def export_report(export_prefix, export_dir: str = './experiments_results', test
         df = df.drop_duplicates()
     else:
         df = pd.DataFrame(json_line)
+    print(df.head())
     logging.info('df has {} rows'.format(len(df)))
 
     df = df.sort_values(by='accuracy', ascending=False)

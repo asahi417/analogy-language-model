@@ -5,10 +5,11 @@ methods = ['ppl_tail_masked', 'ppl_head_masked', 'ppl', 'embedding_similarity', 
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 512), ('bert-large-cased', 64, 512), ('gpt2-large', 32, 512)]
 
-positive_permutation_aggregation = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7']
-pmi_aggregation = ['max', 'mean', 'min', 'p_0', 'p_1', 'p_2', 'p_3', 'p_4', 'p_5', 'p_6', 'p_7', 'p_8', 'p_9', 'p_10',
-                   'p_11']
-ppl_pmi_aggregation = ['max', 'mean', 'min', 'p_0', 'p_1']
+positive_permutation_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4',
+                                    'index_5', 'index_6', 'index_7']
+pmi_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4', 'index_5', 'index_6',
+                   'index_7', 'index_8', 'index_9', 'index_10', 'index_11']
+ppl_pmi_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1']
 export_prefix = 'main'
 
 for _model, _max_length, _batch in models:

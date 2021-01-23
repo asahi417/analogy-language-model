@@ -277,8 +277,6 @@ class RelationScorer:
         else:
             with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'w') as writer:
                 writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
-        print('{}/summary/{}.jsonl'.format(export_dir, export_prefix))
-        input()
 
     def get_score(self, export_dir, test, template_type, data, batch_size, scoring_method, pmi_lambda,
                   negative_permutation, no_inference):

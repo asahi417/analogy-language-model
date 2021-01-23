@@ -264,7 +264,7 @@ class RelationScorer:
         json_line = pool.map(searcher.single_run, searcher.index)
         pool.close()
         logging.info('export to {}/summary'.format(export_dir))
-        os.makedirs('{}/summary'.format(export_dir))
+        os.makedirs('{}/summary'.format(export_dir), exist_ok=True)
         export_prefix = export_prefix + '.test' if test else '.valid'
         # save as a json line
         if os.path.exists('{}/summary/{}.jsonl'.format(export_dir, export_prefix)):

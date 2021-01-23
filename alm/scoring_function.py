@@ -36,14 +36,13 @@ def export_report(export_prefix, export_dir: str = './experiments_results', test
     logging.info('compile jsonlins `{0}.jsonl` to csv file `{0}.csv`'.format(file))
     # save as a csv
     with open('{}.jsonl'.format(file), 'r') as f:
-        for n, i in enumerate(f.read().split('\n')):
-            if len(i) > 0:
-                try:
-                    json.loads(i)
-                except Exception:
-                    print(n, i)
-                    input()
-
+        # for n, i in enumerate(f.read().split('\n')):
+        #     if len(i) > 0:
+        #         try:
+        #             json.loads(i)
+        #         except Exception:
+        #             print(n, i)
+        #             input()
         json_line = list(filter(None, map(lambda x: json.loads(x) if len(x) > 0 else None, f.read().split('\n'))))
 
     if os.path.exists('{}.csv'.format(file)):
@@ -294,6 +293,7 @@ class RelationScorer:
         # save as a json line
         if os.path.exists('{}/summary/{}.jsonl'.format(export_dir, export_prefix)):
             with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'a') as writer:
+                writer.write('\n')
                 writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
         else:
             with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'w') as writer:

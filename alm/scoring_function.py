@@ -26,19 +26,32 @@ AGGREGATOR = {
 PBAR = tqdm.tqdm()
 
 
-def export_report(export_prefix, export_dir: str = './experiments_results'):
+def export_report(export_prefix, export_dir: str = './experiments_results', test: bool = False):
+
+    if test:
+        export_prefix = export_prefix + '.test'
+    else:
+        export_prefix = export_prefix + '.valid'
+    file = '{}/summary/{}'.format(export_dir, export_prefix)
+    logging.info('compile jsonlins `{0}.jsonl` to csv file `{0}.csv`'.format(file))
     # save as a csv
-    with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'r') as f:
+    with open('{}.jsonl'.format(file), 'r') as f:
         json_line = list(filter(None, map(lambda x: json.loads(x) if len(x) > 0 else None, f.read().split('\n'))))
 
-    if os.path.exists('{}/summary/{}.csv'.format(export_dir, export_prefix)):
-        df = pd.read_csv('{}/summary/{}.csv'.format(export_dir, export_prefix), index_col=0)
+    if os.path.exists('{}.csv'.format(file)):
+        df = pd.read_csv('{}.csv'.format(file), index_col=0)
         df_tmp = pd.DataFrame(json_line)
         df = pd.concat([df, df_tmp])
         df = df.drop_duplicates()
-        df.to_csv('{}/summary/{}.csv'.format(export_dir, export_prefix))
     else:
-        pd.DataFrame(json_line).to_csv('{}/summary/{}.csv'.format(export_dir, export_prefix))
+        df = pd.DataFrame(json_line)
+    logging.info('df has {} rows'.format(len(df)))
+
+    df = df.sort_values(by='accuracy', ascending=False)
+    logging.info('df has {} rows'.format(len(df)))
+    logging.info('top result: \n {}'.format(df.head()))
+    logging.info('exporting...')
+    df.to_csv('{}.csv'.format(file))
 
 
 class GridSearch:

@@ -30,8 +30,8 @@ class ConfigManager:
         """ configuration manager for `scoring_function.RelationScorer` """
         self.config = kwargs
         self.prefix = 'test' if test else 'valid'
-        logging.debug('*** setting up a config manager ***\n' +
-                      '\n'.join(list(map(lambda x: '{} : {}'.format(x[0], x[1]), self.config.items()))))
+        logging.info('*** setting up a config manager ***\n' +
+                     '\n'.join(list(map(lambda x: '{} : {}'.format(x[0], x[1]), self.config.items()))))
         cache_dir = os.path.join(export_dir, kwargs['data'], kwargs['model'], kwargs['scoring_method'])
         # if not os.path.exists(export_dir):
         #     self.export_dir = os.path.join(export_dir, kwargs['data'], get_random_string())

@@ -31,8 +31,11 @@ for _model, _max_length, _batch in models:
                 if scoring_method == 'ppl_pmi':
                     shared['ppl_pmi_aggregation'] = ppl_pmi_aggregation
                 if scoring_method == 'pmi':
-                    shared['pmi_aggregation'] = pmi_aggregation
-                scorer.analogy_test(**shared)
+                    for i in pmi_aggregation:
+                        scorer.analogy_test(pmi_aggregation=i, **shared)
+                        scorer.release_cache()
+                else:
+                    scorer.analogy_test(**shared)
                 scorer.release_cache()
 
 

@@ -18,7 +18,7 @@ for i in data:
     for n, tmp_df in best_configs.iterrows():
         pprint(json.loads(tmp_df.to_json()))
     logging.info("use the first one")
-    config = best_configs.iloc[0].to_json()
+    config = json.loads(best_configs.iloc[0].to_json())
     scorer = alm.RelationScorer(model=config.pop('model'), max_length=config.pop('max_length'))
     scorer.analogy_test(test=True,
                         export_prediction=True,

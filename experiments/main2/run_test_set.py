@@ -12,7 +12,7 @@ for i in data:
     val_accuracy = tmp_df.sort_values(by='accuracy', ascending=False).head(1)['accuracy'].values[0]
     logging.info("RUN TEST:\n - data: {} \n - validation accuracy: {} ".format(i, val_accuracy))
     best_configs = tmp_df[tmp_df['accuracy'] == val_accuracy]
-    logging.info("find {} configs with same accuracy".format(best_configs))
+    logging.info("find {} configs with same accuracy".format(len(best_configs)))
     for n, tmp_df in best_configs.iterrows():
         config = json.loads(tmp_df.to_json())
         config.pop('accuracy')

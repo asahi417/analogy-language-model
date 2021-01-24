@@ -4,7 +4,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logg
 import alm
 
 data = ['sat', 'u2', 'u4', 'google', 'bats']
-export_prefix = 'main2'
+export_prefix = 'main1'
 df = alm.get_report(export_prefix=export_prefix)
 
 for i in data:

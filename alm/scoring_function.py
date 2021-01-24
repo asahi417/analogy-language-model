@@ -305,7 +305,6 @@ class RelationScorer:
             ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
             negative_permutation_aggregation, negative_permutation_weight,
             export_prediction=export_prediction)
-        assert export_prediction and len(searcher) == 1, 'more than one config found: {}'.format(len(searcher))
         logging.info('start grid search: {} combinations'.format(len(searcher)))
         logging.info('multiprocessing  : {} cpus'.format(os.cpu_count()))
         json_line = pool.map(searcher.single_run, searcher.index)
@@ -319,7 +318,7 @@ class RelationScorer:
 
         if export_prediction:
             logging.info('export prediction mode')
-            assert len(json_line) == 1
+            assert len(json_line) == 1, 'more than one config found: {}'.format(len(searcher))
             val_set, test_set = get_dataset_raw(data)
             data_raw = test_set if test else val_set
             prediction = json_line[0].pop('prediction')

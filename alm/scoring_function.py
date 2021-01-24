@@ -352,7 +352,7 @@ class RelationScorer:
             pmi_lambda=pmi_lambda
         )
         data_instance = AnalogyData(
-            data=data, negative_permutation=negative_permutation, marginalize_permutation=scoring_method in ['ppl_pmi'])
+            test=test, data=data, negative_permutation=negative_permutation, marginalize_permutation=scoring_method in ['ppl_pmi'])
 
         def prediction(positive: bool = True):
             prefix = 'positive' if positive else 'negative'

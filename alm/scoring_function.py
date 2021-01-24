@@ -26,6 +26,19 @@ AGGREGATOR = {
 PBAR = tqdm.tqdm()
 
 
+def get_report(export_prefix, export_dir: str = './experiments_results', test: bool = False):
+    if test:
+        export_prefix = export_prefix + '.test'
+    else:
+        export_prefix = export_prefix + '.valid'
+    file = '{}/summary/{}'.format(export_dir, export_prefix)
+    logging.info('compile jsonlins `{0}.jsonl` to csv file `{0}.csv`'.format(file))
+    assert os.path.exists('{}.csv'.format(file)), 'csv not found: {}'.format(file)
+    df = pd.read_csv('{}.csv'.format(file), index_col=0)
+    logging.info('df has {} rows'.format(len(df)))
+    return df.sort_values(by='accuracy', ascending=False)
+
+
 def export_report(export_prefix, export_dir: str = './experiments_results', test: bool = False):
 
     if test:
@@ -45,8 +58,6 @@ def export_report(export_prefix, export_dir: str = './experiments_results', test
         df = df.drop_duplicates()
     else:
         df = pd.DataFrame(json_line)
-    logging.info('df has {} rows'.format(len(df)))
-
     df = df.sort_values(by='accuracy', ascending=False)
     logging.info('df has {} rows'.format(len(df)))
     logging.info('top result: \n {}'.format(df.head()))

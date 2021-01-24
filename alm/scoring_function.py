@@ -182,7 +182,7 @@ class GridSearch:
             'negative_permutation_weight': negative_permutation_weight,
             'accuracy': accuracy}
         tmp_config.update(self.shared_config)
-        if self.return_prediction:
+        if self.export_prediction:
             tmp_config['prediction'] = pred
         return tmp_config
 

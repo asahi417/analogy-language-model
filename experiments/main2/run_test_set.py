@@ -6,5 +6,5 @@ df = alm.get_report(export_prefix=export_prefix)
 
 for i in data:
     tmp_df = df[df.data == i]
-    tmp_df = tmp_df.sort_values(by='accuracy').head(0)
+    tmp_df = tmp_df.sort_values(by='accuracy').head(1)
     print(tmp_df)

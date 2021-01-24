@@ -12,7 +12,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logg
 import torch
 import pandas as pd
 from . import TransformersLM
-from .data import AnalogyData
+from .data import AnalogyData, get_dataset_raw
 from .config_manager import ConfigManager
 
 AGGREGATOR = {
@@ -74,13 +74,15 @@ class GridSearch:
                  shared_config,
                  scoring_method, score, data_instance,
                  ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
-                 negative_permutation_aggregation, negative_permutation_weight):
+                 negative_permutation_aggregation, negative_permutation_weight,
+                 export_prediction: bool = False):
         """ Grid Search Aggregator: multiprocessing-oriented """
         # global variables
         self.shared_config = shared_config
         self.score = score
         self.scoring_method = scoring_method
         self.data_instance = data_instance
+        self.export_prediction = export_prediction
         # local parameters for grid serach
         if type(ppl_pmi_aggregation) is not list:
             ppl_pmi_aggregation = [ppl_pmi_aggregation]
@@ -171,7 +173,6 @@ class GridSearch:
         label = self.data_instance.answer
         assert len(pred) == len(label)
         accuracy = sum(map(lambda x: int(x[0] == x[1]), zip(pred, label))) / len(label)
-        # config.save(accuracy=accuracy, logit_pn=logit_pn, logit=logit, prediction=pred)
         tmp_config = {
             'ppl_pmi_aggregation': ppl_pmi_aggregation,
             'ppl_pmi_lambda': ppl_pmi_lambda,
@@ -181,6 +182,8 @@ class GridSearch:
             'negative_permutation_weight': negative_permutation_weight,
             'accuracy': accuracy}
         tmp_config.update(self.shared_config)
+        if self.return_prediction:
+            tmp_config['prediction'] = pred
         return tmp_config
 
 
@@ -210,6 +213,7 @@ class RelationScorer:
             torch.cuda.empty_cache()
 
     def analogy_test(self,
+                     export_prefix: str,
                      data: str,
                      template_type: str,
                      test: bool = False,
@@ -226,8 +230,8 @@ class RelationScorer:
                      ppl_pmi_alpha: (float, List) = 1.0,
                      skip_scoring_prediction: bool = False,
                      export_dir: str = './experiments_results',
-                     export_prefix: str = 'main',
-                     no_inference: bool = False):
+                     no_inference: bool = False,
+                     export_prediction: bool = False):
         """ relation scoring test on analogy dataset
 
         :param data:
@@ -281,7 +285,6 @@ class RelationScorer:
         # restore the nested structure
         logging.info('re-format LM score')
         score = data_instance.insert_score(score_pos, score_neg)
-
         ###############
         # grid search #
         ###############
@@ -296,10 +299,13 @@ class RelationScorer:
             'pmi_aggregation': pmi_aggregation,
             'pmi_lambda': pmi_lambda
         }
+
         searcher = GridSearch(
             shared_config, scoring_method, score, data_instance,
             ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
-            negative_permutation_aggregation, negative_permutation_weight)
+            negative_permutation_aggregation, negative_permutation_weight,
+            export_prediction=export_prediction)
+        assert export_prediction and len(searcher) == 1, 'more than one config found: {}'.format(len(searcher))
         logging.info('start grid search: {} combinations'.format(len(searcher)))
         logging.info('multiprocessing  : {} cpus'.format(os.cpu_count()))
         json_line = pool.map(searcher.single_run, searcher.index)
@@ -311,14 +317,27 @@ class RelationScorer:
         else:
             export_prefix = export_prefix + '.valid'
 
-        # save as a json line
-        if os.path.exists('{}/summary/{}.jsonl'.format(export_dir, export_prefix)):
-            with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'a') as writer:
-                writer.write('\n')
-                writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
+        if export_prediction:
+            logging.info('export prediction mode')
+            assert len(json_line) == 1
+            val_set, test_set = get_dataset_raw(data)
+            data_raw = test_set if test else val_set
+            prediction = json_line[0].pop('prediction')
+            assert len(prediction) == len(data_raw)
+            for d, p in zip(data_raw, prediction):
+                d['prediction'] = p
+            _file = '{}/summary/{}.prediction.csv'.format(export_dir, export_prefix)
+            pd.DataFrame(data_raw).to_csv(_file)
+            logging.info("prediction exported: {}".format(_file))
         else:
-            with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'w') as writer:
-                writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
+            # save as a json line
+            if os.path.exists('{}/summary/{}.jsonl'.format(export_dir, export_prefix)):
+                with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'a') as writer:
+                    writer.write('\n')
+                    writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
+            else:
+                with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'w') as writer:
+                    writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
 
     def get_score(self, export_dir, test, template_type, data, batch_size, scoring_method, pmi_lambda,
                   negative_permutation, no_inference):

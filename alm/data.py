@@ -6,7 +6,7 @@ __all__ = 'AnalogyData'
 VALID_DATA = ['sat', 'u2', 'u4', 'google', 'bats']
 
 
-def _get_dataset(data: str):
+def get_dataset_raw(data: str):
     """ Get prompted SAT-type dataset: a list of (answer: int, prompts: list, stem: list, choice: list)"""
     assert data in VALID_DATA, 'unknown data: {}'.format(data)
     with open('./data/{}/test.jsonl'.format(data), 'r') as f:
@@ -58,7 +58,7 @@ def get_dataset(data: str,
             permutations = list(map(lambda x: perm(*x), dictionary['choice']))
         return dictionary['answer'], permutations
 
-    val, test = _get_dataset(data)
+    val, test = get_dataset_raw(data)
     if test_set:
         data = list(map(lambda x: single_entry(x), test))
     else:

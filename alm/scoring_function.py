@@ -32,11 +32,11 @@ def get_report(export_prefix, export_dir: str = './experiments_results', test: b
     else:
         export_prefix = export_prefix + '.valid'
     file = '{}/summary/{}'.format(export_dir, export_prefix)
-    logging.info('compile jsonlins `{0}.jsonl` to csv file `{0}.csv`'.format(file))
     assert os.path.exists('{}.csv'.format(file)), 'csv not found: {}'.format(file)
     df = pd.read_csv('{}.csv'.format(file), index_col=0)
+    df = df.drop_duplicates()
     logging.info('df has {} rows'.format(len(df)))
-    return df.sort_values(by='accuracy', ascending=False)
+    return df
 
 
 def export_report(export_prefix, export_dir: str = './experiments_results', test: bool = False):

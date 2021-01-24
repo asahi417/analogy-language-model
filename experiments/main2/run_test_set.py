@@ -18,6 +18,7 @@ for i in data:
         config.pop('accuracy')
         scorer = alm.RelationScorer(model=config.pop('model'), max_length=config.pop('max_length'))
         scorer.analogy_test(test=True,
+                            export_prefix=export_prefix,
                             batch_size=128 if 'gpt2-xl' == scorer.model_name else 512,
                             **config)
         scorer.release_cache()

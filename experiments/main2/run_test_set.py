@@ -8,7 +8,7 @@ df = alm.get_report(export_prefix=export_prefix)
 for i in data:
     tmp_df = df[df.data == i]
     tmp_df = tmp_df.sort_values(by='accuracy', ascending=False).head(1)
-    config = tmp_df.tojson()
+    config = tmp_df.to_json()
     pprint(config)
     config.pop('accuracy')
     scorer = alm.RelationScorer(model=config.pop('model'), max_length=config.pop('max_length'))

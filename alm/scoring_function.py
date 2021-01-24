@@ -323,7 +323,7 @@ class RelationScorer:
             val_set, test_set = get_dataset_raw(data)
             data_raw = test_set if test else val_set
             prediction = json_line[0].pop('prediction')
-            assert len(prediction) == len(data_raw)
+            assert len(prediction) == len(data_raw), '{} != {}'.format(len(prediction), len(data_raw))
             for d, p in zip(data_raw, prediction):
                 d['prediction'] = p
             _file = '{}/summary/{}.prediction.csv'.format(export_dir, export_prefix)

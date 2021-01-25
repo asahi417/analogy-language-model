@@ -15,8 +15,9 @@ for i in data:
     logging.info("RUN TEST:\n - data: {} \n - validation accuracy: {} ".format(i, val_accuracy))
     best_configs = tmp_df[tmp_df['accuracy'] == val_accuracy]
     logging.info("find {} configs with same accuracy".format(len(best_configs)))
-    for n, tmp_df in best_configs.iterrows():
-        pprint(json.loads(tmp_df.to_json()))
+    accuracy_list = [json.loads(tmp_df.to_json())['accuracy'] for n, tmp_df in best_configs.iterrows()]
+    logging.info("min accuracy: {}".format(min(accuracy_list)))
+    logging.info("max accuracy: {}".format(max(accuracy_list)))
     config = json.loads(best_configs.iloc[0].to_json())
     logging.info("use the first one: {} accuracy".format(config.pop('accuracy')))
     scorer = alm.RelationScorer(model=config.pop('model'), max_length=config.pop('max_length'))

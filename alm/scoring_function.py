@@ -325,7 +325,7 @@ class RelationScorer:
             assert len(prediction) == len(data_raw), '{} != {}'.format(len(prediction), len(data_raw))
             for d, p in zip(data_raw, prediction):
                 d['prediction'] = p
-            _file = '{}/summary/{}.prediction.csv'.format(export_dir, export_prefix)
+            _file = '{}/summary/{}.prediction.{}.csv'.format(export_dir, export_prefix, data)
             pd.DataFrame(data_raw).to_csv(_file)
             logging.info("prediction exported: {}".format(_file))
         else:

@@ -15,7 +15,8 @@ for i in data:
     logging.info("RUN TEST:\n - data: {} \n - validation accuracy: {} ".format(i, val_accuracy))
     best_configs = tmp_df[tmp_df['accuracy'] == val_accuracy]
     logging.info("find {} configs with same accuracy".format(len(best_configs)))
-    accuracy_list = [json.loads(tmp_df.to_json())['accuracy'] for n, tmp_df in best_configs.iterrows()]
+    accuracy_list = [tmp_df['accuracy'] for n, tmp_df in best_configs.iterrows()]
+    print(accuracy_list)
     logging.info("min accuracy: {}".format(min(accuracy_list)))
     logging.info("max accuracy: {}".format(max(accuracy_list)))
     config = json.loads(best_configs.iloc[0].to_json())

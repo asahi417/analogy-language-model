@@ -213,9 +213,9 @@ class RelationScorer:
             torch.cuda.empty_cache()
 
     def analogy_test(self,
-                     export_prefix: str,
                      data: str,
                      template_type: str,
+                     export_prefix: str = 'main0',
                      test: bool = False,
                      batch_size: int = 4,
                      scoring_method: str = 'ppl',

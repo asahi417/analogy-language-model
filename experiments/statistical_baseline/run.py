@@ -10,6 +10,7 @@ seed(1234)
 BIN_W2V = './cache/GoogleNews-vectors-negative300.bin'
 BIN_FASTTEXT = './cache/crawl-300d-2M-subword.bin'
 os.makedirs('./cache', exist_ok=True)
+os.makedirs('./experiments_results/summary', exist_ok=True)
 DATA = ['sat', 'u2', 'u4', 'google', 'bats']
 DUMMY = -1000
 if not os.path.exists(BIN_W2V):
@@ -25,6 +26,7 @@ from gensim.models import KeyedVectors
 
 model_w2v = KeyedVectors.load_word2vec_format(BIN_W2V, binary=True)
 model_ft = fasttext.load_facebook_model(BIN_FASTTEXT)
+
 
 def embedding(term, model):
     try:
@@ -83,23 +85,24 @@ if __name__ == '__main__':
 
         dict_ = get_embedding(vocab, fasttext=False)
         w2v_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
-        oov['w2v'] = len([i for i in w2v_prediction.values() if i is None])
         dict_ = get_embedding(vocab, fasttext=True)
         ft_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
-        oov['fasttext'] = len([i for i in ft_prediction.values() if i is None])
+        oov['w2v'] = 0
+        oov['fasttext'] = 0
         for k, v in random_prediction.items():
             if w2v_prediction[k] is None:
                 w2v_prediction[k] = v
+                oov['fasttext'] += 1
             if ft_prediction[k] is None:
                 ft_prediction[k] = v
+                oov['w2v'] += 1
 
-        all_accuracy['w2v'] = sum([answer[n] == random_prediction[n] for n in range(len(answer))]) / len(answer)
-        all_accuracy['fasttext'] = sum([answer[n] == random_prediction[n] for n in range(len(answer))]) / len(answer)
+        all_accuracy['w2v'] = sum([answer[n] == w2v_prediction[n] for n in range(len(answer))]) / len(answer)
+        all_accuracy['fasttext'] = sum([answer[n] == ft_prediction[n] for n in range(len(answer))]) / len(answer)
         line_oov.append(oov)
         line_accuracy.append(all_accuracy)
         print(all_accuracy)
         print(oov)
-        input()
 
     print(pd.DataFrame(line_accuracy))
     print(pd.DataFrame(line_oov))

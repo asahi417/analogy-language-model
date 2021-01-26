@@ -14,6 +14,7 @@ df = alm.get_report(export_prefix=export_prefix)
 for i, m, s in product(data, models, methods):
     _model, _batch, _ = m
     tmp_df = df[df.data == i][df.model == _model][df.scoring_method == s]
+    print(tmp_df, _model, s)
     val_accuracy = tmp_df.sort_values(by='accuracy', ascending=False).head(1)['accuracy'].values[0]
     logging.info("RUN TEST:\n - data: {} \n - lm: {} \n - score: {} - validation accuracy: {} ".format(
         i, _model, s, val_accuracy))

@@ -2,5 +2,6 @@ _bu
 cache
 results*
 data/*.csv
+experiments_result
 relative_wikipedia_en_300d.bin
 

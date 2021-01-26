@@ -1,9 +1,9 @@
 import alm
 
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
-methods = ['ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked', 'ppl', 'embedding_similarity', 'ppl_pmi'] #, 'pmi']
+methods = ['ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked', 'ppl', 'embedding_similarity', 'ppl_pmi', 'pmi']
 data = ['sat', 'u2', 'u4', 'google', 'bats']
-models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 64, 512), ('gpt2-large', 32, 512)]
+models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 64, 512)]  # ('gpt2-large', 32, 512)
 
 
 for _model, _max_length, _batch in models:

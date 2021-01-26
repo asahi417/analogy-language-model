@@ -1,4 +1,4 @@
-""" Run inference on best configuration in validation accuracy (LM-wise result) """
+""" Test hypothesis only compared with Perplexity method """
 import logging
 import json
 from itertools import product
@@ -7,14 +7,16 @@ import alm
 
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 64, 1024)]
-export_prefix = 'main2'
+methods = ['ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked', 'ppl']
+export_prefix = 'main1'
 df = alm.get_report(export_prefix=export_prefix)
 
-for i, m in product(data, models):
+for i, m, s in product(data, models, methods):
     _model, _batch, _ = m
-    tmp_df = df[df.data == i][df.model == _model]
+    tmp_df = df[df.data == i][df.model == _model][df.scoring_method == s]
     val_accuracy = tmp_df.sort_values(by='accuracy', ascending=False).head(1)['accuracy'].values[0]
-    logging.info("RUN TEST:\n - data: {} \n - lm: \n - validation accuracy: {} ".format(i, _model, val_accuracy))
+    logging.info("RUN TEST:\n - data: {} \n - lm: {} \n - score: {} - validation accuracy: {} ".format(
+        i, _model, s, val_accuracy))
     best_configs = tmp_df[tmp_df['accuracy'] == val_accuracy]
     logging.info("find {} configs with same accuracy".format(len(best_configs)))
     for n, tmp_df in best_configs.iterrows():

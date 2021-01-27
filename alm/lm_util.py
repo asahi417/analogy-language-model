@@ -392,7 +392,7 @@ class TransformersLM:
                 _token_list[mask_position] = self.tokenizer.mask_token
                 tmp_string = self.tokenizer.convert_tokens_to_string(_token_list)
                 _encode = self.tokenizer.encode_plus(tmp_string, **param)
-                print(len(_encode['input_ids']), mask_position + len(self.sp_token_prefix))
+                # print(len(_encode['input_ids']), mask_position + len(self.sp_token_prefix))
                 _encode['labels'] = self.input_ids_to_labels(
                     _encode['input_ids'],
                     label_position=[mask_position + len(self.sp_token_prefix)],

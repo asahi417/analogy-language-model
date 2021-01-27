@@ -392,13 +392,14 @@ class TransformersLM:
                 _token_list[mask_position] = self.tokenizer.mask_token
                 tmp_string = self.tokenizer.convert_tokens_to_string(_token_list)
                 _encode = self.tokenizer.encode_plus(tmp_string, **param)
+                print(len(_encode['input_ids']), mask_position + len(self.sp_token_prefix))
                 _encode['labels'] = self.input_ids_to_labels(
                     _encode['input_ids'],
                     label_position=[mask_position + len(self.sp_token_prefix)],
                     label_id=[masked_token_id])
                 return _encode
 
-            length = min(self.tokenizer.max_len_single_sentence, len(token_list))
+            length = min(self.tokenizer.max_len_single_sentence, len(token_list) + len(self.sp_token_prefix))
             return [encode_with_single_mask_id(i) for i in range(length) if i not in list(range(s, e))]
 
     def batch_encode_plus_perplexity(self,

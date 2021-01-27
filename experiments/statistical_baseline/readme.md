@@ -2,6 +2,7 @@
 - Random
 - word2vec
 - fasttext
+- Glove
 
 ## Script
 - Get accuracy

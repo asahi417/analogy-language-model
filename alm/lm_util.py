@@ -398,7 +398,8 @@ class TransformersLM:
                     label_id=[masked_token_id])
                 return _encode
 
-            return [encode_with_single_mask_id(i) for i in range(len(token_list)) if i not in list(range(s, e))]
+            length = min(self.tokenizer.max_len_single_sentence, len(token_list))
+            return [encode_with_single_mask_id(i) for i in range(length) if i not in list(range(s, e))]
 
     def batch_encode_plus_perplexity(self,
                                      template_type: str,

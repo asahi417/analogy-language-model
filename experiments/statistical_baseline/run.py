@@ -5,10 +5,15 @@ from random import randint, seed
 
 import numpy as np
 import pandas as pd
+from gensim.models import fasttext
+from gensim.models import KeyedVectors
+from gensim.scripts.glove2word2vec import glove2word2vec
 
 seed(1234)
 BIN_W2V = './cache/GoogleNews-vectors-negative300.bin'
 BIN_FASTTEXT = './cache/crawl-300d-2M-subword.bin'
+BIN_GLOVE = './cache/glove.840B.300d.txt'
+BIN_GLOVE_W2V = './cache/glove_converted.txt'
 os.makedirs('./cache', exist_ok=True)
 os.makedirs('./experiments_results/summary', exist_ok=True)
 DATA = ['sat', 'u2', 'u4', 'google', 'bats']
@@ -16,14 +21,16 @@ DUMMY = -1000
 if not os.path.exists(BIN_W2V):
     raise ValueError('download embedding from "https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit",'
                      'unzip, and put it as {}'.format(BIN_W2V))
-
 if not os.path.exists(BIN_FASTTEXT):
     raise ValueError('download embedding from "https://fasttext.cc/docs/en/english-vectors.html",'
                      'unzip, and put it as {}'.format(BIN_FASTTEXT))
+if not os.path.exists(BIN_GLOVE):
+    raise ValueError('download embedding from "http://nlp.stanford.edu/data/glove.840B.300d.zip"'
+                     'unzip, and put it as {}'.format(BIN_FASTTEXT))
 
-from gensim.models import fasttext
-from gensim.models import KeyedVectors
-
+if not os.path.exists(BIN_GLOVE_W2V):
+    glove2word2vec(glove_input_file="./cache/glove.840B.300d.txt", word2vec_output_file="./cache/glove_converted.txt")
+model_glove = KeyedVectors.load_word2vec_format(BIN_GLOVE_W2V)
 model_w2v = KeyedVectors.load_word2vec_format(BIN_W2V, binary=True)
 model_ft = fasttext.load_facebook_model(BIN_FASTTEXT)
 
@@ -44,9 +51,11 @@ def cos_similarity(a_, b_):
     return inner / (norm_b * norm_a)
 
 
-def get_embedding(word_list, fasttext: bool):
-    if fasttext:
+def get_embedding(word_list, model_type=None):
+    if model_type == 'fasttext':
         embeddings = [(_i, embedding(_i, model_w2v)) for _i in word_list]
+    elif model_type == 'glove':
+        embeddings = [(_i, embedding(_i, model_glove)) for _i in word_list]
     else:
         embeddings = [(_i, embedding(_i, model_ft)) for _i in word_list]
     embeddings = list(filter(lambda x: x[1] is not None, embeddings))
@@ -83,12 +92,15 @@ if __name__ == '__main__':
 
         vocab = list(set(list(chain(*[list(chain(*[o['stem']] + o['choice'])) for o in test]))))
 
-        dict_ = get_embedding(vocab, fasttext=False)
+        dict_ = get_embedding(vocab)
         w2v_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
-        dict_ = get_embedding(vocab, fasttext=True)
+        dict_ = get_embedding(vocab, model_type='fasttext')
         ft_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
+        dict_ = get_embedding(vocab, model_type='glove')
+        glove_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
         oov['w2v'] = 0
         oov['fasttext'] = 0
+        oov['glove'] = 0
         for k, v in random_prediction.items():
             if w2v_prediction[k] is None:
                 w2v_prediction[k] = v
@@ -96,9 +108,13 @@ if __name__ == '__main__':
             if ft_prediction[k] is None:
                 ft_prediction[k] = v
                 oov['w2v'] += 1
+            if glove_prediction[k] is None:
+                glove_prediction[k] = v
+                oov['glove'] += 1
 
         all_accuracy['w2v'] = sum([answer[n] == w2v_prediction[n] for n in range(len(answer))]) / len(answer)
         all_accuracy['fasttext'] = sum([answer[n] == ft_prediction[n] for n in range(len(answer))]) / len(answer)
+        all_accuracy['glove'] = sum([answer[n] == glove_prediction[n] for n in range(len(answer))]) / len(answer)
         line_oov.append(oov)
         line_accuracy.append(all_accuracy)
         print(all_accuracy)

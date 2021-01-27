@@ -13,9 +13,11 @@ df = alm.get_report(export_prefix=export_prefix)
 
 for i, m, s in product(data, models, methods):
     _model, _batch, _ = m
-    tmp_df = df[df.data == i][df.model == _model][df.scoring_method == s]
+    tmp_df = df[df.data == i]
+    tmp_df = tmp_df[tmp_df.model == _model]
+    tmp_df = tmp_df[tmp_df.scoring_method == s]
     val_accuracy = tmp_df.sort_values(by='accuracy', ascending=False).head(1)['accuracy'].values[0]
-    logging.info("RUN TEST:\n - data: {} \n - lm: {} \n - score: {} - validation accuracy: {} ".format(
+    logging.info("RUN TEST:\n - data: {} \n - lm: {} \n - score: {} \n - validation accuracy: {} ".format(
         i, _model, s, val_accuracy))
     best_configs = tmp_df[tmp_df['accuracy'] == val_accuracy]
     logging.info("find {} configs with same accuracy".format(len(best_configs)))

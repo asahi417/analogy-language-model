@@ -101,7 +101,7 @@ class TransformersLM:
             self.tokenizer.pad_token = self.tokenizer.eos_token
         self.config = transformers.AutoConfig.from_pretrained(model, cache_dir=cache_dir)
         if max_length:
-            assert self.tokenizer.model_max_length >= max_length
+            assert self.tokenizer.model_max_length >= max_length, '{} < {}'.format(self.tokenizer.model_max_length, max_length)
             self.max_length = max_length
         else:
             self.max_length = self.tokenizer.model_max_length

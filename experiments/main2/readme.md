@@ -1,5 +1,4 @@
 # Grid Search: Low-level search
-- Data: `sat`, `u2`, `u4`, `google`, `bats`
 
 ## Target Parameters
 - Language Model: `gpt2-xl`, `bert-large-cased`, `roberta-large`

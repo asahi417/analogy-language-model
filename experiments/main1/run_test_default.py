@@ -12,7 +12,7 @@ models = [('roberta-large', 32, 512), ('bert-large-cased', 64, 1024), ('gpt2-xl'
 export_prefix = 'main1.default'
 
 for i, m in product(data, models):
-    _model, _batch, _len = m
+    _model, _len, _batch = m
     scorer = alm.RelationScorer(model=_model, max_length=_len)
     scorer.analogy_test(test=True,
                         template_type='is-to-as',

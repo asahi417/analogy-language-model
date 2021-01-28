@@ -22,6 +22,12 @@ python ./experiments/main1/grid_search.py
 python ./experiments/main1/run_test_hyp_only.py
 ```
 
+- Get test accuracy with default configuration on every dataset and model pair
+```shell script
+python ./experiments/main1/run_test_default.py
+```
+
 ## Output
 - high-level validation accuracy: `./experiments_results/summary/main1.valid.csv`
 - test accuracy (hypothesis only methods): `./experiments_results/summary/main1.test.csv`
+- test accuracy (default): `./experiments_results/summary/main1.default.test.csv`

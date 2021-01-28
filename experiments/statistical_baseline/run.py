@@ -83,47 +83,50 @@ def get_prediction(stem, choice, embedding_dict):
 if __name__ == '__main__':
     line_oov = []
     line_accuracy = []
-    for i in DATA:
-        oov = {'data': i}
-        all_accuracy = {'data': i}
-        _, test = alm.data.get_dataset_raw(i)
-        answer = {n: o['answer'] for n, o in enumerate(test)}
-        random_prediction = {n: randint(0, len(o['choice']) - 1) for n, o in enumerate(test)}
-        all_accuracy['random'] = sum([answer[n] == random_prediction[n] for n in range(len(answer))]) / len(answer)
+    for prefix in ['test', 'valid']:
+        for i in DATA:
+            oov = {'data': i}
+            all_accuracy = {'data': i}
+            val, test = alm.data.get_dataset_raw(i)
+            if prefix == 'valid':
+                test = val
+            answer = {n: o['answer'] for n, o in enumerate(test)}
+            random_prediction = {n: randint(0, len(o['choice']) - 1) for n, o in enumerate(test)}
+            all_accuracy['random'] = sum([answer[n] == random_prediction[n] for n in range(len(answer))]) / len(answer)
 
-        vocab = list(set(list(chain(*[list(chain(*[o['stem']] + o['choice'])) for o in test]))))
+            vocab = list(set(list(chain(*[list(chain(*[o['stem']] + o['choice'])) for o in test]))))
 
-        dict_ = get_embedding(vocab)
-        w2v_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
-        dict_ = get_embedding(vocab, model_type='fasttext')
-        ft_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
-        dict_ = get_embedding(vocab, model_type='glove')
-        glove_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
-        oov['w2v'] = 0
-        oov['fasttext'] = 0
-        oov['glove'] = 0
-        for k, v in random_prediction.items():
-            if w2v_prediction[k] is None:
-                w2v_prediction[k] = v
-                oov['fasttext'] += 1
-            if ft_prediction[k] is None:
-                ft_prediction[k] = v
-                oov['w2v'] += 1
-            if glove_prediction[k] is None:
-                glove_prediction[k] = v
-                oov['glove'] += 1
+            dict_ = get_embedding(vocab)
+            w2v_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
+            dict_ = get_embedding(vocab, model_type='fasttext')
+            ft_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
+            dict_ = get_embedding(vocab, model_type='glove')
+            glove_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
+            oov['w2v'] = 0
+            oov['fasttext'] = 0
+            oov['glove'] = 0
+            for k, v in random_prediction.items():
+                if w2v_prediction[k] is None:
+                    w2v_prediction[k] = v
+                    oov['fasttext'] += 1
+                if ft_prediction[k] is None:
+                    ft_prediction[k] = v
+                    oov['w2v'] += 1
+                if glove_prediction[k] is None:
+                    glove_prediction[k] = v
+                    oov['glove'] += 1
 
-        all_accuracy['w2v'] = sum([answer[n] == w2v_prediction[n] for n in range(len(answer))]) / len(answer)
-        all_accuracy['fasttext'] = sum([answer[n] == ft_prediction[n] for n in range(len(answer))]) / len(answer)
-        all_accuracy['glove'] = sum([answer[n] == glove_prediction[n] for n in range(len(answer))]) / len(answer)
-        line_oov.append(oov)
-        line_accuracy.append(all_accuracy)
-        print(all_accuracy)
-        print(oov)
+            all_accuracy['w2v'] = sum([answer[n] == w2v_prediction[n] for n in range(len(answer))]) / len(answer)
+            all_accuracy['fasttext'] = sum([answer[n] == ft_prediction[n] for n in range(len(answer))]) / len(answer)
+            all_accuracy['glove'] = sum([answer[n] == glove_prediction[n] for n in range(len(answer))]) / len(answer)
+            line_oov.append(oov)
+            line_accuracy.append(all_accuracy)
+            print(all_accuracy)
+            print(oov)
 
-    print(pd.DataFrame(line_accuracy))
-    print(pd.DataFrame(line_oov))
-    pd.DataFrame(line_accuracy).to_csv('experiments_results/summary/statistics.test.csv')
-    pd.DataFrame(line_oov).to_csv('experiments_results/summary/statistics.test.oov.csv')
+        print(pd.DataFrame(line_accuracy))
+        # print(pd.DataFrame(line_oov))
+        pd.DataFrame(line_accuracy).to_csv('experiments_results/summary/statistics.{}.csv'.format(prefix))
+        # pd.DataFrame(line_oov).to_csv('experiments_results/summary/statistics.test.oov.csv'.)
 
 

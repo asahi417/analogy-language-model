@@ -1,73 +1,34 @@
-import os
-import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import alm
+import os
 
-export_dir = './experiments/ppl_pmi_grid/results'
-df_main = pd.read_csv('{}/summary.csv'.format(export_dir), index_col=0)
-export_dir = '{}/figure'.format(export_dir)
-if not os.path.exists(export_dir):
-    os.makedirs(export_dir, exist_ok=True)
+os.makedirs('./experiments_results/summary/main2_figure', exist_ok=True)
+export_prefix = 'main2'
+df = alm.get_report(export_prefix=export_prefix)
+df['accuracy'] = df['accuracy'].round(4) * 100
+data = ['sat', 'u2', 'u4', 'google', 'bats']
+model = ['roberta-large', 'gpt2-xl']
+big_group = df.groupby(['data', 'model', 'ppl_pmi_alpha', 'negative_permutation_weight'])
 
-
-def main(path_to_data, ppl_pmi_aggregation=None, aggregation_positive=None):
-    data_name = os.path.basename(path_to_data).split('.')[0]
-    df = df_main[df_main['path_to_data'] == path_to_data]
-    df['aggregations'] = df['aggregation_positive'] + df['ppl_pmi_aggregation']
-    sns.set_theme(style="darkgrid")
-
-    for i, n in zip(['ppl_pmi_lambda', 'ppl_pmi_alpha'], ['Lambda', 'Alpha']):
-        if i == 'ppl_pmi_lambda':
-            tmp_df = df[df['ppl_pmi_alpha'] == 1]
-        else:
-            tmp_df = df[df['ppl_pmi_lambda'] == 1]
-
-        # Line plot with 95% interval
+sns.set_theme(style="darkgrid")
+for d in data:
+    for m in model:
         fig = plt.figure()
         fig.clear()
-        sns_plot = sns.lineplot(x=i, y="accuracy", data=tmp_df)
-        sns_plot.set_xlabel(n, fontsize=15)
-        sns_plot.set_ylabel("Accuracy", fontsize=15)
+        group = big_group[d][m]
+        # print('size per category', group.size())
+        accuracy = group.accuracy.max()
+        accuracy = accuracy - accuracy[0.0][0.0]
+        # print('accuracy per category', accuracy)
+        accuracy = accuracy.to_frame()
+        accuracy.reset_index(inplace=True)
+        accuracy = accuracy.pivot(index='ppl_pmi_alpha', columns='negative_permutation_weight', values='accuracy')
+        sns_plot = sns.heatmap(accuracy, annot=True, fmt="g", cmap='viridis', cbar=False)
+
+        sns_plot.set_xlabel('e', fontsize=15)
+        sns_plot.set_ylabel('a', fontsize=15)
         sns_plot.tick_params(labelsize=10)
         fig = sns_plot.get_figure()
         plt.tight_layout()
-        fig.savefig('{}/plot.mean.{}.{}.png'.format(export_dir, data_name, i))
-        fig.clear()
-
-        # Line plot with individual result
-        fig = plt.figure()
-        fig.clear()
-        sns_plot = sns.lineplot(x=i, y="accuracy", data=tmp_df, hue='aggregations')
-        sns_plot.set_xlabel(n, fontsize=15)
-        sns_plot.set_ylabel("Accuracy", fontsize=15)
-        sns_plot.tick_params(labelsize=10)
-        # plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
-        fig = sns_plot.get_figure()
-        plt.tight_layout()
-        fig.savefig('{}/plot.all.{}.{}.png'.format(export_dir, data_name, i))
-        fig.clear()
-
-    for i in list(set(list(df['aggregation_positive'].values))):
-        for _i in list(set(list(df['ppl_pmi_aggregation'].values))):
-            if ppl_pmi_aggregation is not None and _i != ppl_pmi_aggregation:
-                continue
-            if aggregation_positive is not None and i != aggregation_positive:
-                continue
-
-            fig = plt.figure()
-            fig.clear()
-            tmp = df[df['aggregation_positive'] == i][df['ppl_pmi_aggregation'] == _i]
-            result = tmp.pivot(index='ppl_pmi_lambda', columns='ppl_pmi_alpha', values='accuracy')
-            sns_plot = sns.heatmap(result, annot=True, fmt="g", cmap='viridis', cbar=False)
-            sns_plot.set_xlabel("Alpha", fontsize=15)
-            sns_plot.set_ylabel("Lambda", fontsize=15)
-            sns_plot.tick_params(labelsize=10)
-            fig = sns_plot.get_figure()
-            plt.tight_layout()
-            fig.savefig('{}/plot.heatmap.{}.{}.{}.png'.format(export_dir, data_name, i, _i))
-
-
-if __name__ == '__main__':
-    main(path_to_data='./data/sat_package_v3.jsonl', ppl_pmi_aggregation='p_1', aggregation_positive='p_2')
-    main(path_to_data='./data/u2.jsonl', ppl_pmi_aggregation='p_0', aggregation_positive='p_0')
-    main(path_to_data='./data/u4.jsonl', ppl_pmi_aggregation='max', aggregation_positive='p_0')
+        fig.savefig('./experiments_results/summary/main2_figure/heatmap.{}.{}.png'.format(d, m))

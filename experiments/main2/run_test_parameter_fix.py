@@ -1,4 +1,3 @@
-""" Run inference on best configuration in validation accuracy (LM-wise result) """
 import logging
 import json
 from itertools import product
@@ -11,7 +10,7 @@ export_prefix = 'main2'
 df = alm.get_report(export_prefix=export_prefix)
 
 for i, m in product(data, models):
-    _model, _len, _batch = m
+    _model, _batch, _ = m
     tmp_df = df[df.data == i][df.model == _model]
     val_accuracy = tmp_df.sort_values(by='accuracy', ascending=False).head(1)['accuracy'].values[0]
     logging.info("RUN TEST:\n - data: {} \n - lm: \n - validation accuracy: {} ".format(i, _model, val_accuracy))

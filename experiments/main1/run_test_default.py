@@ -10,7 +10,6 @@ data = ['sat', 'u2', 'u4', 'google', 'bats']
 models = [('roberta-large', 32, 512), ('bert-large-cased', 64, 1024), ('gpt2-xl', 32, 128)]
 
 export_prefix = 'main1.default'
-df = alm.get_report(export_prefix=export_prefix)
 
 for i, m in product(data, models):
     _model, _batch, _len = m

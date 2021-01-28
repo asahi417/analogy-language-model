@@ -45,8 +45,8 @@ def embedding(term, model):
 def cos_similarity(a_, b_):
     if a_ is None or b_ is None:
         return DUMMY
-    inner = (a_*b_).sum()
-    norm_a = (a_*a_).sum() ** 0.5
+    inner = (a_ * b_).sum()
+    norm_a = (a_ * a_).sum() ** 0.5
     norm_b = (b_ * b_).sum() ** 0.5
     return inner / (norm_b * norm_a)
 
@@ -66,7 +66,8 @@ def get_prediction(stem, choice, embedding_dict):
     def diff(x, y):
         if x is None or y is None:
             return None
-        return np.abs(x-y)
+        # return np.abs(x-y)
+        return x - y
 
     stem_e = diff(embedding(stem[0], embedding_dict), embedding(stem[1], embedding_dict))
     if stem_e is None:

@@ -34,7 +34,7 @@ config = {
         "positive_permutation_aggregation": "index_4",
         "negative_permutation_aggregation": "index_5",
         "negative_permutation_weight": 0.6,
-        "data": "sat",
+        "data": "u4",
         "template_type": "rel-same"
     },
     'google': {
@@ -44,7 +44,7 @@ config = {
         "positive_permutation_aggregation": "min",
         "negative_permutation_aggregation": "index_7",
         "negative_permutation_weight": 0.6,
-        "data": "sat",
+        "data": "google",
         "template_type": "what-is-to"
     },
     'bats': {
@@ -54,7 +54,7 @@ config = {
         "positive_permutation_aggregation": "mean",
         "negative_permutation_aggregation": "index_10",
         "negative_permutation_weight": 0.6,
-        "data": "sat",
+        "data": "bats",
         "template_type": "what-is-to"
     }
 }

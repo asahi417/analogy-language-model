@@ -12,7 +12,7 @@ export_prefix = 'main1'
 df = alm.get_report(export_prefix=export_prefix)
 
 for i, m, s in product(data, models, methods):
-    _model, _batch, _ = m
+    _model, _, _batch = m
     tmp_df = df[df.data == i]
     tmp_df = tmp_df[tmp_df.model == _model]
     tmp_df = tmp_df[tmp_df.scoring_method == s]

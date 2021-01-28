@@ -31,4 +31,4 @@ for i, m, s in product(data, models, methods):
                             **config)
         scorer.release_cache()
 
-alm.export_report(export_prefix=export_prefix, test=True)
+alm.export_report(export_prefix=export_prefix + '.hyp', test=True)

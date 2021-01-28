@@ -5,7 +5,7 @@ from pprint import pprint
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 import alm
 
-
+# these are the most neutral configurations among what achieve the best validation accuracy (with RoBERTa)
 config = {
     'sat': {
         "model": "roberta-large",

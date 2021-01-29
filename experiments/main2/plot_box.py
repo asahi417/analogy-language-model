@@ -2,10 +2,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import alm
 import os
-plt.rcParams.update({
-                "text.usetex": True,
-                "font.family": "sans-serif",
-                "font.sans-serif": ["Helvetica"]})
+plt.rcParams.update({"text.usetex": True, "font.family": "sans-serif", "font.sans-serif": ["Helvetica"]})
 os.makedirs('./experiments_results/summary/main2_figure', exist_ok=True)
 export_prefix = 'main2'
 df = alm.get_report(export_prefix=export_prefix)
@@ -22,11 +19,24 @@ for d in data:
     for s, n in zip(
             ['ppl_pmi_alpha', 'negative_permutation_weight', 'positive_permutation_aggregation',
              'negative_permutation_aggregation', 'ppl_pmi_aggregation'],
-            [r'$\alpha$', r'$\beta$', 'positive permutation', 'negative permutation', 'PMI permutation']):
-
+            [r'$\alpha$', r'$\beta$', 'Positive permutation', 'Negative permutation', 'PMI permutation']):
         fig = plt.figure()
         fig.clear()
-        ax = sns.boxplot(x=s, y='accuracy', data=df, hue='model')
+        # if s in ['ppl_pmi_alpha', 'negative_permutation_weight']:
+        #     plt.rcParams.update({"text.usetex": True})
+        # else:
+        #     plt.rcParams.update({"text.usetex": False})
+        if s == 'negative_permutation_aggregation':
+            ax = sns.boxplot(x=s, y='accuracy', data=df, hue='model',
+                             order=['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'max', 'mean', 'min'])
+        elif s == 'positive_permutation_aggregation':
+            ax = sns.boxplot(x=s, y='accuracy', data=df, hue='model',
+                             order=['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'max', 'mean', 'min'])
+        elif s == 'ppl_pmi_aggregation':
+            ax = sns.boxplot(x=s, y='accuracy', data=df, hue='model',
+                             order=['P0', 'P1', 'max', 'mean', 'min'])
+        else:
+            ax = sns.boxplot(x=s, y='accuracy', data=df, hue='model')
         handles, labels = ax.get_legend_handles_labels()
         labels = [i.replace('roberta-large', 'RoBERTa').replace('gpt2-xl', 'GPT2') for i in labels]
         ax.legend(handles=handles, labels=labels)

@@ -8,17 +8,17 @@ export_prefix = 'main2'
 df = alm.get_report(export_prefix=export_prefix)
 df['accuracy'] = df['accuracy'].round(4) * 100
 data = ['sat', 'u2', 'u4', 'google', 'bats']
-model = ['roberta-large', 'gpt2-xl']
-big_group = df.groupby(['data', 'model', 'ppl_pmi_alpha', 'negative_permutation_weight'])
+model = ['roberta-large', 'gpt2-xl', 'bert-large-cased']
+big_group = df.groupby(['data', 'model', 'ppl_pmi_alpha', 'negative_permutation_weight']).accuracy.max()
 
 sns.set_theme(style="darkgrid")
 for d in data:
     for m in model:
         fig = plt.figure()
         fig.clear()
-        group = big_group[d][m]
+        # accuracy = group.accuracy.max()
+        accuracy = big_group[d][m]
         # print('size per category', group.size())
-        accuracy = group.accuracy.max()
         accuracy = accuracy - accuracy[0.0][0.0]
         # print('accuracy per category', accuracy)
         accuracy = accuracy.to_frame()

@@ -26,6 +26,10 @@ python ./experiments/main2/run_test_set.py
 python ./experiments/main2/export_test_prediction.py
 ```
 
+- Generate heatmap
+```shell script
+python ./experiments/main2/plot_heatmap.py
+```
 ## Output
 - validation accuracy: `./experiments_results/summary/main2.valid.csv`
 - test accuracy: `./experiments_results/summary/main2.test.csv`

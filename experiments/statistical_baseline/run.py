@@ -3,7 +3,6 @@ import alm
 from itertools import chain
 from random import randint, seed
 
-import numpy as np
 import pandas as pd
 from gensim.models import fasttext
 from gensim.models import KeyedVectors
@@ -123,6 +122,11 @@ if __name__ == '__main__':
             line_accuracy.append(all_accuracy)
             print(all_accuracy)
             print(oov)
+
+            if prefix == 'test':
+                for n, d in enumerate(test):
+                    d['prediction'] = ft_prediction[n]
+                pd.DataFrame(test).to_csv('experiments_results/summary/statistics.test.prediction.{}.csv'.format(i))
 
         print(pd.DataFrame(line_accuracy))
         print(pd.DataFrame(line_oov))

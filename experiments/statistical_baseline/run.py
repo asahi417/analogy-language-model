@@ -81,9 +81,9 @@ def get_prediction(stem, choice, embedding_dict):
 
 
 if __name__ == '__main__':
-    line_oov = []
-    line_accuracy = []
     for prefix in ['test', 'valid']:
+        line_oov = []
+        line_accuracy = []
         for i in DATA:
             oov = {'data': i}
             all_accuracy = {'data': i}
@@ -125,8 +125,8 @@ if __name__ == '__main__':
             print(oov)
 
         print(pd.DataFrame(line_accuracy))
-        # print(pd.DataFrame(line_oov))
+        print(pd.DataFrame(line_oov))
         pd.DataFrame(line_accuracy).to_csv('experiments_results/summary/statistics.{}.csv'.format(prefix))
-        # pd.DataFrame(line_oov).to_csv('experiments_results/summary/statistics.test.oov.csv'.)
+        pd.DataFrame(line_oov).to_csv('experiments_results/summary/statistics.{}.oov.csv'.format(prefix))
 
 

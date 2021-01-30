@@ -42,7 +42,8 @@ for d in ['sat', 'u2', 'u4', 'google', 'bats']:
     if d == 'u2':
         order = ['grade{}'.format(i) for i in range(4, 13)]
     elif d == 'u4':
-        order = ['low-intermediate', 'low-advanced', 'high-beginning', 'high-intermediate', 'high-advanced']
+        # order = ['low-intermediate', 'low-advanced', 'high-beginning', 'high-intermediate', 'high-advanced']
+        order = ['high-beginning', 'low-intermediate', 'high-intermediate', 'low-advanced', 'high-advanced']
 
     if d in ['bats', 'google']:
         plt.xticks(rotation=90)

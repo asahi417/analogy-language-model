@@ -6,7 +6,7 @@ from itertools import product
 
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
 data = ['sat', 'u2', 'u4', 'google', 'bats']
-model = ['roberta-large', 'bert-cased-large']
+model = ['roberta-large', 'bert-large-cased']
 
 
 def get_config(path):

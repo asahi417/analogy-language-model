@@ -16,9 +16,9 @@ def get_config(path):
 
 
 for d, m in product(data, model):
-    a = {get_config(i): i for i in glob('./logit/{}/{}/ppl_add_masked/*'.format(d, m))}
-    h = {get_config(i): i for i in glob('./logit/{}/{}/ppl_head_masked/*'.format(d, m))}
-    t = {get_config(i): i for i in glob('./logit/{}/{}/ppl_tail_masked/*'.format(d, m))}
+    a = {get_config(i): i for i in glob('./experiments_results/logit/{}/{}/ppl_add_masked/*'.format(d, m))}
+    h = {get_config(i): i for i in glob('./experiments_results/logit/{}/{}/ppl_head_masked/*'.format(d, m))}
+    t = {get_config(i): i for i in glob('./experiments_results/logit/{}/{}/ppl_tail_masked/*'.format(d, m))}
     print(a)
     print(h)
     print(t)

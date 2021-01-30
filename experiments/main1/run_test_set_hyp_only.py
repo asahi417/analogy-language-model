@@ -12,7 +12,7 @@ export_prefix = 'main1'
 df = alm.get_report(export_prefix=export_prefix)
 
 for i, m, s in product(data, models, methods):
-    _model, _, _batch = m
+    _model, _len, _batch = m
     tmp_df = df[df.data == i]
     tmp_df = tmp_df[tmp_df.model == _model]
     tmp_df = tmp_df[tmp_df.scoring_method == s]
@@ -24,7 +24,8 @@ for i, m, s in product(data, models, methods):
     for n, tmp_df in best_configs.iterrows():
         config = json.loads(tmp_df.to_json())
         config.pop('accuracy')
-        scorer = alm.RelationScorer(model=config.pop('model'), max_length=config.pop('max_length'))
+        config.pop('max_length')
+        scorer = alm.RelationScorer(model=config.pop('model'), max_length=_len)
         scorer.analogy_test(test=True,
                             export_prefix=export_prefix,
                             batch_size=_batch,

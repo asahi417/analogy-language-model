@@ -22,7 +22,8 @@ for i, m in product(data, models):
     for n, tmp_df in best_configs.iterrows():
         config = json.loads(tmp_df.to_json())
         config.pop('accuracy')
-        scorer = alm.RelationScorer(model=config.pop('model'), max_length=config.pop('max_length'))
+        config.pop('max_length')
+        scorer = alm.RelationScorer(model=config.pop('model'), max_length=_len)
         scorer.analogy_test(test=True,
                             export_prefix=export_prefix,
                             batch_size=_batch,

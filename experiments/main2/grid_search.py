@@ -2,7 +2,7 @@ import alm
 
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
-models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 64, 1024)]
+models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
 # all_templates = ['rel-same', 'as-what-same', 'is-to-as']
 # models = [('bert-large-cased', 64, 1024)]
 

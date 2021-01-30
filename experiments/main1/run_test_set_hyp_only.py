@@ -6,7 +6,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logg
 import alm
 
 data = ['sat', 'u2', 'u4', 'google', 'bats']
-models = [('roberta-large', 32, 512), ('bert-large-cased', 64, 1024)]
+models = [('roberta-large', 32, 512), ('bert-large-cased', 32, 1024)]
 methods = ['ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked', 'ppl']
 export_prefix = 'main1'
 df = alm.get_report(export_prefix=export_prefix)

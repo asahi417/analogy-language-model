@@ -29,5 +29,7 @@ for i, m in product(data, models):
                                 batch_size=_batch,
                                 **config)
             scorer.release_cache()
+            # compute onl the first one to reduce time
+            break
 
 alm.export_report(export_prefix=export_prefix + '.parameter_fix', test=True)

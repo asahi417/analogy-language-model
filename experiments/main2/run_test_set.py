@@ -6,7 +6,8 @@ logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logg
 import alm
 
 data = ['sat', 'u2', 'u4', 'google', 'bats']
-models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 64, 512)]
+# models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 64, 512)]
+models = [('bert-large-cased', 64, 512)]
 export_prefix = 'main2'
 df = alm.get_report(export_prefix=export_prefix)
 
@@ -27,5 +28,6 @@ for i, m in product(data, models):
                             batch_size=_batch,
                             **config)
         scorer.release_cache()
+        break  # reduce the time
 
 alm.export_report(export_prefix=export_prefix, test=True)

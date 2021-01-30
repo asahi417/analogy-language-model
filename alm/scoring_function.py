@@ -366,47 +366,57 @@ class RelationScorer:
             assert not no_inference, '"no_inference==True" but no cache found'
             logging.info('# run scoring: {}'.format(scoring_method))
             shared = {'batch_size': batch_size, 'template_type': template_type}
-            if scoring_method in ['ppl_pmi', 'ppl']:
-                logging.info(' * ppl computation')
-                full_score = self.lm.get_perplexity(word=input_data, **shared)
-            elif scoring_method in ['ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked']:
-                logging.info(' * ppl computation ({})'.format(scoring_method))
-                if scoring_method == 'ppl_tail_masked':
-                    full_score = self.lm.get_perplexity(
-                        word=input_data, mask_index_condition=[-1] * len(input_data), **shared)
-                elif scoring_method == 'ppl_head_masked':
-                    full_score = self.lm.get_perplexity(
-                        word=input_data, mask_index_condition=[-2] * len(input_data), **shared)
-                else:
-                    full_score_tail = self.lm.get_perplexity(
-                        word=input_data, mask_index_condition=[-1] * len(input_data), **shared)
-                    full_score_head = self.lm.get_perplexity(
-                        word=input_data, mask_index_condition=[-2] * len(input_data), **shared)
-                    full_score = list(map(lambda x: sum(x), zip(full_score_head, full_score_tail)))
-            elif scoring_method == 'embedding_similarity':
-                logging.info(' * embedding similarity')
-                full_score = self.lm.get_embedding_similarity(word=input_data, **shared)
-            elif scoring_method == 'pmi':
-                score_list = []
-                for n, (i, k) in enumerate(list(permutations(range(4), 2))):
-                    logging.info(' * PMI permutation: {}, {} ({}/12)'.format(i, k, n + 1))
-                    key = '{}-{}'.format(i, k)
-                    if config.pmi_logits[prefix] and key in config.pmi_logits[prefix].keys():
-                        _score = config.pmi_logits[prefix][key]
-                        continue
-                    _score = self.lm.get_negative_pmi(
-                        word=input_data,
-                        mask_index=[i] * len(input_data),
-                        mask_index_condition=[k] * len(input_data),
-                        weight=pmi_lambda, **shared)
-                    config.cache_scores_pmi(key, _score, positive=positive)
-                    score_list.append(_score)
-
-                full_score = list(zip(*score_list))
+            full_full_score = []
+            if data == 'bats':
+                s = int(len(input_data)/2)
+                input_data = [input_data[:s], input_data[s:]]
             else:
-                raise ValueError('unknown method: {}'.format(scoring_method))
-            config.cache_scores(full_score, positive=positive)
-            return full_score
+                input_data = [input_data]
+            for input_data_sub in input_data:
+                if scoring_method in ['ppl_pmi', 'ppl']:
+                    logging.info(' * ppl computation')
+                    full_score = self.lm.get_perplexity(word=input_data_sub, **shared)
+                elif scoring_method in ['ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked']:
+                    logging.info(' * ppl computation ({})'.format(scoring_method))
+                    if scoring_method == 'ppl_tail_masked':
+                        full_score = self.lm.get_perplexity(
+                            word=input_data_sub, mask_index_condition=[-1] * len(input_data_sub), **shared)
+                    elif scoring_method == 'ppl_head_masked':
+                        full_score = self.lm.get_perplexity(
+                            word=input_data_sub, mask_index_condition=[-2] * len(input_data_sub), **shared)
+                    else:
+                        full_score_tail = self.lm.get_perplexity(
+                            word=input_data_sub, mask_index_condition=[-1] * len(input_data_sub), **shared)
+                        full_score_head = self.lm.get_perplexity(
+                            word=input_data_sub, mask_index_condition=[-2] * len(input_data_sub), **shared)
+                        full_score = list(map(lambda x: sum(x), zip(full_score_head, full_score_tail)))
+                elif scoring_method == 'embedding_similarity':
+                    logging.info(' * embedding similarity')
+                    full_score = self.lm.get_embedding_similarity(word=input_data_sub, **shared)
+                elif scoring_method == 'pmi':
+                    score_list = []
+                    for n, (i, k) in enumerate(list(permutations(range(4), 2))):
+                        logging.info(' * PMI permutation: {}, {} ({}/12)'.format(i, k, n + 1))
+                        key = '{}-{}'.format(i, k)
+                        if config.pmi_logits[prefix] and key in config.pmi_logits[prefix].keys():
+                            _score = config.pmi_logits[prefix][key]
+                            continue
+                        _score = self.lm.get_negative_pmi(
+                            word=input_data_sub,
+                            mask_index=[i] * len(input_data_sub),
+                            mask_index_condition=[k] * len(input_data_sub),
+                            weight=pmi_lambda, **shared)
+                        config.cache_scores_pmi(key, _score, positive=positive)
+                        score_list.append(_score)
+
+                    full_score = list(zip(*score_list))
+                else:
+                    raise ValueError('unknown method: {}'.format(scoring_method))
+                full_full_score += full_score
+            print(len(input_data), len(full_score), len(full_full_score))
+            input()
+            config.cache_scores(full_full_score, positive=positive)
+            return full_full_score
 
         # run inference
         score_pos = prediction()

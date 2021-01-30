@@ -55,9 +55,9 @@ def export_report(export_prefix, export_dir: str = './experiments_results', test
         df = pd.read_csv('{}.csv'.format(file), index_col=0)
         df_tmp = pd.DataFrame(json_line)
         df = pd.concat([df, df_tmp])
-        df = df.drop_duplicates()
     else:
         df = pd.DataFrame(json_line)
+    df = df.drop_duplicates()
     df = df.sort_values(by='accuracy', ascending=False)
     logging.info('df has {} rows'.format(len(df)))
     logging.info('top result: \n {}'.format(df.head()))

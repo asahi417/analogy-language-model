@@ -4,9 +4,8 @@ from pprint import pprint
 from glob import glob
 
 if __name__ == '__main__':
-    model = 'gpt2-large'
-    data = './data/sat_package_v3.jsonl'
-    aggregation_positive = 'p_2'
+    model = 'roberta-large'
+    data = 'sat'
     template = ['is-to-as']
     for i in glob('./results/outputs/*/config.json'):
         with open(i) as f:

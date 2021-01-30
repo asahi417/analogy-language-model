@@ -378,11 +378,11 @@ class RelationScorer:
                     full_score = self.lm.get_perplexity(
                         word=input_data, mask_index_condition=[-2] * len(input_data), **shared)
                 else:
-                    full_score_head = self.lm.get_perplexity(
-                        word=input_data, mask_index_condition=[-1] * len(input_data), **shared)
                     full_score_tail = self.lm.get_perplexity(
+                        word=input_data, mask_index_condition=[-1] * len(input_data), **shared)
+                    full_score_head = self.lm.get_perplexity(
                         word=input_data, mask_index_condition=[-2] * len(input_data), **shared)
-                    full_score = full_score_head + full_score_tail
+                    full_score = list(map(lambda x: sum(x), zip(full_score_head, full_score_tail)))
             elif scoring_method == 'embedding_similarity':
                 logging.info(' * embedding similarity')
                 full_score = self.lm.get_embedding_similarity(word=input_data, **shared)

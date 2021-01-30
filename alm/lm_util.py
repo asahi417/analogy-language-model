@@ -274,11 +274,13 @@ class TransformersLM:
 
         logging.info('creating data loader')
         data_dk = []
+        data_flat = []
         # this can be parallelized, but due to deepcopy at DictKeeper, it may cause memory error in some machine
         for x in tqdm(list(zip(batch_word, batch_mask_index, batch_mask_index_no_label))):
-            data_dk.append(self.encode_plus_mask(
-                word=x[0], mask_index=x[1], mask_index_no_label=x[2], template_type=template_type))
-        data_flat = [i.flat_values for i in data_dk]
+            tmp = self.encode_plus_mask(
+                word=x[0], mask_index=x[1], mask_index_no_label=x[2], template_type=template_type)
+            data_dk.append(tmp)
+            data_flat.append(tmp.flat_values)
         partition = get_partition(data_flat)
         data_loader = torch.utils.data.DataLoader(
             Dataset(list(chain(*data_flat))),

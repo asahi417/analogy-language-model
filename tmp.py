@@ -19,8 +19,10 @@ for d, m in product(data, model):
     a = {get_config(i): i for i in glob('./logit/{}/{}/ppl_add_masked/*'.format(d, m))}
     h = {get_config(i): i for i in glob('./logit/{}/{}/ppl_head_masked/*'.format(d, m))}
     t = {get_config(i): i for i in glob('./logit/{}/{}/ppl_tail_masked/*'.format(d, m))}
+    print(a)
+    print(h)
+    print(t)
     for tmp in all_templates:
-        '{}/flatten_score.positive.valid.pkl'.format(a[tmp])
         with open('{}/flatten_score.positive.valid.pkl'.format(t[tmp]), 'rb') as fp:
             t_v = pickle.load(fp)
         with open('{}/flatten_score.positive.valid.pkl'.format(h[tmp]), 'rb') as fp:

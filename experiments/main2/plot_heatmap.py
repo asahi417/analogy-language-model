@@ -9,9 +9,15 @@ os.makedirs('./experiments_results/summary/main2_figure', exist_ok=True)
 export_prefix = 'main2'
 df = alm.get_report(export_prefix=export_prefix)
 df['accuracy'] = df['accuracy'].round(3) * 100
-df['ppl_pmi_aggregation'] = df['ppl_pmi_aggregation'].apply(lambda x: x.replace('index_', 'P'))
-df['negative_permutation_aggregation'] = df['negative_permutation_aggregation'].apply(lambda x: x.replace('index_', 'P'))
-df['positive_permutation_aggregation'] = df['positive_permutation_aggregation'].apply(lambda x: x.replace('index_', 'P'))
+# df['ppl_pmi_aggregation'] = df['ppl_pmi_aggregation'].apply(lambda x: x.replace('index_', 'P'))
+# df['negative_permutation_aggregation'] = df['negative_permutation_aggregation'].apply(lambda x: x.replace('index_', 'P'))
+# df['positive_permutation_aggregation'] = df['positive_permutation_aggregation'].apply(lambda x: x.replace('index_', 'P'))
+df['ppl_pmi_aggregation'] = df['ppl_pmi_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
+    '{', (int(x.replace('index_', '')) + 1 if 'index' in x else x), '}'))
+df['negative_permutation_aggregation'] = df['negative_permutation_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
+    '{', (int(x.replace('index_', '')) + 1 if 'index' in x else x), '}'))
+df['positive_permutation_aggregation'] = df['positive_permutation_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
+    '{', (int(x.replace('index_', '')) + 1 if 'index' in x else x), '}'))
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 model = ['roberta-large', 'gpt2-xl', 'bert-large-cased']
 big_group = df.groupby(['data', 'model', 'ppl_pmi_alpha', 'negative_permutation_weight']).accuracy.max()
@@ -39,14 +45,16 @@ for d, m in product(data, model):
     fig = plt.figure()
     fig.clear()
     accuracy = big_group_perm[d][m]
-    accuracy = accuracy - accuracy['P0']['P0']
+    # print(accuracy)
+    accuracy = accuracy - accuracy[r'val$_{1}$'][r'val$_{1}$']
     accuracy = accuracy.to_frame()
     accuracy.reset_index(inplace=True)
     accuracy = accuracy.pivot(
         index='positive_permutation_aggregation', columns='negative_permutation_aggregation', values='accuracy'
     )
-    accuracy = accuracy.reindex(['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'max', 'mean', 'min'][::-1])
-    accuracy = accuracy.reindex(['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'max', 'mean', 'min'],
+
+    accuracy = accuracy.reindex([r'val$_{}{}{}$'.format('{', n, '}') for n in range(1, 9)] + ['max', 'mean', 'min'][::-1])
+    accuracy = accuracy.reindex([r'val$_{}{}{}$'.format('{', n, '}') for n in range(1, 12)] + ['max', 'mean', 'min'],
                                 axis=1)
     sns_plot = sns.heatmap(accuracy, annot=True, fmt="g", cbar=False, annot_kws={"fontsize": 8})
     sns_plot.set_xlabel('Negative permutation', fontsize=12)

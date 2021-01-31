@@ -7,9 +7,12 @@ os.makedirs('./experiments_results/summary/main2_figure', exist_ok=True)
 export_prefix = 'main2'
 df = alm.get_report(export_prefix=export_prefix)
 df['accuracy'] = df['accuracy'].round(3) * 100
-df['ppl_pmi_aggregation'] = df['ppl_pmi_aggregation'].apply(lambda x: x.replace('index_', 'P'))
-df['negative_permutation_aggregation'] = df['negative_permutation_aggregation'].apply(lambda x: x.replace('index_', 'P'))
-df['positive_permutation_aggregation'] = df['positive_permutation_aggregation'].apply(lambda x: x.replace('index_', 'P'))
+df['ppl_pmi_aggregation'] = df['ppl_pmi_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
+    '{', (int(x.replace('index_', '')) + 1), '}') if 'index' in x else x)
+df['negative_permutation_aggregation'] = df['negative_permutation_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
+    '{', (int(x.replace('index_', '')) + 1), '}') if 'index' in x else x)
+df['positive_permutation_aggregation'] = df['positive_permutation_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
+    '{', (int(x.replace('index_', '')) + 1), '}') if 'index' in x else x)
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 model = ['roberta-large', 'gpt2-xl']
 df = df[df.model != 'bert-large-cased']
@@ -22,19 +25,15 @@ for d in data:
             [r'$\alpha$', r'$\beta$', 'Positive permutation', 'Negative permutation', 'PMI permutation']):
         fig = plt.figure()
         fig.clear()
-        # if s in ['ppl_pmi_alpha', 'negative_permutation_weight']:
-        #     plt.rcParams.update({"text.usetex": True})
-        # else:
-        #     plt.rcParams.update({"text.usetex": False})
         if s == 'negative_permutation_aggregation':
             ax = sns.boxplot(x=s, y='accuracy', data=df, hue='model',
-                             order=['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9', 'P10', 'P11', 'max', 'mean', 'min'])
+                             order=[r'val$_{}{}{}$'.format('{', n, '}') for n in range(1, 13)] + ['max', 'mean', 'min'])
         elif s == 'positive_permutation_aggregation':
             ax = sns.boxplot(x=s, y='accuracy', data=df, hue='model',
-                             order=['P0', 'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'max', 'mean', 'min'])
+                             order=[r'val$_{}{}{}$'.format('{', n, '}') for n in range(1, 9)] + ['max', 'mean', 'min'])
         elif s == 'ppl_pmi_aggregation':
             ax = sns.boxplot(x=s, y='accuracy', data=df, hue='model',
-                             order=['P0', 'P1', 'max', 'mean', 'min'])
+                             order=[r'val$_{}{}{}$'.format('{', n, '}') for n in range(1, 3)] + ['max', 'mean', 'min'])
         else:
             ax = sns.boxplot(x=s, y='accuracy', data=df, hue='model')
         handles, labels = ax.get_legend_handles_labels()

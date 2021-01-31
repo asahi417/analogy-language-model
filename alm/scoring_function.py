@@ -123,17 +123,25 @@ class GridSearch:
                 if all(s == 0 for s in ppl_scores):
                     return [0] * opt_length
 
-                # conditional negative log likelihood (fixed head and tail tokens)
-                ppl_in_option = list(map(lambda x: ppl_scores[opt_length * x + x], range(opt_length)))
-                negative_log_likelihood_cond = list(map(lambda x: log(x / sum(ppl_in_option)), ppl_in_option))
+                # conditional negative log likelihood
+                negative_log_likelihood_cond_h = list(map(
+                    lambda x: log(ppl_scores[opt_length * x + x] / sum(
+                        ppl_scores[opt_length * x: opt_length * x + x]
+                    )),
+                    range(opt_length)))
 
-                # marginal negative log likelihood (tail token)
+                negative_log_likelihood_cond_t = list(map(
+                    lambda x: log(ppl_scores[opt_length * x + x] / sum(
+                        [ppl_scores[opt_length * y + x] for y in range(opt_length)]
+                    )),
+                    range(opt_length)))
+
+                # marginal negative log likelihood
                 ppl_out_option = list(map(
                     lambda x: sum(map(lambda y: ppl_scores[x + opt_length * y], range(opt_length))),
                     range(opt_length)))
                 negative_log_likelihood_mar_t = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
 
-                # marginal negative log likelihood (head token)
                 ppl_out_option = list(map(
                     lambda x: sum(ppl_scores[x * opt_length: (x + 1) * opt_length]),
                     range(opt_length)))
@@ -141,9 +149,34 @@ class GridSearch:
 
                 # negative pmi approx by perplexity difference: higher is better
                 neg_pmi = list(map(
-                    lambda x: x[0] * ppl_pmi_lambda - aggregator([x[1], x[2]]) * ppl_pmi_alpha,
-                    zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
+                    lambda x: aggregator([
+                        x[0] * ppl_pmi_lambda - x[1] * ppl_pmi_alpha,
+                        x[2] * ppl_pmi_lambda - x[3] * ppl_pmi_alpha
+                    ),
+                    zip(negative_log_likelihood_cond_h, negative_log_likelihood_mar_h,
+                        negative_log_likelihood_cond_t, negative_log_likelihood_mar_t)))
                 return neg_pmi
+                # # conditional negative log likelihood (fixed head and tail tokens)
+                # ppl_in_option = list(map(lambda x: ppl_scores[opt_length * x + x], range(opt_length)))
+                # negative_log_likelihood_cond = list(map(lambda x: log(x / sum(ppl_in_option)), ppl_in_option))
+                #
+                # # marginal negative log likelihood (tail token)
+                # ppl_out_option = list(map(
+                #     lambda x: sum(map(lambda y: ppl_scores[x + opt_length * y], range(opt_length))),
+                #     range(opt_length)))
+                # negative_log_likelihood_mar_t = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
+                #
+                # # marginal negative log likelihood (head token)
+                # ppl_out_option = list(map(
+                #     lambda x: sum(ppl_scores[x * opt_length: (x + 1) * opt_length]),
+                #     range(opt_length)))
+                # negative_log_likelihood_mar_h = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
+                #
+                # # negative pmi approx by perplexity difference: higher is better
+                # neg_pmi = list(map(
+                #     lambda x: x[0] * ppl_pmi_lambda - aggregator([x[1], x[2]]) * ppl_pmi_alpha,
+                #     zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
+                # return neg_pmi
 
             pmi = list(map(lambda o: (
                 list(map(lambda x: compute_pmi(list(map(lambda s: s[0][x], o))), range(8))),

@@ -413,8 +413,8 @@ class RelationScorer:
                 else:
                     raise ValueError('unknown method: {}'.format(scoring_method))
                 full_full_score += full_score
-            print(len(input_data), len(full_score), len(full_full_score))
-            input()
+            # print(len(input_data), len(full_score), len(full_full_score))
+            # input()
             config.cache_scores(full_full_score, positive=positive)
             return full_full_score
 

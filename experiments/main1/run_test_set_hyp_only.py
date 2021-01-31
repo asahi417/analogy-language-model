@@ -7,7 +7,7 @@ import alm
 
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 models = [('roberta-large', 32, 512), ('bert-large-cased', 32, 1024)]
-methods = ['ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked', 'ppl']
+methods = ['ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked']
 export_prefix = 'main1'
 df = alm.get_report(export_prefix=export_prefix)
 

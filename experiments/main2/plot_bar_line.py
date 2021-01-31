@@ -66,7 +66,7 @@ for d in ['sat', 'u2', 'u4', 'google', 'bats']:
         f['order'] = f['prefix']
     f = f.sort_values(by='order')
     ax = sns.lineplot(x='prefix', y='accuracy', hue='model', data=f, sort=False, hue_order=['PMI', 'FastText', 'RoBERTa'],
-                      style="model", markers=True, dashes=[(2, 2), (2, 2), (2, 2)])
+                      style="model", markers=True, dashes=[(1, 0), (2, 1), (1, 0)])
     ax.legend(handles=handles, labels=labels)
     plt.setp(ax.get_legend().get_texts(), fontsize='15')
     ax.set_xlabel(None)

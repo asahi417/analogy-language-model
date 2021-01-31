@@ -127,7 +127,7 @@ class GridSearch:
                 try:
                     negative_log_likelihood_cond_h = list(map(
                         lambda x: log(ppl_scores[opt_length * x + x] / sum(
-                            ppl_scores[opt_length * x: opt_length * x + x]
+                            ppl_scores[opt_length * x: opt_length * (x +1)]
                         )),
                         range(opt_length)))
                 except Exception:

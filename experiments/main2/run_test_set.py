@@ -5,10 +5,10 @@ from itertools import product
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 import alm
 
-# data = ['sat', 'u2', 'u4', 'google', 'bats']
-# models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
-data = ['bats']
-models = [('bert-large-cased', 32, 1024)]
+data = ['sat', 'u2', 'u4', 'google', 'bats']
+models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
+# data = ['bats']
+# models = [('bert-large-cased', 32, 1024)]
 # models = [('bert-large-cased', 32, 512)]
 export_prefix = 'main2'
 df = alm.get_report(export_prefix=export_prefix)

@@ -8,7 +8,7 @@ import alm
 # data = ['sat', 'u2', 'u4', 'google', 'bats']
 data = ['sat']
 # models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
-models = [(''bert-large-cased'', 32, 128)]
+models = [('bert-large-cased', 32, 128)]
 export_prefix = 'main2'
 df = alm.get_report(export_prefix=export_prefix)
 

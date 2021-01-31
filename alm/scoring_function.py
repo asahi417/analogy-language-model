@@ -152,7 +152,7 @@ class GridSearch:
                     lambda x: aggregator([
                         x[0] * ppl_pmi_lambda - x[1] * ppl_pmi_alpha,
                         x[2] * ppl_pmi_lambda - x[3] * ppl_pmi_alpha
-                    ),
+                    ]),
                     zip(negative_log_likelihood_cond_h, negative_log_likelihood_mar_h,
                         negative_log_likelihood_cond_t, negative_log_likelihood_mar_t)))
                 return neg_pmi

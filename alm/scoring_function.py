@@ -124,6 +124,7 @@ class GridSearch:
                     return [0] * opt_length
 
                 # conditional negative log likelihood
+                print(ppl_scores)
                 negative_log_likelihood_cond_h = list(map(
                     lambda x: log(ppl_scores[opt_length * x + x] / sum(
                         ppl_scores[opt_length * x: opt_length * x + x]

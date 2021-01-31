@@ -44,29 +44,22 @@ for d in ['sat', 'u2', 'u4', 'google', 'bats']:
         order = ['grade{}'.format(i) for i in range(4, 13)]
     elif d == 'u4':
         order = ['high-beginning', 'low-intermediate', 'high-intermediate', 'low-advanced', 'high-advanced']
-
-    if d in ['bats', 'google']:
-        plt.xticks(rotation=90)
-    else:
-        plt.xticks(rotation=60)
+    if d in ['u4', 'u2']:
+        plt.xticks(rotation=15)
     ax = sns.barplot(x='prefix', y='accuracy', hue='model', data=f, order=order, hue_order=['PMI', 'FastText', 'RoBERTa'])
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(handles=handles, labels=labels)
+    plt.setp(ax.get_legend().get_texts(), fontsize='15')
     ax.set_xlabel(None)
-    ax.set_ylabel('Accuracy', fontsize=12)
-    if d == 'bats':
-        ax.tick_params(labelsize=10)
-    else:
-        ax.tick_params(labelsize=12)
+    ax.set_ylabel('Accuracy', fontsize=15)
+    ax.tick_params(labelsize=15)
     fig = ax.get_figure()
     plt.tight_layout()
     fig.savefig('./experiments_results/summary/main2_figure/bar.{}.png'.format(d))
     plt.close()
 
-    if d in ['bats', 'google']:
-        plt.xticks(rotation=90)
-    else:
-        plt.xticks(rotation=60)
+    if d in ['u4', 'u2']:
+        plt.xticks(rotation=15)
     if order:
         f['order'] = f['prefix'].apply(lambda x: order.index(x))
     else:
@@ -75,12 +68,10 @@ for d in ['sat', 'u2', 'u4', 'google', 'bats']:
     ax = sns.lineplot(x='prefix', y='accuracy', hue='model', data=f, sort=False, hue_order=['PMI', 'FastText', 'RoBERTa'],
                       style="model", markers=True, dashes=[(2, 2), (2, 2), (2, 2)])
     ax.legend(handles=handles, labels=labels)
+    plt.setp(ax.get_legend().get_texts(), fontsize='15')
     ax.set_xlabel(None)
-    ax.set_ylabel('Accuracy', fontsize=12)
-    if d == 'bats':
-        ax.tick_params(labelsize=10)
-    else:
-        ax.tick_params(labelsize=12)
+    ax.set_ylabel('Accuracy', fontsize=15)
+    ax.tick_params(labelsize=15)
     fig = ax.get_figure()
     plt.tight_layout()
     fig.savefig('./experiments_results/summary/main2_figure/line.{}.png'.format(d))

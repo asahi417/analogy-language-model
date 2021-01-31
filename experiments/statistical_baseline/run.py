@@ -65,7 +65,6 @@ def get_prediction(stem, choice, embedding_dict):
     def diff(x, y):
         if x is None or y is None:
             return None
-        # return np.abs(x-y)
         return x - y
 
     stem_e = diff(embedding(stem[0], embedding_dict), embedding(stem[1], embedding_dict))

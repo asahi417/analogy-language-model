@@ -6,8 +6,9 @@ sns.set_theme(style="darkgrid")
 for d in ['sat', 'u2', 'u4', 'google', 'bats']:
     lm = pd.read_csv('./experiments_results/summary/main2.test.prediction.{}.csv'.format(d))
     we = pd.read_csv('./experiments_results/summary/statistics.test.prediction.{}.csv'.format(d))
-    full = pd.concat([lm, we])
-    full['model'] = ['RoBERTa'] * len(lm) + ['FastText']*len(we)
+    pmi = pd.read_csv('./experiments_results/summary/statistics.test.prediction.pmi.1.{}.csv'.format(d))
+    full = pd.concat([lm, we, pmi])
+    full['model'] = ['RoBERTa'] * len(lm) + ['FastText'] * len(we) + ['PMI'] * len(we)
     full['accuracy'] = full['prediction'] == full['answer']
     if d == 'sat':
         full['prefix'] = full['prefix'].apply(lambda x: 'SAT' if 'FROM REAL SAT' in x else 'not SAT')
@@ -16,40 +17,39 @@ for d in ['sat', 'u2', 'u4', 'google', 'bats']:
                                               replace('_', ' ').replace(' - ', ':').replace(' reg', '').
                                               replace('V', 'v+').replace(' irreg', ''))
         meta = {
-            'Mor': [
+            'Morphological': [
                 'adj:comparative', 'adj:superlative', 'adj+ly', 'adj+ness', 'verb 3pSg:v+ed', 'verb v+ing:3pSg',
                 'verb v+ing:v+ed', 'verb inf:3pSg', 'verb inf:v+ed', 'verb inf:v+ing', 'verb+able', 'verb+er',
                 'verb+ment', 'verb+tion', 'un+adj', 'noun+less', 'over+adj',
             ],
-            'Lex': [
+            'Lexical': [
                 'hypernyms:animals', 'hypernyms:misc', 'hyponyms:misc', 'antonyms:binary', 'antonyms:gradable',
                 'meronyms:member', 'meronyms:part', 'meronyms:substance', 'synonyms:exact', 'synonyms:intensity',
                 're+verb'
             ],
-            'Enc': [
+            'Encyclopedic': [
                 'UK city:county', 'animal:shelter', 'animal:sound', 'animal:young', 'country:capital',
                 'country:language', 'male:female', 'name:nationality', 'name:occupation', 'noun:plural',
                 'things:color',
             ]
         }
-        full['prefix'] = full['prefix'].apply(lambda x: [k for k, v in meta.items() if x in v][0] + '/'+ x)
+        full['prefix'] = full['prefix'].apply(lambda x: [k for k, v in meta.items() if x in v][0])
     elif d == 'google':
-        full['prefix'] = full['prefix'].apply(lambda x: 'Mor/' + x if 'gram' in x else "Sem/" + x)
-    g = full.groupby(['prefix', 'model']).accuracy.mean()
+        full['prefix'] = full['prefix'].apply(lambda x: 'Morphological' if 'gram' in x else "Semantic")
+    g = full.groupby(['prefix', 'model']).accuracy.mean() * 100
     f = g.to_frame()
     f.reset_index(inplace=True)
     order = None
     if d == 'u2':
         order = ['grade{}'.format(i) for i in range(4, 13)]
     elif d == 'u4':
-        # order = ['low-intermediate', 'low-advanced', 'high-beginning', 'high-intermediate', 'high-advanced']
         order = ['high-beginning', 'low-intermediate', 'high-intermediate', 'low-advanced', 'high-advanced']
 
     if d in ['bats', 'google']:
         plt.xticks(rotation=90)
     else:
         plt.xticks(rotation=60)
-    ax = sns.barplot(x='prefix', y='accuracy', hue='model', data=f, order=order)
+    ax = sns.barplot(x='prefix', y='accuracy', hue='model', data=f, order=order, hue_order=['PMI', 'FastText', 'RoBERTa'])
     handles, labels = ax.get_legend_handles_labels()
     ax.legend(handles=handles, labels=labels)
     ax.set_xlabel(None)
@@ -72,7 +72,8 @@ for d in ['sat', 'u2', 'u4', 'google', 'bats']:
     else:
         f['order'] = f['prefix']
     f = f.sort_values(by='order')
-    ax = sns.lineplot(x='prefix', y='accuracy', hue='model', data=f, sort=False)
+    ax = sns.lineplot(x='prefix', y='accuracy', hue='model', data=f, sort=False, hue_order=['PMI', 'FastText', 'RoBERTa'],
+                      style="model", markers=True, dashes=[(2, 2), (2, 2), (2, 2)])
     ax.legend(handles=handles, labels=labels)
     ax.set_xlabel(None)
     ax.set_ylabel('Accuracy', fontsize=12)

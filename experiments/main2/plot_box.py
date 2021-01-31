@@ -45,5 +45,5 @@ for d in data:
         ax.tick_params(labelsize=10)
         fig = ax.get_figure()
         plt.tight_layout()
-        fig.savefig('./experiments_results/summary/main2_figure/box.alpha_beta.{}.{}.png'.format(d, s))
+        fig.savefig('./experiments_results/summary/main2_figure/box.{}.{}.png'.format(d, s))
         plt.close()

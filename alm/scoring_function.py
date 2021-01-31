@@ -124,12 +124,26 @@ class GridSearch:
                     return [0] * opt_length
 
                 # conditional negative log likelihood
-                print(ppl_scores)
-                negative_log_likelihood_cond_h = list(map(
-                    lambda x: log(ppl_scores[opt_length * x + x] / sum(
-                        ppl_scores[opt_length * x: opt_length * x + x]
-                    )),
-                    range(opt_length)))
+                try:
+                    negative_log_likelihood_cond_h = list(map(
+                        lambda x: log(ppl_scores[opt_length * x + x] / sum(
+                            ppl_scores[opt_length * x: opt_length * x + x]
+                        )),
+                        range(opt_length)))
+                except Exception:
+                    print(ppl_scores)
+                    print(opt_length)
+                    print(
+                        list(map(
+                            lambda x: sum(ppl_scores[opt_length * x: opt_length * x + x]),
+                            range(opt_length)))
+                    )
+                    print(
+                        list(map(
+                            lambda x: [opt_length * x, opt_length * x + x],
+                            range(opt_length)))
+                    )
+                    input()
 
                 negative_log_likelihood_cond_t = list(map(
                     lambda x: log(ppl_scores[opt_length * x + x] / sum(

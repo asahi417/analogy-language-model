@@ -1,10 +1,7 @@
 import alm
 
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
-# all_templates = ['is-to-what', 'is-to-as', 'what-is-to', 'she-to-as']
-# data = ['sat', 'u2', 'u4', 'google', 'bats']
 data = ['sat']
-# models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
 models = [('roberta-large', 32, 512)]
 
 for _model, _max_length, _batch in models:

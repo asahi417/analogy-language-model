@@ -1,10 +1,7 @@
 import alm
 
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
-# all_templates = ['is-to-what', 'is-to-as', 'what-is-to', 'she-to-as']
-# data = ['sat', 'u2', 'u4', 'google', 'bats']
 data = ['sat']
-# models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
 models = [('roberta-large', 32, 512)]
 positive_permutation_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4',
                                     'index_5', 'index_6', 'index_7']

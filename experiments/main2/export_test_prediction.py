@@ -10,22 +10,22 @@ config = {
     'sat': {
         "model": "roberta-large",
         "ppl_pmi_aggregation": "mean",
-        "ppl_pmi_alpha": 0,
+        "ppl_pmi_alpha": -0.4,
         "positive_permutation_aggregation": "mean",
-        "negative_permutation_aggregation": "index_2",
+        "negative_permutation_aggregation": "index_10",
         "negative_permutation_weight": 0.6,
         "data": "sat",
-        "template_type": "what-is-to"
+        "template_type": "she-to-as"
     },
     'u2': {
         "model": "roberta-large",
         "ppl_pmi_aggregation": "mean",
-        "ppl_pmi_alpha": 0.4,
+        "ppl_pmi_alpha": 0.0,
         "positive_permutation_aggregation": "index_0",
-        "negative_permutation_aggregation": "index_3",
-        "negative_permutation_weight": 0.6,
+        "negative_permutation_aggregation": "index_6",
+        "negative_permutation_weight": 0.4,
         "data": "u2",
-        "template_type": "she-to-as"
+        "template_type": "what-is-to"
     },
     'u4': {
         "model": "roberta-large",
@@ -41,16 +41,16 @@ config = {
         "model": "roberta-large",
         "ppl_pmi_aggregation": "min",
         "ppl_pmi_alpha": -0.4,
-        "positive_permutation_aggregation": "min",
-        "negative_permutation_aggregation": "index_7",
+        "positive_permutation_aggregation": "mean",
+        "negative_permutation_aggregation": "index_10",
         "negative_permutation_weight": 0.6,
         "data": "google",
         "template_type": "what-is-to"
     },
     'bats': {
         "model": "roberta-large",
-        "ppl_pmi_aggregation": "min",
-        "ppl_pmi_alpha": 0.4,
+        "ppl_pmi_aggregation": "max",
+        "ppl_pmi_alpha": -0.4,
         "positive_permutation_aggregation": "mean",
         "negative_permutation_aggregation": "index_10",
         "negative_permutation_weight": 0.6,

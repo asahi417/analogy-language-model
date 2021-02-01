@@ -19,37 +19,41 @@ df = df[df.model != 'bert-large-cased']
 df = df.sort_values(by=['model'])
 
 sns.set_theme(style="darkgrid")
-for d in data:
-    df_ = df[df.data == d]
-    for s, n in zip(
-            ['ppl_pmi_alpha', 'negative_permutation_weight', 'positive_permutation_aggregation',
-             'negative_permutation_aggregation', 'ppl_pmi_aggregation'],
-            [r'$\alpha$', r'$\beta$', 'Positive permutation', 'Negative permutation', 'PMI permutation']):
-        # if s != 'positive_permutation_aggregation':
-        #     continue
-        fig = plt.figure()
-        fig.clear()
-        if s == 'negative_permutation_aggregation':
-            ax = sns.boxplot(x=s, y='accuracy', data=df_, hue='model', hue_order=model,
-                             order=[r'val$_{}{}{}$'.format('{', n, '}') for n in range(1, 13)] + ['max', 'mean', 'min'])
-        elif s == 'positive_permutation_aggregation':
-            ax = sns.boxplot(x=s, y='accuracy', data=df_, hue='model', hue_order=model,
-                             order=[r'val$_{}{}{}$'.format('{', n, '}') for n in range(1, 9)] + ['max', 'mean', 'min'])
-        elif s == 'ppl_pmi_aggregation':
-            ax = sns.boxplot(x=s, y='accuracy', data=df_, hue='model', hue_order=model,
-                             order=[r'val$_{}{}{}$'.format('{', n, '}') for n in range(1, 3)] + ['max', 'mean', 'min'])
-        else:
-            ax = sns.boxplot(x=s, y='accuracy', data=df_, hue='model')
-        handles, labels = ax.get_legend_handles_labels()
-        labels = [i.replace('roberta-large', 'RoBERTa').replace('gpt2-xl', 'GPT2') for i in labels]
-        ax.legend(handles=handles, labels=labels)
-        plt.setp(ax.get_legend().get_texts(), fontsize='15')
 
-        # ax.set_xlabel(n, fontsize=15)
-        ax.set_xlabel(None)
-        ax.set_ylabel('Accuracy', fontsize=15)
-        ax.tick_params(labelsize=15)
-        fig = ax.get_figure()
-        plt.tight_layout()
-        fig.savefig('./experiments_results/summary/main2_figure/box.{}.{}.png'.format(d, s))
-        plt.close()
+
+def plot(df_, s, d):
+    fig = plt.figure()
+    fig.clear()
+    if s == 'negative_permutation_aggregation':
+        ax = sns.boxplot(x=s, y='accuracy', data=df_, hue='model', hue_order=model,
+                         order=[r'val$_{}{}{}$'.format('{', n, '}') for n in range(1, 13)] + ['max', 'mean', 'min'])
+    elif s == 'positive_permutation_aggregation':
+        ax = sns.boxplot(x=s, y='accuracy', data=df_, hue='model', hue_order=model,
+                         order=[r'val$_{}{}{}$'.format('{', n, '}') for n in range(1, 9)] + ['max', 'mean', 'min'])
+    elif s == 'ppl_pmi_aggregation':
+        ax = sns.boxplot(x=s, y='accuracy', data=df_, hue='model', hue_order=model,
+                         order=[r'val$_{}{}{}$'.format('{', n, '}') for n in range(1, 3)] + ['max', 'mean', 'min'])
+    else:
+        ax = sns.boxplot(x=s, y='accuracy', data=df_, hue='model')
+    handles, labels = ax.get_legend_handles_labels()
+    labels = [i.replace('roberta-large', 'RoBERTa').replace('gpt2-xl', 'GPT2') for i in labels]
+    ax.legend(handles=handles, labels=labels)
+    plt.setp(ax.get_legend().get_texts(), fontsize='15')
+
+    # ax.set_xlabel(n, fontsize=15)
+    ax.set_xlabel(None)
+    ax.set_ylabel('Accuracy', fontsize=15)
+    ax.tick_params(labelsize=15)
+    fig = ax.get_figure()
+    plt.tight_layout()
+    plt.legend(loc='right')
+    fig.savefig('./experiments_results/summary/main2_figure/box.{}.{}.png'.format(d, s))
+    plt.close()
+
+
+for s_tmp in ['positive_permutation_aggregation', 'negative_permutation_aggregation', 'ppl_pmi_aggregation']:
+    plot(df, s_tmp, 'all')
+    for data_ in data:
+        df_tmp = df[df.data == data_]
+        plot(df_tmp, s_tmp, data_)
+

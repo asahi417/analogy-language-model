@@ -23,4 +23,17 @@ for i, m in product(data, models):
                         positive_permutation_aggregation='index_0')
     scorer.release_cache()
 
+for i, m in product(data, models):
+    _model, _len, _batch = m
+    scorer = alm.RelationScorer(model=_model, max_length=_len)
+    scorer.analogy_test(test=True,
+                        template_type='is-to-as',
+                        export_prefix=export_prefix,
+                        batch_size=_batch,
+                        data=i,
+                        scoring_method='ppl_pmi',
+                        positive_permutation_aggregation='index_0')
+    scorer.release_cache()
+
+
 alm.export_report(export_prefix=export_prefix, test=True)

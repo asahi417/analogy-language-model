@@ -8,7 +8,8 @@ plt.rcParams.update({"text.usetex": True, "font.family": "sans-serif", "font.san
 os.makedirs('./experiments_results/summary/main2_figure', exist_ok=True)
 export_prefix = 'main2'
 df = alm.get_report(export_prefix=export_prefix)
-df['accuracy'] = df['accuracy'].round(3) * 100
+df['accuracy'] = df['accuracy'] * 100
+df['accuracy'] = df['accuracy'].round(5)
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 model = ['roberta-large', 'gpt2-xl']
 big_group = df.groupby(['data', 'model', 'ppl_pmi_alpha', 'negative_permutation_weight']).accuracy.max()
@@ -19,6 +20,7 @@ sns.set_theme(style="darkgrid")
 def plot(d, m, accuracy):
     fig = plt.figure()
     fig.clear()
+    print(accuracy)
     accuracy = accuracy - accuracy[0.0][0.0]
     accuracy = accuracy.to_frame()
     accuracy.reset_index(inplace=True)
@@ -35,13 +37,13 @@ def plot(d, m, accuracy):
 
 
 plot('all', 'all', df.groupby(['ppl_pmi_alpha', 'negative_permutation_weight']).accuracy.max())
-for m_ in model:
-    plot('all', m_, df.groupby(['model', 'ppl_pmi_alpha', 'negative_permutation_weight']).accuracy.max()[m_])
-
-for d_ in data:
-    plot(d_, 'all', df.groupby(['data', 'ppl_pmi_alpha', 'negative_permutation_weight']).accuracy.max()[d_])
-
-for d_, m_ in product(data, model):
-    plot(d_, m_, big_group[d_][m_])
+# for m_ in model:
+#     plot('all', m_, df.groupby(['model', 'ppl_pmi_alpha', 'negative_permutation_weight']).accuracy.max()[m_])
+#
+# for d_ in data:
+#     plot(d_, 'all', df.groupby(['data', 'ppl_pmi_alpha', 'negative_permutation_weight']).accuracy.max()[d_])
+#
+# for d_, m_ in product(data, model):
+#     plot(d_, m_, big_group[d_][m_])
 
 

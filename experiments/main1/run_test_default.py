@@ -33,7 +33,7 @@ for i, m in product(data, models):
                         data=i,
                         scoring_method='ppl_pmi',
                         ppl_pmi_aggregation='mean',
-                        ppl_pmi_alpha=0.0,
+                        ppl_pmi_alpha=1.0,
                         positive_permutation_aggregation='index_0')
     scorer.release_cache()
 

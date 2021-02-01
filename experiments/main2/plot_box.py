@@ -62,7 +62,7 @@ def plot(df_, s, d):
 
 for s_tmp in ['positive_permutation_aggregation', 'negative_permutation_aggregation', 'ppl_pmi_aggregation']:
     plot(df, s_tmp, 'all')
-    # for data_ in data:
-    #     df_tmp = df[df.data == data_]
-    #     plot(df_tmp, s_tmp, data_)
+    for data_ in data:
+        df_tmp = df[df.data == data_]
+        plot(df_tmp, s_tmp, data_)
 

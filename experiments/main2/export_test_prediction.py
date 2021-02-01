@@ -191,6 +191,6 @@ config_bert = {
     }
 }
 
-main(config_gpt)
-main(config_bert)
+# main(config_gpt)
+# main(config_bert)
 main(config_roberta)

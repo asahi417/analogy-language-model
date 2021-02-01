@@ -357,7 +357,7 @@ class RelationScorer:
             assert len(prediction) == len(data_raw), '{} != {}'.format(len(prediction), len(data_raw))
             for d, p in zip(data_raw, prediction):
                 d['prediction'] = p
-            _file = '{}/summary/{}.prediction.{}.csv'.format(export_dir, export_prefix, data)
+            _file = '{}/summary/{}.prediction.{}.{}.csv'.format(export_dir, export_prefix, data, self.model_name)
             pd.DataFrame(data_raw).to_csv(_file)
             logging.info("prediction exported: {}".format(_file))
         else:
@@ -445,8 +445,6 @@ class RelationScorer:
                 else:
                     raise ValueError('unknown method: {}'.format(scoring_method))
                 full_full_score += full_score
-            # print(len(input_data), len(full_score), len(full_full_score))
-            # input()
             config.cache_scores(full_full_score, positive=positive)
             return full_full_score
 

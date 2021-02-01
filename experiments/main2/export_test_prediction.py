@@ -49,7 +49,7 @@ config_gpt = {
         "negative_permutation_aggregation": "index_3",
         "negative_permutation_weight": 0.4,
         "data": "u2",
-        "template_type": "what-is-to"
+        "template_type": "rel-same"
     },
     'u4': {
         "model": "gpt2-xl",
@@ -59,7 +59,7 @@ config_gpt = {
         "negative_permutation_aggregation": "min",
         "negative_permutation_weight": 0,
         "data": "u4",
-        "template_type": "she-to-as"
+        "template_type": "is-to-what"
     },
     'google': {
         "model": "gpt2-xl",
@@ -186,7 +186,7 @@ config_bert = {
         "negative_permutation_aggregation": "index_4",
         "negative_permutation_weight": 0.2,
         "data": "bats",
-        "template_type": "what-is-to"
+        "template_type": "as-what-same"
     }
 }
 

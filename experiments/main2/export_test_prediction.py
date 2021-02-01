@@ -29,13 +29,13 @@ config = {
     },
     'u4': {
         "model": "roberta-large",
-        "ppl_pmi_aggregation": "index_1",
-        "ppl_pmi_alpha": 0.4,
-        "positive_permutation_aggregation": "index_4",
-        "negative_permutation_aggregation": "index_5",
-        "negative_permutation_weight": 0.6,
+        "ppl_pmi_aggregation": "min",
+        "ppl_pmi_alpha": 0.0,
+        "positive_permutation_aggregation": "index_6",
+        "negative_permutation_aggregation": "index_6",
+        "negative_permutation_weight": 0.2,
         "data": "u4",
-        "template_type": "rel-same"
+        "template_type": "she-to-as"
     },
     'google': {
         "model": "roberta-large",

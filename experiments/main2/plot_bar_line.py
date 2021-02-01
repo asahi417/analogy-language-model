@@ -3,12 +3,16 @@ import pandas as pd
 from matplotlib import pyplot as plt
 plt.rcParams.update({"text.usetex": True, "font.family": "sans-serif", "font.sans-serif": ["Helvetica"]})
 sns.set_theme(style="darkgrid")
+model_order = ['PMI', 'FastText', 'BERT', 'GPT2', 'RoBERTa']
 for d in ['sat', 'u2', 'u4', 'google', 'bats']:
-    lm = pd.read_csv('./experiments_results/summary/main2.test.prediction.{}.csv'.format(d))
+    bert = pd.read_csv('./experiments_results/summary/main2.test.prediction.{}.bert-large-cased.csv'.format(d))
+    roberta = pd.read_csv('./experiments_results/summary/main2.test.prediction.{}.roberta-large.csv'.format(d))
+    gpt = pd.read_csv('./experiments_results/summary/main2.test.prediction.{}.gpt2-xl.csv'.format(d))
     we = pd.read_csv('./experiments_results/summary/statistics.test.prediction.{}.csv'.format(d))
     pmi = pd.read_csv('./experiments_results/summary/statistics.test.prediction.pmi.1.{}.csv'.format(d))
-    full = pd.concat([lm, we, pmi])
-    full['model'] = ['RoBERTa'] * len(lm) + ['FastText'] * len(we) + ['PMI'] * len(we)
+    # gpt = pmi
+    full = pd.concat([pmi, we, bert, gpt, roberta])
+    full['model'] = ['PMI'] * len(pmi) + ['FastText'] * len(we) + ['BERT'] * len(bert) + ['GPT2'] * len(gpt) + ['RoBERTa'] * len(roberta)
     full['accuracy'] = full['prediction'] == full['answer']
     if d == 'sat':
         full['prefix'] = full['prefix'].apply(lambda x: 'SAT' if 'FROM REAL SAT' in x else 'not SAT')
@@ -40,39 +44,46 @@ for d in ['sat', 'u2', 'u4', 'google', 'bats']:
     f = g.to_frame()
     f.reset_index(inplace=True)
     order = None
+
     if d == 'u2':
         order = ['grade{}'.format(i) for i in range(4, 13)]
     elif d == 'u4':
         order = ['high-beginning', 'low-intermediate', 'high-intermediate', 'low-advanced', 'high-advanced']
-    if d in ['u4', 'u2']:
-        plt.xticks(rotation=15)
-    ax = sns.barplot(x='prefix', y='accuracy', hue='model', data=f, order=order, hue_order=['PMI', 'FastText', 'RoBERTa'])
-    handles, labels = ax.get_legend_handles_labels()
-    ax.legend(handles=handles, labels=labels)
-    plt.setp(ax.get_legend().get_texts(), fontsize='15')
-    ax.set_xlabel(None)
-    ax.set_ylabel('Accuracy', fontsize=15)
-    ax.tick_params(labelsize=15)
-    fig = ax.get_figure()
-    plt.tight_layout()
-    fig.savefig('./experiments_results/summary/main2_figure/bar.{}.png'.format(d))
-    plt.close()
+
+    if d in ['sat', 'google', 'bats']:
+        if d in ['u4', 'u2']:
+            plt.xticks(rotation=15)
+        ax = sns.barplot(x='prefix', y='accuracy', hue='model', data=f, order=order,
+                         hue_order=model_order)
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(handles=handles, labels=labels)
+        plt.setp(ax.get_legend().get_texts(), fontsize='15')
+        ax.set_xlabel(None)
+        ax.set_ylabel('Accuracy', fontsize=15)
+        ax.tick_params(labelsize=15)
+        fig = ax.get_figure()
+        plt.tight_layout()
+        fig.savefig('./experiments_results/summary/main2_figure/bar.{}.png'.format(d))
+        plt.close()
 
     if d in ['u4', 'u2']:
-        plt.xticks(rotation=15)
-    if order:
-        f['order'] = f['prefix'].apply(lambda x: order.index(x))
-    else:
-        f['order'] = f['prefix']
-    f = f.sort_values(by='order')
-    ax = sns.lineplot(x='prefix', y='accuracy', hue='model', data=f, sort=False, hue_order=['PMI', 'FastText', 'RoBERTa'],
-                      style="model", markers=True, dashes=[(1, 0), (2, 1), (1, 0)])
-    ax.legend(handles=handles, labels=labels)
-    plt.setp(ax.get_legend().get_texts(), fontsize='15')
-    ax.set_xlabel(None)
-    ax.set_ylabel('Accuracy', fontsize=15)
-    ax.tick_params(labelsize=15)
-    fig = ax.get_figure()
-    plt.tight_layout()
-    fig.savefig('./experiments_results/summary/main2_figure/line.{}.png'.format(d))
-    plt.close()
+        if d in ['u4', 'u2']:
+            plt.xticks(rotation=15)
+        if order:
+            f['order'] = f['prefix'].apply(lambda x: order.index(x))
+        else:
+            f['order'] = f['prefix']
+        f = f.sort_values(by=['order', 'model'])
+        ax = sns.lineplot(x='prefix', y='accuracy', hue='model', data=f, sort=False,
+                          style="model", markers=True, dashes=[(1, 0), (1, 0), (1, 0), (2, 1), (1, 0)],
+                          hue_order=model_order)
+        handles, labels = ax.get_legend_handles_labels()
+        ax.legend(handles=handles, labels=labels)
+        plt.setp(ax.get_legend().get_texts(), fontsize='15')
+        ax.set_xlabel(None)
+        ax.set_ylabel('Accuracy', fontsize=15)
+        ax.tick_params(labelsize=15)
+        fig = ax.get_figure()
+        plt.tight_layout()
+        fig.savefig('./experiments_results/summary/main2_figure/line.{}.png'.format(d))
+        plt.close()

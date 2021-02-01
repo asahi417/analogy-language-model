@@ -128,7 +128,7 @@ config_roberta = {
     },
     'bats': {
         "model": "roberta-large",
-        "ppl_pmi_aggregation": "min",
+        "ppl_pmi_aggregation": "max",
         "ppl_pmi_alpha": -0.4,
         "positive_permutation_aggregation": "mean",
         "negative_permutation_aggregation": "index_10",

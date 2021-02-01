@@ -32,6 +32,8 @@ for i, m in product(data, models):
                         batch_size=_batch,
                         data=i,
                         scoring_method='ppl_pmi',
+                        ppl_pmi_aggregation='mean',
+                        ppl_pmi_alpha=0.0,
                         positive_permutation_aggregation='index_0')
     scorer.release_cache()
 

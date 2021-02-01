@@ -8,6 +8,7 @@ import alm
 export_prefix = 'main2'
 df = alm.get_report(export_prefix=export_prefix, test=True)
 
+
 def main(config):
     for k, v in config.items():
         tmp_df = df[df.data == k]
@@ -127,7 +128,7 @@ config_roberta = {
     },
     'bats': {
         "model": "roberta-large",
-        "ppl_pmi_aggregation": "max",
+        "ppl_pmi_aggregation": "min",
         "ppl_pmi_alpha": -0.4,
         "positive_permutation_aggregation": "mean",
         "negative_permutation_aggregation": "index_10",
@@ -191,5 +192,5 @@ config_bert = {
 }
 
 main(config_gpt)
-main(config_roberta)
 main(config_bert)
+main(config_roberta)

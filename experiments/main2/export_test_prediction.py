@@ -140,7 +140,7 @@ config_roberta = {
 
 config_bert = {
     'sat': {
-        "model": "roberta-large",
+        "model": "berta-large-cased",
         "ppl_pmi_aggregation": "min",
         "ppl_pmi_alpha": -0.2,
         "positive_permutation_aggregation": "index_4",
@@ -150,7 +150,7 @@ config_bert = {
         "template_type": "as-what-same"
     },
     'u2': {
-        "model": "roberta-large",
+        "model": "berta-large-cased",
         "ppl_pmi_aggregation": "max",
         "ppl_pmi_alpha": 0.4,
         "positive_permutation_aggregation": "index_4",
@@ -160,7 +160,7 @@ config_bert = {
         "template_type": "rel-same"
     },
     'u4': {
-        "model": "roberta-large",
+        "model": "berta-large-cased",
         "ppl_pmi_aggregation": "max",
         "ppl_pmi_alpha": 0.2,
         "positive_permutation_aggregation": "mean",
@@ -170,7 +170,7 @@ config_bert = {
         "template_type": "is-to-as"
     },
     'google': {
-        "model": "roberta-large",
+        "model": "berta-large-cased",
         "ppl_pmi_aggregation": "index_0",
         "ppl_pmi_alpha": -0.4,
         "positive_permutation_aggregation": "mean",
@@ -180,7 +180,7 @@ config_bert = {
         "template_type": "what-is-to"
     },
     'bats': {
-        "model": "roberta-large",
+        "model": "berta-large-cased",
         "ppl_pmi_aggregation": "index_0",
         "ppl_pmi_alpha": -0.4,
         "positive_permutation_aggregation": "index_6",

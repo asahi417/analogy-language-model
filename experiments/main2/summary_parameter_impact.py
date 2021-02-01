@@ -8,36 +8,39 @@ import pandas as pd
 
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 model = ['roberta-large', 'gpt2-xl', 'bert-large-cased']
-export_prefix = 'main2'
-df = alm.get_report(export_prefix=export_prefix)
-os.makedirs('./experiments_results/summary/main2_summary')
-print('ALPHA/ETA')
-group = df.groupby(['data', 'model']).accuracy.max()
-group_a = df.groupby(['data', 'model', 'ppl_pmi_alpha']).accuracy.max()
-group_n = df.groupby(['data', 'model', 'negative_permutation_weight']).accuracy.max()
-group_na = df.groupby(['data', 'model', 'ppl_pmi_alpha', 'negative_permutation_weight']).accuracy.max()
-output = {i: {} for i in data}
-for i, _model in product(data, model):
-    output[i][_model] = {
-        'ppl_neg_alpha': group[i][_model] * 100,
-        'ppl_neg': group_a[i][_model][0.0] * 100,
-        'ppl_alpha': group_n[i][_model][0.0] * 100,
-        'ppl': group_na[i][_model][0.0][0.0] * 100
-    }
-pprint(output)
-df_ = pd.DataFrame(output)
-pprint(df_)
-df_.to_csv('./experiments_results/summary/main2_summary/alpha_eta.csv')
+df = alm.get_report(export_prefix='main1')
+df = df[df.scoring_method != 'ppl_head_masked']
+df = df[df.scoring_method != 'ppl_tail_masked']
+df = df[df.scoring_method != 'ppl_add_masked']
+df = df[df.scoring_method != 'ppl_pmi']
+g = df.groupby(['data', 'scoring_method']).accuracy.max()
+g = g.to_frame()
+g.reset_index(inplace=True)
 
-for p in ['template_type', 'ppl_pmi_aggregation', 'positive_permutation_aggregation', 'negative_permutation_aggregation']:
-    print('\n{}'.format(p))
-    group = df.groupby(['data', 'model', p]).accuracy.max()
-    output = {i: {} for i in data}
-    for i, _model in product(data, model):
-        sub_group = group[i][_model]
-        top3 = list(sub_group.sort_values(ascending=False)[:3].keys())
-        output[i][_model] = ','.join(top3)
-    df_ = pd.DataFrame(output)
-    pprint(df_)
-    df_.to_csv('./experiments_results/summary/main2_summary/{}.csv'.format(p))
+df2 = alm.get_report(export_prefix='main2')
+g2 = df2.groupby(['data', 'scoring_method']).accuracy.max()
+g2 = g2.to_frame()
+g2.reset_index(inplace=True)
+
+
+def rename(x):
+    if x == 'embedding_similarity':
+        return 'embedding'
+    if x == 'pmi':
+        return 'Mask PMI'
+    if x == 'ppl':
+        return 'perplexity'
+    if x == 'ppl_pmi':
+        return 'PMI'
+    else:
+        raise ValueError('OMG')
+
+
+df_full = pd.concat([g, g2])
+df_full.reset_index()
+df_full['accuracy'] = df_full['accuracy'] * 100
+df_full['scoring_method'] = df_full['scoring_method'].apply(
+    lambda x: rename(x))
+df_full.sort_values(by=['data', 'scoring_method'])
+df_full.to_csv('./experiments_results/summary/scoring_method.csv')
 

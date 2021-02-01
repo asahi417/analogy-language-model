@@ -36,7 +36,10 @@ def plot(df_, s, d):
     else:
         ax = sns.boxplot(x=s, y='accuracy', data=df_, hue='model')
     handles, labels = ax.get_legend_handles_labels()
+    print(labels)
     labels = [i.replace('roberta-large', 'RoBERTa').replace('gpt2-xl', 'GPT2') for i in labels]
+    print(labels)
+    # input()
     ax.legend(handles=handles, labels=labels)
     plt.setp(ax.get_legend().get_texts(), fontsize='15')
 

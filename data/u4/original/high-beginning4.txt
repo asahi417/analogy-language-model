@@ -1,0 +1,57 @@
+1) BIRD : FLYA) horse : ride 
+B) tree : run 
+C) fish : swim 
+D) arm : dance
+c
+
+2) ORGANIZED : NEATA) ugly : pretty
+B) fun : good
+C) disgusting : sour 
+D) transparent : clear
+d
+
+3) SHARK : FISHA) sausage : vegetable 
+B) tulip : flower
+C) aunt : uncleD) mouse : rat
+b
+
+4) BRANCH : TREE
+A) lemon : fruit
+B) leg : chair
+C) plant : flower
+D) road : car
+b
+
+5) DEAD : LIFEA) cold : temperature 
+B) perfect : error
+C) loud : noise
+D) yellow : color
+b
+
+6) SHOVEL : DIGA) bus : runB) pencil : write 
+C) hat : protect 
+D) fork : take
+b
+
+7) PILOT : AIRPLANEA) driver : ship
+B) conductor : train 
+C) bicycle : car
+D) passenger : bus
+b
+
+8) NEAR : FARA) gray : black 
+B) right : wrong 
+C) cold : freezing 
+D) good : fun
+b
+
+9) CHESS : GAMEA) checkers : basketball 
+B) kid : childC) man : woman 
+D) tennis : sport
+d
+
+10) WIN : LOSEA) play : learn 
+B) buy : sell 
+C) see : hear 
+D) like : love
+b

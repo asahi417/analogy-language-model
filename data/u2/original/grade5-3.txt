@@ -1,60 +1,0 @@
-1) SECOND : MINUTEA) day : week
-B) centimeter : inch 
-C) mile : hour
-D) year : month
-a
-
-2) AUTHOR : WRITEA) mother : annoy 
-B) banker : preach 
-C) firefighter : study 
-D) janitor : clean
-d
-
-3) WONDERFUL : GOODA) great : terrific 
-B) sinful : evil
-C) terrifying : scary 
-D) perfect : flawed
-c
-
-4) BROKEN : REPAIRED
-A) foreign : strange 
-B) selfish : generous 
-C) unusual : weird 
-D) nasty : mean
-b
-
-5) KNIFE : SHARPA) crime : illegal 
-B) child : rude
-C) wife : powerful 
-D) war : peaceful
-a
-
-6) BOOTS : FEETA) socks : underwear 
-B) shorts : pantsC) mittens : hands 
-D) braces : glasses
-c
-
-7) ZEBRA : ANIMALA) green : color 
-B) shape : cube 
-C) country : Brazil 
-D) food : dessert
-a
-
-8) OBVIOUS : HIDDENA) silver : jewelry
-B) dress : gown
-C) idea : belief
-D) liberal : conservative
-c
-
-9) EVIL : MORALSA) special : manners 
-B) famous : friends
-C) blind : sight
-D) beautiful : opinions
-c
-
-10) RACIST : PREJUDICED
-A) saint : holy
-B) worker : tired 
-C) nurse : sick 
-D) clerk : hungry
-d

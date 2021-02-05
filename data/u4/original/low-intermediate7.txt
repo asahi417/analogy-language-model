@@ -1,57 +1,0 @@
-1) COFFEE : BITTERA) meat : fried 
-B) glass : fragile 
-C) gas : cheap 
-D) silk : rough
-b
-
-2) ALARM : WARNA) map : navigate 
-B) dog : party
-C) cup : pour
-D) shirt : design
-a
-
-3) SODA : BEVERAGEA) fish : ocean
-B) dirt : ingredient 
-C) cereal : pancakeD) shrimp : seafood
-d
-
-4) CLOCK : TIME
-A) guitar : music 
-B) calendar : date 
-C) ruler : speed 
-D) mother : family
-b
-
-5) DECK : SHIPA) sleeve : shirt 
-B) player : game 
-C) tail : human 
-D) year : month
-a
-
-6) HELP : HINDERA) hurry : delayB) travel : fly 
-C) steal : take 
-D) smile : laugh
-a
-
-7) APPLE : TREEA) cow : field
-B) wish : dream
-C) pearl : clam
-D) tooth : sandwich
-c
-
-8) SHELL : NUTA) pill : doctor 
-B) page : book 
-C) song : music 
-D) cat : house
-b
-
-9) CAREFREE : WORRYA) upset : sadness
-B) successful : moneyC) enslaved : freedom 
-D) talented : wisdom
-c
-
-10) HUGE : LARGEA) possible : easy
-B) critical : important 
-C) likely : incredible
-D) upsetting : offensive
-b

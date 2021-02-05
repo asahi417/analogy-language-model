@@ -1,59 +1,0 @@
-1) GREAT : GOODA) fun : cool
-B) strange : weird 
-C) hot : warm
-D) dull : sharp
-c
-
-2) BEAUTIFUL : PRETTYA) terrible : bad 
-B) brave : valiant 
-C) new : old
-D) tall : skinny
-a
-
-3) RING : FINGERA) necklace : neck
-B) bracelet : diamond 
-C) sock : hand
-D) glove : foot
-a
-
-4) CORRECT : RIGHTA) crazy : smart
-B) weak : fun
-C) strong : hard
-D) cheap : inexpensive
-d
-
-5) SHOE : FOOTA) boot : hand 
-B) glove : wrist 
-C) hat : head 
-D) sock : leg
-c
-
-6) PUPPY : DOGA) kitten : cat 
-B) bear : cubC) fish : minnow 
-D) cow : calf
-a
-
-7) ROCK : HARDA) water : wet
-B) table : wooden 
-C) mom : nice
-D) sound : loud
-a
-
-8) SICK : HEALTHA) sad : emotion
-B) tall : intelligence 
-C) scared : courage 
-D) smart : energy
-c
-
-9) HAMMER : HITA) knife : cut 
-B) table : eat 
-C) pen : build 
-D) wheel : race
-a
-
-10) SHIELD : PROTECT
-A) computer : talk
-B) vehicle : transport 
-C) pencil : make
-D) song : sing
-b

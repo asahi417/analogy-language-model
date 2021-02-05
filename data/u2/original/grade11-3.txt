@@ -1,54 +1,0 @@
-1) BUTTRESS : WALLA) precinct : city
-B) column : pillar
-C) cream : lotion
-D) document : preamble 
-E) philanthropist : charity
-e
-
-2) JURY : DELIBERATEA) candidate : deprecate 
-B) precedent : preside 
-C) ruse : illuminate
-D) lobbyist : persuade
-E) parachute : open
-d
-
-3) SACCHARINE : SWEETA) omniscient : omnipotent 
-B) lethargic : slovenlyC) sacrosanct : sacred
-D) hypocritical : dissonant 
-E) obtuse : angular
-c
-
-4) ALTRUISM : SELFISHNESSA) alacrity : clarity
-B) passion : fervor
-C) levity : flippancy
-D) gravity : momentum 
-E) impartiality : bias
-e
-
-5) BISHOP : ORDAINEDA) palace : stately
-B) transgression : acceptable 
-C) cliché : intrepid
-D) loft : unattainable
-E) character : humorous
-a
-
-6) PRAGMATIC : PRACTICALA) irritating : pleasing 
-B) tenacious : faltering 
-C) opaque : translucent 
-D) trivial : negligible
-E) unusual : ludicrous
-d
-
-7) CAULDRON : POTA) vibration : perception 
-B) pictograph : symbol 
-C) favor : currency
-D) luminary : phantasm 
-E) paragon : light
-b
-
-8) PRECEPT : GUIDANCEA) chord : music
-B) footnote : connotation
-C) mathematician : numbers 
-D) epilogue : introduction
-E) alibi : defense
-e

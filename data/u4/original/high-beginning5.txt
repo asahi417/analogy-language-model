@@ -1,58 +1,0 @@
-1) ROBIN : BIRDA) pear : fruit
-B) cucumber : onion 
-C) cow : calf
-D) lamp : table
-a
-
-2) BEES : HIVEA) cows : city
-B) birds : nest
-C) snakes : house 
-D) bears : hotel
-b
-
-3) GIANT : LARGEA) scary : bad
-B) new : expensive 
-C) great : goodD) funny : annoying
-c
-
-4) HARD : SOFT
-A) fast : quick
-B) smooth : straight
-C) heavy : light
-D) healthy : good
-c
-
-5) MAP : GUIDEA) apartment : locate 
-B) bag : open
-C) bed : read
-D) towel : dry
-d
-
-6) APPLE : HEATHYA) teacher : good
-B) bed : comfortableC) car : fast 
-D) rock : hard
-d
-
-7) SALESMAN : SELLA) teacher : learn
-B) mechanic : repair 
-C) lawyer : free
-D) desk : hard
-b
-
-8) RARE : COMMONA) shiny : bright 
-B) fake : phony 
-C) old : new
-D) thin : skinny
-c
-
-9) CARROT : VEGETABLEA) animal : horse
-B) flute : instrumentC) fruit : apple 
-D) book : novel
-b
-
-10) SIDE : SQUARE
-A) finger : hand 
-B) hat : suit
-C) bird : tree
-D) pencil : paper
-a

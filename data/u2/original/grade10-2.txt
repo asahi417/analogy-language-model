@@ -1,54 +1,0 @@
-1) HIDDEN : COVERTA) diverse : ordinary 
-B) angry : judgmental 
-C) feminine : ladylike 
-D) hardworking : dull 
-E) prohibited : allowed
-c
-
-2) CAT : SHEDA) bird : molt
-B) elephant : hunt 
-C) dog : fetch
-D) ferret : burrow 
-E) human : tattoo
-a
-
-3) BLUFF : INTENTIONSA) cloak : maskB) disguise : appearance 
-C) backpack : computer 
-D) envelope : messenger 
-E) prayer : faith
-b
-
-4) SHARP : BLUNTA) studious : intelligent
-B) impermanent : temporary 
-C) philosophical : religious 
-D) forgiving : harsh
-E) translated : interpreted
-d
-
-5) GAME : SPECTATORSA) theater : actorsB) opera : audience
-C) diner : waitresses 
-D) museum : dinosaurs 
-E) school : pupils
-b
-
-6) ARID : MOISTUREA) vacant : emptiness 
-B) prophetic : vision 
-C) stoic : emotion
-D) crystal : clarity
-E) salty : sodium
-c
-
-7) PAIN : SENSATIONA) knowledge : mathematics 
-B) resonance : music
-C) pork : meatloaf
-D) judgment : court
-E) excitement : emotion
-e
-
-8) BOHEMIAN : UNCONVENTIONAL
-A) pariah : unpopular
-B) fairy : ephemeral
-C) symphony : cacophonous 
-D) masterpiece : novel
-E) libertine : chaste
-a

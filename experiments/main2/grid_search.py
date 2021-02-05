@@ -17,22 +17,23 @@ for _model, _max_length, _batch in models:
     scorer = alm.RelationScorer(model=_model, max_length=_max_length)
     for _data in data:
         for _temp in all_templates:
-            scorer.analogy_test(
-                ppl_pmi_marginal_version=True,
-                scoring_method='ppl_pmi',
-                data=_data,
-                template_type=_temp,
-                batch_size=_batch,
-                export_prefix=export_prefix,
-                ppl_pmi_aggregation=ppl_pmi_aggregation,
-                no_inference=True,
-                ppl_pmi_alpha=ppl_pmi_alpha,
-                negative_permutation=True,
-                positive_permutation_aggregation=positive_permutation_aggregation,
-                negative_permutation_aggregation=negative_permutation_aggregation,
-                negative_permutation_weight=negative_permutation_weight
-            )
-            scorer.release_cache()
+            for ppl_pmi_marginal_version in [True, False]:
+                scorer.analogy_test(
+                    ppl_pmi_marginal_version=ppl_pmi_marginal_version,
+                    scoring_method='ppl_pmi',
+                    data=_data,
+                    template_type=_temp,
+                    batch_size=_batch,
+                    export_prefix=export_prefix,
+                    ppl_pmi_aggregation=ppl_pmi_aggregation,
+                    no_inference=True,
+                    ppl_pmi_alpha=ppl_pmi_alpha,
+                    negative_permutation=True,
+                    positive_permutation_aggregation=positive_permutation_aggregation,
+                    negative_permutation_aggregation=negative_permutation_aggregation,
+                    negative_permutation_weight=negative_permutation_weight
+                )
+                scorer.release_cache()
 
 
 alm.export_report(export_prefix=export_prefix)

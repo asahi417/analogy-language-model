@@ -4,4 +4,6 @@ results*
 data/*.csv
 experiments_results
 relative_wikipedia_en_300d.bin
-
+data/sat
+data/u2
+data/u4

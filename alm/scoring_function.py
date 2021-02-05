@@ -75,15 +75,17 @@ class GridSearch:
                  scoring_method, score, data_instance,
                  ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
                  negative_permutation_aggregation, negative_permutation_weight,
+                 ppl_pmi_marginal_version,
                  export_prediction: bool = False):
         """ Grid Search Aggregator: multiprocessing-oriented """
         # global variables
+        self.ppl_pmi_marginal_version = ppl_pmi_marginal_version
         self.shared_config = shared_config
         self.score = score
         self.scoring_method = scoring_method
         self.data_instance = data_instance
         self.export_prediction = export_prediction
-        # local parameters for grid serach
+        # local parameters for grid search
         if type(ppl_pmi_aggregation) is not list:
             ppl_pmi_aggregation = [ppl_pmi_aggregation]
         if type(ppl_pmi_lambda) is not list:
@@ -115,7 +117,7 @@ class GridSearch:
             assert ppl_pmi_aggregation is not None
             aggregator = AGGREGATOR[ppl_pmi_aggregation]
 
-            def compute_pmi(ppl_scores):
+            def compute_ppl_pmi(ppl_scores):
                 opt_length = len(ppl_scores) ** 0.5
                 assert opt_length.is_integer(), 'something wrong'
                 opt_length = int(opt_length)
@@ -155,32 +157,48 @@ class GridSearch:
                     zip(negative_log_likelihood_cond_h, negative_log_likelihood_mar_h,
                         negative_log_likelihood_cond_t, negative_log_likelihood_mar_t)))
                 return neg_pmi
-                # # conditional negative log likelihood (fixed head and tail tokens)
-                # ppl_in_option = list(map(lambda x: ppl_scores[opt_length * x + x], range(opt_length)))
-                # negative_log_likelihood_cond = list(map(lambda x: log(x / sum(ppl_in_option)), ppl_in_option))
-                #
-                # # marginal negative log likelihood (tail token)
-                # ppl_out_option = list(map(
-                #     lambda x: sum(map(lambda y: ppl_scores[x + opt_length * y], range(opt_length))),
-                #     range(opt_length)))
-                # negative_log_likelihood_mar_t = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
-                #
-                # # marginal negative log likelihood (head token)
-                # ppl_out_option = list(map(
-                #     lambda x: sum(ppl_scores[x * opt_length: (x + 1) * opt_length]),
-                #     range(opt_length)))
-                # negative_log_likelihood_mar_h = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
-                #
-                # # negative pmi approx by perplexity difference: higher is better
-                # neg_pmi = list(map(
-                #     lambda x: x[0] * ppl_pmi_lambda - aggregator([x[1], x[2]]) * ppl_pmi_alpha,
-                #     zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
-                # return neg_pmi
 
-            pmi = list(map(lambda o: (
-                list(map(lambda x: compute_pmi(list(map(lambda s: s[0][x], o))), range(8))),
-                list(map(lambda x: compute_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))), range(16)))
-            ), self.score))
+            def compute_ppl_mar(ppl_scores):
+                opt_length = len(ppl_scores) ** 0.5
+                assert opt_length.is_integer(), 'something wrong'
+                opt_length = int(opt_length)
+
+                if all(s == 0 for s in ppl_scores):
+                    return [0] * opt_length
+
+                # conditional negative log likelihood (fixed head and tail tokens)
+                ppl_in_option = list(map(lambda x: ppl_scores[opt_length * x + x], range(opt_length)))
+                negative_log_likelihood_cond = list(map(lambda x: log(x / sum(ppl_in_option)), ppl_in_option))
+
+                # marginal negative log likelihood (tail token)
+                ppl_out_option = list(map(
+                    lambda x: sum(map(lambda y: ppl_scores[x + opt_length * y], range(opt_length))),
+                    range(opt_length)))
+                negative_log_likelihood_mar_t = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
+
+                # marginal negative log likelihood (head token)
+                ppl_out_option = list(map(
+                    lambda x: sum(ppl_scores[x * opt_length: (x + 1) * opt_length]),
+                    range(opt_length)))
+                negative_log_likelihood_mar_h = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
+
+                # negative pmi approx by perplexity difference: higher is better
+                neg_pmi = list(map(
+                    lambda x: x[0] * ppl_pmi_lambda - aggregator([x[1], x[2]]) * ppl_pmi_alpha,
+                    zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
+                return neg_pmi
+
+            if not self.ppl_pmi_marginal_version:
+                score = list(map(lambda o: (
+                    list(map(lambda x: compute_ppl_pmi(list(map(lambda s: s[0][x], o))), range(8))),
+                    list(map(lambda x: compute_ppl_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))), range(16)))
+                ), self.score))
+            else:
+                score = list(map(lambda o: (
+                    list(map(lambda x: compute_ppl_mar(list(map(lambda s: s[0][x], o))), range(8))),
+                    list(map(lambda x: compute_ppl_mar(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))),
+                             range(16)))
+                ), self.score))
 
             logit_pn = list(map(
                 lambda s: (
@@ -189,7 +207,7 @@ class GridSearch:
                         list(map(lambda o: aggregator_neg(o), list(zip(*s[1]))))
                     ))
                 ),
-                pmi))
+                score))
 
         else:
             logit_pn = list(map(
@@ -263,7 +281,8 @@ class RelationScorer:
                      skip_scoring_prediction: bool = False,
                      export_dir: str = './experiments_results',
                      no_inference: bool = False,
-                     export_prediction: bool = False):
+                     export_prediction: bool = False,
+                     ppl_pmi_marginal_version: bool = False):
         """ relation scoring test on analogy dataset
 
         :param data:
@@ -329,13 +348,15 @@ class RelationScorer:
             'scoring_method': scoring_method,
             'negative_permutation': negative_permutation,
             'pmi_aggregation': pmi_aggregation,
-            'pmi_lambda': pmi_lambda
+            'pmi_lambda': pmi_lambda,
+            'ppl_pmi_marginal_version': ppl_pmi_marginal_version
         }
 
         searcher = GridSearch(
             shared_config, scoring_method, score, data_instance,
             ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
             negative_permutation_aggregation, negative_permutation_weight,
+            ppl_pmi_marginal_version,
             export_prediction=export_prediction)
         logging.info('start grid search: {} combinations'.format(len(searcher)))
         logging.info('multiprocessing  : {} cpus'.format(os.cpu_count()))

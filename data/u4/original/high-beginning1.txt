@@ -1,58 +1,0 @@
-1) WALL : ROOMA) lettuce : sandwich 
-B) dog : cat
-C) wheel : car
-D) song : dance
-c
-
-2) MATCH : FIREA) bag : wallet
-B) key : car
-C) gas : machine 
-D) cookie : mouth
-b
-
-3) CANDY : SWEETA) water : cold 
-B) time : fast
-C) money : cleanD) fire : hot
-d
-
-4) HUGE : BIG
-A) nice : good
-B) tiny : small 
-C) funny : happy
-D) old : new
-b
-
-5) TEACHER : EDUCATEA) doctor : heal 
-B) farmer : talk 
-C) engine : oil 
-D) dog : sit
-a
-
-6) UGLY : BEAUTYA) serious : humor 
-B) old : ageC) hot : heat
-D) sweet : strength 
-a
-
-7) HILARIOUS : FUNNYA) right : wrong 
-B) hard : boring 
-C) nice : crazy 
-D) great : good
-d
-
-8) PLAY : WORKA) laugh : cry 
-B) eat : talk 
-C) run : walk 
-D) see : hear
-a
-
-9) EYES : SEEA) hands : cry 
-B) ears : hearC) feet : talk 
-D) teeth : think
-b
-
-10) HAM : MEAT
-A) air : water
-B) tennis : school 
-C) juice : drink
-D) math : number
-c

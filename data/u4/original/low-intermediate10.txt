@@ -1,57 +1,0 @@
-1) BUILDING : MANMADEA) bracelet : stylish
-B) jacket : leather
-C) school : strict
-D) biography : nonfiction
-d
-
-2) INSECURE : CONFIDENCEA) disabled : worth
-B) certain : doubt
-C) unemployed : hope 
-D) elegant : sympathy
-b
-
-3) INGREDIENT : RECIPEA) moral : story 
-B) chair : table 
-C) roof : houseD) map : plan
-c
-
-4) NIGHTMARE : DREAM
-A) wrench : tool 
-B) want : need 
-C) friend : enemy 
-D) grade : school
-a
-
-5) SCIENTIST : LABORATORYA) librarian : bookstore 
-B) cashier : hotel
-C) artist : studio
-D) doctor : church
-c
-
-6) HILARIOUS : FUNNYA) strange : weird
-B) famished : hungryC) uncomfortable : painful 
-D) familiar : trustworthy
-b
-
-7) SURGEON : DOCTORA) soup : drink
-B) lollipop : candy 
-C) animal : bear 
-D) house : hut
-b
-
-8) SIREN : ALERTA) heart : love
-B) flag : wave
-C) truck : transport 
-D) stereo : receive
-c
-
-9) RUTHLESS : PITYA) neutral : prejudice 
-B) challenged : rivalsC) gullible : truth 
-D) childish : speech
-a
-
-10) MANDATORY : OPTIONALA) unwanted : discarded 
-B) destructive : creative 
-C) animated : happy
-D) pure : clean
-b

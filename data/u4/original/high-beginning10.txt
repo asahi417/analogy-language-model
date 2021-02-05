@@ -1,56 +1,0 @@
-1) POT : COOKA) camera : take 
-B) broom : sweep 
-C) rock : play
-D) piano : sing
-b
-
-2) CUSHION : SOFAA) faucet : sink
-B) toilet : kitchen 
-C) necklace : dress 
-D) dollar : wallet
-a
-
-3) JAZZ : MUSICA) silver : metal 
-B) window : glass 
-C) water : poolD) juice : fruit
-a
-
-4) ANCIENT : OLDA) crazy : unhealthy 
-B) delicious : tasty 
-C) smart : intelligent 
-D) rusty : old
-b
-
-5) BOULDER : HEAVYA) ring : beautiful 
-B) steak : good 
-C) beach : sunny 
-D) mountain : tall
-d
-
-6) MIRCROSCOPE : EXAMINEA) letter : communicate 
-B) sweater : knitC) ball : hit
-D) game : score
-a
-
-7) ICE : SLIPPERYA) basketball : fun 
-B) cake : delicious 
-C) paper : thin
-D) chalk : white
-c
-
-8) DEPRESSED : SADA) peaceful : bored 
-B) sweet : strong 
-C) ready : anxious 
-D) elated : happy
-d
-
-9) SPEAKERS : STEREOA) arms : legsB) feet : toes
-C) wings : airplane 
-D) clouds : sky
-c
-
-10) NEEDLE : SEWA) movie : entertain 
-B) pencil : study
-C) wheel : move
-D) plate : drink
-a

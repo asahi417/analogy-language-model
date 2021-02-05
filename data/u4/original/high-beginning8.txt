@@ -1,56 +1,0 @@
-1) JOY : EMOTIONA) food : beverage 
-B) air : water
-C) pain : feeling
-D) money : product
-c
-
-2) DANGEROUS : SAFEA) hard : nice
-B) easy : difficult
-C) strong : thin
-D) organized : orderly
-b
-
-3) LAZY : AMBITIONA) bald : hair
-B) strong : confidence 
-C) thirsty : foodD) rich : wealth
-a
-
-4) POTATO : VEGETABLEA) fish : shark 
-B) peach : fruit 
-C) bus : car
-D) play : actress
-b
-
-5) SCALE : WEIGHTA) thermometer : temperature 
-B) ruler : time
-C) compass : location
-D) calculator : money
-a
-
-6) BALL : ROUNDA) dog : friendly
-B) computer : expensiveC) feather : light 
-D) car : blue
-c
-
-7) STRANGE : NORMALA) scared : angry 
-B) unhappy : sad 
-C) nervous : young 
-D) new : old
-d
-
-8) IGNORANT : KNOWLEDGEA) scared : courage 
-B) old : health
-C) nice : power
-D) crazy : happiness
-a
-
-9) BRILLIANT : INTELLIGENTA) devastated : disappointed 
-B) talented : skilledC) bored : intrigued
-D) motivated : dedicated
-a
-
-10) STRING : GUITARA) shoe : pants 
-B) wheel : bicycle 
-C) candle : table 
-D) picture : wall
-b

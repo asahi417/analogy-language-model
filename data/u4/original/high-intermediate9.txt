@@ -1,57 +1,0 @@
-1) CHARITY : AIDA) dictionary : words 
-B) fortune : money
-C) counselor : advice 
-D) translator : language
-c
-
-2) TRAITOR : TREASONOUSA) reporter : biased 
-B) hero : fictional 
-C) alligator : angry 
-D) crime : illegal
-d
-
-3) REMEMBER : PREDICTA) hear : listen
-B) scrutinize : ignore 
-C) repeat : copyD) interrogate : question
-b
-
-4) DOUGHNUT : PASTRY
-A) passport : document 
-B) stamp : currency
-C) symphony : opera 
-D) volcano : lava
-a
-
-5) EXAMINATION : DIAGNOSISA) evaluation : title
-B) inference : consequences 
-C) search : rescue
-D) minute : hour
-c
-
-6) FLAMBOYANT : ELABORATEA) kind : benevolent
-B) autocratic : democraticC) ludicrous : absurd
-D) desirable : necessary
-c
-
-7) TABOO : ACCEPTANCEA) factual : opinion
-B) inspirational : reality
-C) unpopular : support
-D) independent : structure
-c
-
-8) CONFIRM : DENYA) use : employ
-B) define : prove
-C) dispense : collect 
-D) entertain : amuse
-c
-
-9) SALUTATION : LETTERA) courtship : marriage 
-B) summit : mountainC) book : character
-D) composition : notebook
-b
-
-10) REFEREE:OFFICIATEA) sentry : guard
-B) grandmother : age 
-C) detective : accuse 
-D) wizard : curse
-a

@@ -1,57 +1,0 @@
-1) ORPHAN : PARENTSA) prisoner : freedom 
-B) doctor : patience 
-C) man : feelings
-D) star : space
-a
-
-2) MIRROR : REFLECTA) preacher : cook
-B) telescope : magnify 
-C) nurse : smoke
-D) lock : unlock
-b
-
-3) CLOTH : THREADSA) gun : bullets 
-B) guitar : drums 
-C) chain : linksD) star : planets
-c
-
-4) TATTOO : PERMANENT
-A) necklace : silver 
-B) boat : electric 
-C) phone : broken 
-D) marathon : long
-d
-
-5) OUTDATED : MODERNA) beautiful : ugly 
-B) happy : glad
-C) successful : rich 
-D) curious : smart
-a
-
-6) ADORABLE : CUTEA) obvious : mysteriousB) unkind : happy 
-C) polite : common 
-D) tragic : sad
-d
-
-7) SCULPTURE : ARTA) language : book
-B) justice : jail
-C) happiness : religion
-D) weightlifting : exercise
-d
-
-8) ORDER : CHAOSA) unity : division 
-B) culture : feeling 
-C) family : tradition 
-D) anger : pride
-a
-
-9) RECKLESS : CAUTIONA) silly : thought
-B) doubtful : convictionC) selfish : friends 
-D) shy : jewelry
-b
-
-10) FORK : UTENSILA) jet : airplane
-B) fact : idea
-C) program : computer 
-D) mountain : plastic
-a

@@ -15,7 +15,7 @@ df = alm.get_report(export_prefix=export_prefix)
 # df['accuracy_mean'] = df['data'].apply(lambda x: mean_acc[x])
 # df['accuracy'] = df['accuracy'] - df['accuracy_mean']
 df['accuracy'] = df['accuracy'] * 100
-df['accuracy'] = df['accuracy'].round(1)
+# df['accuracy'] = df['accuracy'].round(1)
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 model = ['roberta-large', 'gpt2-xl']
 big_group = df.groupby(['data', 'model', 'ppl_pmi_alpha', 'negative_permutation_weight']).accuracy.max()
@@ -29,6 +29,7 @@ def plot(d, m, accuracy):
     print(accuracy)
     accuracy = accuracy - accuracy[0.0][0.0]
     accuracy = accuracy.to_frame()
+    accuracy = accuracy.round(1)
     accuracy.reset_index(inplace=True)
     accuracy = accuracy.pivot(index='ppl_pmi_alpha', columns='negative_permutation_weight', values='accuracy')
     accuracy = accuracy.reindex([0.4, 0.2, 0.0, -0.2, -0.4])

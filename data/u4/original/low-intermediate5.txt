@@ -1,58 +1,0 @@
-1) GENERAL : ARMYA) queen : fortress 
-B) guide : expedition 
-C) dad : business
-D) salesman : sail
-b
-
-2) HELMET : PROTECTA) bomb : destroy 
-B) storm : rain
-C) parade : walk 
-D) dream : sleep
-a
-
-3) BACHELOR : WIFEA) nomad : home 
-B) postman : job 
-C) computer : fireD) building : wall
-a
-
-4) GIGANTIC : LARGE
-A) new : strange
-B) little : small
-C) funny : important 
-D) freezing : cold
-d
-
-5) PAIN : DISCOMFORTA) carelessness : mistakes 
-B) ignorance : knowledge 
-C) laughter : jokes
-D) food : nutrition
-a
-
-6) MANSION : LARGEA) tree : freeB) suit : formal 
-C) car : safe
-D) ladder : low
-b
-
-7) BALD : HAIRYA) overweight : skinny 
-B) large : huge
-C) strong : forceful
-D) depressed : sad
-a
-
-8) SWORD : WEAPONA) father : brother 
-B) yacht : boat
-C) salad : cake
-D) color : art
-b
-
-9) STAGE : THEATERA) march : belief 
-B) jacket : suitC) fruit : apple
-D) windmill : wind
-b
-
-10) RUBY : GEM
-A) baseball : basketball 
-B) concert : music
-C) party : house
-D) trophy : prize
-d

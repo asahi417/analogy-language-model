@@ -385,12 +385,10 @@ class RelationScorer:
             for d, p in zip(data_raw, prediction):
                 d['prediction'] = p
             os.makedirs('{}/summary/prediction_file'.format(export_dir), exist_ok=True)
-            _file = '{}/summary/prediction_file/{}.prediction.{}.{}.csv'.format(
-                export_dir, export_prefix, data, self.model_name)
-            pd.DataFrame(data_raw).to_csv(_file)
-            _file = '{}/summary/prediction_file/{}.prediction.{}.{}.json'.format(
-                export_dir, export_prefix, data, self.model_name)
-            with open(_file, 'w') as f:
+            _file = '{}/summary/prediction_file/{}.prediction.{}.{}.{}.{}'.format(
+                export_dir, export_prefix, data, self.model_name, scoring_method, ppl_pmi_marginal_version)
+            pd.DataFrame(data_raw).to_csv('{}.csv'.format(_file))
+            with open('{}.json'.format(_file), 'w') as f:
                 json.dump(json_line, f)
             logging.info("prediction exported: {}".format(_file))
         else:
@@ -418,7 +416,8 @@ class RelationScorer:
             pmi_lambda=pmi_lambda
         )
         data_instance = AnalogyData(
-            test=test, data=data, negative_permutation=negative_permutation, marginalize_permutation=scoring_method in ['ppl_pmi'])
+            test=test, data=data, negative_permutation=negative_permutation,
+            marginalize_permutation=scoring_method in ['ppl_pmi'])
 
         def prediction(positive: bool = True):
             prefix = 'positive' if positive else 'negative'

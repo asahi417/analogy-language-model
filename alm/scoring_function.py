@@ -364,7 +364,6 @@ class RelationScorer:
         json_line = pool.map(searcher.single_run, searcher.index)
         pool.close()
         if val_accuracy is not None:
-            assert type(val_accuracy) == float, type(val_accuracy)
             for i in json_line:
                 i['accuracy_validation'] = val_accuracy
         logging.info('export to {}/summary'.format(export_dir))

@@ -12,10 +12,10 @@ df = alm.get_report(export_prefix=export_prefix)
 
 for i, m in product(data, models):
     _model, _len, _batch = m
-    tmp_df = df[df.data == i]
-    tmp_df = tmp_df[tmp_df.model == _model]
+    tmp_df_ = df[df.data == i]
+    tmp_df_ = tmp_df_[tmp_df_.model == _model]
     for v in [True, False]:
-        tmp_df = tmp_df[tmp_df.ppl_pmi_marginal_version == v]
+        tmp_df = tmp_df_[tmp_df_.ppl_pmi_marginal_version == v]
         val_accuracy = tmp_df.sort_values(by='accuracy', ascending=False).head(1)['accuracy'].values[0]
         logging.info("RUN TEST:\n - data: {} \n - lm: {} \n - validation accuracy: {} ".format(i, _model, val_accuracy))
         best_configs = tmp_df[tmp_df['accuracy'] == val_accuracy]

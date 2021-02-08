@@ -11,7 +11,7 @@ models = [('roberta-large', 32, 512), ('bert-large-cased', 32, 1024)]
 #######################################################################
 # get test accuracy on each combination of model and scoring function #
 #######################################################################
-methods = ['ppl_tail_masked', 'ppl_head_masked', 'embedding_similarity', 'ppl_pmi', 'ppl_add_masked', 'pmi']
+methods = ['ppl_pmi', 'ppl_tail_masked', 'ppl_head_masked', 'embedding_similarity', 'ppl_add_masked', 'pmi']
 export_prefix = 'main1'
 df = alm.get_report(export_prefix=export_prefix)
 
@@ -25,6 +25,7 @@ for i, m, s in product(data, models, methods):
     else:
         ppl_pmi_marginal_version = [False]
     for v in ppl_pmi_marginal_version:
+        print(tmp_df.ppl_pmi_marginal_version)
         tmp_df = tmp_df[tmp_df.ppl_pmi_marginal_version == v]
         val_accuracy = tmp_df.sort_values(by='accuracy', ascending=False).head(1)['accuracy'].values[0]
         logging.info("RUN TEST:\n - data: {} \n - lm: {} \n - score: {} \n - validation accuracy: {} ".format(

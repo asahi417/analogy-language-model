@@ -17,16 +17,15 @@ df = alm.get_report(export_prefix=export_prefix)
 
 for i, m, s in product(data, models, methods):
     _model, _len, _batch = m
-    tmp_df = df[df.data == i]
-    tmp_df = tmp_df[tmp_df.model == _model]
-    tmp_df = tmp_df[tmp_df.scoring_method == s]
+    tmp_df_ = df[df.data == i]
+    tmp_df_ = tmp_df_[tmp_df_.model == _model]
+    tmp_df_ = tmp_df_[tmp_df_.scoring_method == s]
     if s == 'ppl_pmi':
         ppl_pmi_marginal_version = [True, False]
     else:
         ppl_pmi_marginal_version = [False]
     for v in ppl_pmi_marginal_version:
-        print(tmp_df.ppl_pmi_marginal_version)
-        tmp_df = tmp_df[tmp_df.ppl_pmi_marginal_version == v]
+        tmp_df = tmp_df_[tmp_df_.ppl_pmi_marginal_version == v]
         val_accuracy = tmp_df.sort_values(by='accuracy', ascending=False).head(1)['accuracy'].values[0]
         logging.info("RUN TEST:\n - data: {} \n - lm: {} \n - score: {} \n - validation accuracy: {} ".format(
             i, _model, s, val_accuracy))

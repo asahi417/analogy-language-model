@@ -1,4 +1,4 @@
-""" Test hypothesis only compared with Perplexity method """
+""" Run on test set """
 import logging
 import json
 from itertools import product

@@ -3,7 +3,6 @@ import alm
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
-
 positive_permutation_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4',
                                     'index_5', 'index_6', 'index_7']
 negative_permutation_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4',
@@ -17,9 +16,9 @@ for _model, _max_length, _batch in models:
     scorer = alm.RelationScorer(model=_model, max_length=_max_length)
     for _data in data:
         for _temp in all_templates:
-            for ppl_pmi_marginal_version in [True, False]:
+            for v in [True, False]:
                 scorer.analogy_test(
-                    ppl_pmi_marginal_version=ppl_pmi_marginal_version,
+                    ppl_pmi_marginal_version=v,
                     scoring_method='ppl_pmi',
                     data=_data,
                     template_type=_temp,

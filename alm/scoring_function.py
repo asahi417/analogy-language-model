@@ -391,7 +391,7 @@ class RelationScorer:
             with open('{}.json'.format(_file), 'w') as f:
                 json.dump(json_line, f)
             logging.info("prediction exported: {}".format(_file))
-            return 
+            return
         else:
             # save as a json line
             os.makedirs('{}/summary/jsonlines'.format(export_dir), exist_ok=True)

@@ -9,14 +9,6 @@ export_prefix = 'main2'
 df = alm.get_report(export_prefix=export_prefix)
 df['accuracy'] = df['accuracy'].round(3) * 100
 
-# TEMPLATES = {
-#     'is-to-what': r"{\it to what}",
-#     'is-to-as': r"{\it to as}",
-#     'rel-same': r'{\it rel same}',
-#     'what-is-to': r'{\it what to}',
-#     'she-to-as': r'{\it she as}',
-#     'as-what-same': r'{\it as what}'
-# }
 TEMPLATES = {
     'is-to-as': "to-as",
     'is-to-what': "to-what",

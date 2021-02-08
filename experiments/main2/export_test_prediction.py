@@ -16,7 +16,6 @@ for m, d in product(models, data):
     accuracy = tmp_df.sort_values(by='accuracy', ascending=False).head(1)['accuracy'].values[0]
     logging.info("RUN TEST:\n - data: {} \n - test accuracy: {} ".format(d, accuracy))
     best_configs = tmp_df[tmp_df['accuracy'] == accuracy]
-    # assert len(best_configs) == 1, str(best_configs)
     config = json.loads(best_configs.iloc[0].to_json())
     logging.info("use the first one: {} accuracy".format(config.pop('accuracy')))
     scorer = alm.RelationScorer(model=config.pop('model'), max_length=config.pop('max_length'))

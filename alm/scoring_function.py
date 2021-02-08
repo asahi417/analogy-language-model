@@ -59,6 +59,7 @@ def export_report(export_prefix, export_dir: str = './experiments_results', test
         df = pd.DataFrame(json_line)
     df = df.drop_duplicates()
     df = df.sort_values(by='accuracy', ascending=False)
+    file = '{}/summary/{}'.format(export_dir, export_prefix)
     logging.info('df has {} rows'.format(len(df)))
     logging.info('top result: \n {}'.format(df.head()))
     logging.info('exporting...')

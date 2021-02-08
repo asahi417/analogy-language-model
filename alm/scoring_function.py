@@ -377,7 +377,7 @@ class RelationScorer:
         if export_prediction:
             logging.info('export prediction mode')
             assert len(json_line) == 1, 'more than one config found: {}'.format(len(searcher))
-            json_line = json_line[0]
+            # json_line = json.dumps(json_line[0])
             val_set, test_set = get_dataset_raw(data)
             data_raw = test_set if test else val_set
             prediction = json_line.pop('prediction')
@@ -401,6 +401,7 @@ class RelationScorer:
             else:
                 with open('{}/summary/jsonlines/{}.jsonl'.format(export_dir, export_prefix), 'w') as writer:
                     writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
+        print(json_line)
         return list(map(lambda x: x['accuracy'], json_line))
 
     def get_score(self, export_dir, test, template_type, data, batch_size, scoring_method, pmi_lambda,

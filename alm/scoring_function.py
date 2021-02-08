@@ -45,7 +45,7 @@ def export_report(export_prefix, export_dir: str = './experiments_results', test
         export_prefix = export_prefix + '.test'
     else:
         export_prefix = export_prefix + '.valid'
-    file = '{}/summary/{}'.format(export_dir, export_prefix)
+    file = '{}/summary/jsonlines/{}'.format(export_dir, export_prefix)
     logging.info('compile jsonlins `{0}.jsonl` to csv file `{0}.csv`'.format(file))
     # save as a csv
     with open('{}.jsonl'.format(file), 'r') as f:
@@ -376,23 +376,31 @@ class RelationScorer:
         if export_prediction:
             logging.info('export prediction mode')
             assert len(json_line) == 1, 'more than one config found: {}'.format(len(searcher))
+            json_line = json_line[0]
             val_set, test_set = get_dataset_raw(data)
             data_raw = test_set if test else val_set
-            prediction = json_line[0].pop('prediction')
+            prediction = json_line.pop('prediction')
             assert len(prediction) == len(data_raw), '{} != {}'.format(len(prediction), len(data_raw))
             for d, p in zip(data_raw, prediction):
                 d['prediction'] = p
-            _file = '{}/summary/{}.prediction.{}.{}.csv'.format(export_dir, export_prefix, data, self.model_name)
+            os.makedirs('{}/summary/prediction_file'.format(export_dir), exist_ok=True)
+            _file = '{}/summary/prediction_file/{}.prediction.{}.{}.csv'.format(
+                export_dir, export_prefix, data, self.model_name)
             pd.DataFrame(data_raw).to_csv(_file)
+            _file = '{}/summary/prediction_file/{}.prediction.{}.{}.json'.format(
+                export_dir, export_prefix, data, self.model_name)
+            with open(_file, 'w') as f:
+                json.dump(json_line, f)
             logging.info("prediction exported: {}".format(_file))
         else:
             # save as a json line
-            if os.path.exists('{}/summary/{}.jsonl'.format(export_dir, export_prefix)):
-                with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'a') as writer:
+            os.makedirs('{}/summary/jsonlines'.format(export_dir), exist_ok=True)
+            if os.path.exists('{}/summary/jsonlines/{}.jsonl'.format(export_dir, export_prefix)):
+                with open('{}/summary/jsonlines/{}.jsonl'.format(export_dir, export_prefix), 'a') as writer:
                     writer.write('\n')
                     writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
             else:
-                with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'w') as writer:
+                with open('{}/summary/jsonlines/{}.jsonl'.format(export_dir, export_prefix), 'w') as writer:
                     writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
         return list(map(lambda x: x['accuracy'], json_line))
 

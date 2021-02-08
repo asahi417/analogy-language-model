@@ -278,7 +278,7 @@ class RelationScorer:
                      pmi_lambda: float = 1.0,
                      ppl_pmi_aggregation: (str, List) = None,
                      ppl_pmi_lambda: (float, List) = 1.0,
-                     ppl_pmi_alpha: (float, List) = 1.0,
+                     ppl_pmi_alpha: (float, List) = 0.0,
                      skip_scoring_prediction: bool = False,
                      export_dir: str = './experiments_results',
                      no_inference: bool = False,

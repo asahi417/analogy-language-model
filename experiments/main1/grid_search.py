@@ -11,7 +11,6 @@ pmi_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index
 ppl_pmi_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1']
 export_prefix = 'main1'
 ppl_pmi_marginal_version = [True, False]
-ppl_pmi_alpha = 0.0
 
 for _model, _max_length, _batch in models:
     for scoring_method in methods:
@@ -27,7 +26,6 @@ for _model, _max_length, _batch in models:
                     batch_size=_batch,
                     export_prefix=export_prefix,
                     no_inference=True,
-                    ppl_pmi_alpha=ppl_pmi_alpha,
                     positive_permutation_aggregation=positive_permutation_aggregation,
                 )
                 if scoring_method == 'ppl_pmi':

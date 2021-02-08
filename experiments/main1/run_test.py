@@ -48,19 +48,21 @@ alm.export_report(export_prefix=export_prefix, test=True)
 shared = {
     'export_prefix': 'main1.default',
     'template_type': 'is-to-as',
+    'scoring_method': 'ppl_pmi',
     'positive_permutation_aggregation': 'index_0',
     'ppl_pmi_aggregation': 'mean',
     'ppl_pmi_alpha': 1.0
 }
-methods = ['ppl', 'ppl_pmi']
-for s in methods:
-    for i, m in product(data, models):
+
+for i, m in product(data, models):
+    for v in [True, False]:
         _model, _len, _batch = m
         scorer = alm.RelationScorer(model=_model, max_length=_len)
-        val_accuracy = scorer.analogy_test(batch_size=_batch, data=i, scoring_method=s, test=False, **shared)
+        val_accuracy = scorer.analogy_test(batch_size=_batch, data=i, ppl_pmi_marginal_version=v, test=False, **shared)
         print(val_accuracy)
         assert len(val_accuracy) == 0
-        scorer.analogy_test(batch_size=_batch, data=i, scoring_method=s, val_accuracy=val_accuracy, test=True, **shared)
+        scorer.analogy_test(
+            batch_size=_batch, data=i, ppl_pmi_marginal_version=v, val_accuracy=val_accuracy, test=True, **shared)
         scorer.release_cache()
 
 alm.export_report(export_prefix='main1.default', test=True)

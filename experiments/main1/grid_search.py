@@ -27,7 +27,7 @@ for _model, _max_length, _batch in models:
                     batch_size=_batch,
                     export_prefix=export_prefix,
                     no_inference=True,
-                    ppl_pmi_alph=ppl_pmi_alpha,
+                    ppl_pmi_alpha=ppl_pmi_alpha,
                     positive_permutation_aggregation=positive_permutation_aggregation,
                 )
                 if scoring_method == 'ppl_pmi':

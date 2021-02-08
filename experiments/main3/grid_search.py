@@ -10,16 +10,15 @@ negative_permutation_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1', 
 ppl_pmi_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1']
 ppl_pmi_alpha = [-0.4, -0.2, 0, 0.2, 0.4]
 negative_permutation_weight = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
-export_prefix = 'tune_on_test'
+export_prefix = 'main3'
 
 for _model, _max_length, _batch in models:
     scorer = alm.RelationScorer(model=_model, max_length=_max_length)
     for _data in data:
         for _temp in all_templates:
-            for ppl_pmi_marginal_version in [True, False]:
-                scorer.analogy_test(
-                    test=True,
-                    ppl_pmi_marginal_version=ppl_pmi_marginal_version,
+            for v in [True, False]:
+                config = dict(
+                    ppl_pmi_marginal_version=v,
                     scoring_method='ppl_pmi',
                     data=_data,
                     template_type=_temp,
@@ -32,8 +31,8 @@ for _model, _max_length, _batch in models:
                     negative_permutation_aggregation=negative_permutation_aggregation,
                     negative_permutation_weight=negative_permutation_weight
                 )
+                val_accuracy = scorer.analogy_test(test=False, **config)
+                scorer.analogy_test(test=True, val_accuracy=val_accuracy, **config)
                 scorer.release_cache()
-
-
 
 alm.export_report(export_prefix=export_prefix, test=True)

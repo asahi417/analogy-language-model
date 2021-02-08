@@ -1,4 +1,8 @@
-""" Run on test set """
+""" Run on test set
+- LM x Dataset x [PPL-based, PMI-based]
+where PPL-based is ppl_pmi_marginal_version == True
+and PMI-based is ppl_pmi_marginal_version == False
+"""
 import logging
 import json
 from itertools import product

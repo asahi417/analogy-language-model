@@ -189,15 +189,16 @@ class GridSearch:
                     zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
                 return neg_pmi
 
-            if not self.ppl_pmi_marginal_version:
-                score = list(map(lambda o: (
-                    list(map(lambda x: compute_ppl_pmi(list(map(lambda s: s[0][x], o))), range(8))),
-                    list(map(lambda x: compute_ppl_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))), range(16)))
-                ), self.score))
-            else:
+            if self.ppl_pmi_marginal_version:
                 score = list(map(lambda o: (
                     list(map(lambda x: compute_ppl_mar(list(map(lambda s: s[0][x], o))), range(8))),
                     list(map(lambda x: compute_ppl_mar(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))),
+                             range(16)))
+                ), self.score))
+            else:
+                score = list(map(lambda o: (
+                    list(map(lambda x: compute_ppl_pmi(list(map(lambda s: s[0][x], o))), range(8))),
+                    list(map(lambda x: compute_ppl_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))),
                              range(16)))
                 ), self.score))
 

@@ -1,4 +1,4 @@
-""" Export prediction file of the best configuration in test accuracy """
+""" Export prediction file of the best configuration in test accuracy for PPL-based and PMI-based """
 import logging
 import json
 from itertools import product

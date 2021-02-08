@@ -18,7 +18,14 @@ def check_position(text, positions, tokens):
 
 
 def prompting_relation(relation_words, template_type: str = 'is-to-what'):
-    """ to convert a SAT style analogy set into a natural sentence with a template """
+    """ to convert a SAT style analogy set into a natural sentence with a template
+
+    :param relation_words: 4 words
+    :param template_type:
+    :return:
+        template: string
+        position: character position in template of each relation word
+    """
     template = TEMPLATES[template_type]
     subject_a, object_a, subject_b, object_b = relation_words
     position = []

@@ -282,7 +282,8 @@ class RelationScorer:
                      export_dir: str = './experiments_results',
                      no_inference: bool = False,
                      export_prediction: bool = False,
-                     ppl_pmi_marginal_version: bool = False):
+                     ppl_pmi_marginal_version: bool = False,
+                     val_accuracy: float = None):
         """ relation scoring test on analogy dataset
 
         :param data:
@@ -362,6 +363,10 @@ class RelationScorer:
         logging.info('multiprocessing  : {} cpus'.format(os.cpu_count()))
         json_line = pool.map(searcher.single_run, searcher.index)
         pool.close()
+        if val_accuracy is not None:
+            assert type(val_accuracy) == float, type(val_accuracy)
+            for i in json_line:
+                i['accuracy_validation'] = val_accuracy
         logging.info('export to {}/summary'.format(export_dir))
         os.makedirs('{}/summary'.format(export_dir), exist_ok=True)
         if test:
@@ -390,6 +395,7 @@ class RelationScorer:
             else:
                 with open('{}/summary/{}.jsonl'.format(export_dir, export_prefix), 'w') as writer:
                     writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
+        return list(map(lambda x: x['accuracy'], json_line))
 
     def get_score(self, export_dir, test, template_type, data, batch_size, scoring_method, pmi_lambda,
                   negative_permutation, no_inference):

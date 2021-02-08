@@ -2,10 +2,8 @@ import alm
 
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
 data = ['sat', 'u2', 'u4', 'google', 'bats']
-# models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
-models = [('bert-large-cased', 32, 1024)]
-# methods = ['ppl_tail_masked', 'ppl_head_masked', 'ppl', 'embedding_similarity', 'ppl_pmi', 'ppl_add_masked', 'pmi']
-methods = ['pmi']
+models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
+methods = ['ppl_tail_masked', 'ppl_head_masked', 'ppl', 'embedding_similarity', 'ppl_pmi', 'ppl_add_masked', 'pmi']
 
 positive_permutation_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4',
                                     'index_5', 'index_6', 'index_7']

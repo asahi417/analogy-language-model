@@ -28,12 +28,23 @@ def get_partition(_list):
 
 
 def find_position(tokenizer, mask_position, text, token: List = None):
-    """ Find masking position in a token-space given a string target
+    """ Given a text and mask position represented as a position in that string,
+    find a masking token in tokenized token list.
 
-    :param str_to_mask: a string to be masked
+    - given
+    start, end = mask_position
+    masked_token = text[start:end]
+
+    - after
+    start, end = find_position(text)
+    token = tokenize(text)
+    masked_token = token[start:end]
+
     :param text: source text
+    :param tokenizer: transformer tokenizer
+    :param mask_position: [start, end] position in text
     :param token: (optional) tokenized text
-    :return: [start_position, end_position] in a token-space
+    :return: [start, end]  in token list
     """
     if token is None:
         token = tokenizer.tokenize(text)

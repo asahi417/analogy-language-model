@@ -32,6 +32,8 @@ for _model, _max_length, _batch in models:
                     negative_permutation_weight=negative_permutation_weight
                 )
                 val_accuracy = scorer.analogy_test(test=False, **config)
+                print(val_accuracy)
+                input()
                 scorer.analogy_test(test=True, val_accuracy=val_accuracy, **config)
                 scorer.release_cache()
 

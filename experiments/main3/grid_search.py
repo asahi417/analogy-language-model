@@ -17,7 +17,7 @@ for _model, _max_length, _batch in models:
     for _data in data:
         for _temp in all_templates:
             for v in [True, False]:
-                config = dict(
+                scorer.analogy_test(
                     ppl_pmi_marginal_version=v,
                     scoring_method='ppl_pmi',
                     data=_data,
@@ -29,14 +29,7 @@ for _model, _max_length, _batch in models:
                     negative_permutation=True,
                     positive_permutation_aggregation=positive_permutation_aggregation,
                     negative_permutation_aggregation=negative_permutation_aggregation,
-                    negative_permutation_weight=negative_permutation_weight
-                )
-                # val_accuracy = scorer.analogy_test(test=False, **config)
-                # print(val_accuracy)
-                # input()
-                scorer.analogy_test(test=True, **config)
+                    negative_permutation_weight=negative_permutation_weight, test=True)
                 scorer.release_cache()
 
 alm.export_report(export_prefix=export_prefix, test=True)
-
-# merge to valid

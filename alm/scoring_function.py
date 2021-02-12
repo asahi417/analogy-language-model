@@ -304,6 +304,7 @@ class RelationScorer:
         :param export_dir: directory to export the result
         :return:
         """
+        assert val_accuracy is None or type(val_accuracy) is float
         ##############
         # get scores #
         ##############

@@ -31,10 +31,12 @@ for _model, _max_length, _batch in models:
                     negative_permutation_aggregation=negative_permutation_aggregation,
                     negative_permutation_weight=negative_permutation_weight
                 )
-                val_accuracy = scorer.analogy_test(test=False, **config)
-                print(val_accuracy)
-                input()
-                scorer.analogy_test(test=True, val_accuracy=val_accuracy, **config)
+                # val_accuracy = scorer.analogy_test(test=False, **config)
+                # print(val_accuracy)
+                # input()
+                scorer.analogy_test(test=True, **config)
                 scorer.release_cache()
 
 alm.export_report(export_prefix=export_prefix, test=True)
+
+# merge to valid

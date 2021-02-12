@@ -9,6 +9,8 @@ df_test = df_test.sort_values(by=list(df_val.columns)).reindex()
 accuracy_val = df_val.pop('accuracy')
 accuracy_test = df_test.pop('accuracy')
 
+print(df_val.shape)
+print(df_test.shape)
 check = (df_val != df_test).values.sum()
 assert check == 0, '{}'.format(check)
 df_test['accuracy_validation'] = accuracy_val

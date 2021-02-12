@@ -103,11 +103,17 @@ class Prompter:
         return label
 
     def cleanup_decode(self, sentence):
+        # give a space around <mask>
+        cleaned_sent = re.sub(r'({})'.format(self.tokenizer.mask_token), r' \1 ', sentence)
+        cleaned_sent = re.sub(r'\s+', ' ', cleaned_sent)  # reduce more than two space to one
+
+        # remove special tokens but mask
         to_remove = list(filter(lambda x: x != self.tokenizer.mask_token, self.tokenizer.all_special_tokens))
         to_remove = '|'.join(to_remove).replace('[', '\[').replace(']', '\]')
-        sentence = re.sub(r'{}'.format(to_remove), '', sentence)
-        sentence = re.sub(r'\A\s*', '', sentence)
-        return sentence
+        cleaned_sent = re.sub(r'{}'.format(to_remove), '', cleaned_sent)
+
+        # remove redundant spaces at the prefix
+        return re.sub(r'\A\s*', '', cleaned_sent)
 
     def load_model(self):
         """ Model setup """
@@ -127,10 +133,38 @@ class Prompter:
         self.model.to(self.device)
         logging.info('running on {} GPU'.format(n_gpu))
 
-    def pair_to_seed(self, word_pair: List, n_blank: int = 3):
+    def pair_to_seed(self,
+                     word_pair: List,
+                     n_blank: int = 3,
+                     n_blank_prefix: int = 2,
+                     n_blank_suffix: int = 2,
+                     batch_size: int = 4,
+                     seed_type: str = 'middle'):
         assert len(word_pair) == 2, '{}'.format(len(word_pair))
         h, t = word_pair
-        return ' '.join([h] + [self.tokenizer.mask_token] * n_blank + [t])
+        if seed_type == 'middle':
+            return ' '.join([h] + [self.tokenizer.mask_token] * n_blank + [t])
+        elif seed_type == 'whole':
+            return ' '.join([self.tokenizer.mask_token] * n_blank_prefix + [h] + [self.tokenizer.mask_token] * n_blank
+                            + [t] + [self.tokenizer.mask_token] * n_blank_suffix)
+        elif seed_type == 'best':
+            # build candidates
+            candidates = []
+            for pre_n in range(self.max_length - 2):
+                prefix = [self.tokenizer.mask_token] * pre_n + [h]
+                for mid_n in range(1, self.max_length - 1 - pre_n):
+                    middle = [self.tokenizer.mask_token] * mid_n + [t]
+                    candidates.append(' '.join(prefix + middle))
+            # compute perplexity
+            logging.info('find best seed position for head and tail by perplexity: {} in total'.format(len(candidates)))
+            ppl = self.get_perplexity(candidates, batch_size=batch_size)
+            best_seed = candidates[ppl.index(min(ppl))]
+            print(candidates)
+            print(ppl)
+            print(best_seed)
+            return best_seed
+        else:
+            raise ValueError('unknown seed type: {}'.format(seed_type))
 
     def encode_plus(self, sentence):
         param = {'max_length': self.max_length, 'truncation': True, 'padding': 'max_length'}
@@ -143,13 +177,18 @@ class Prompter:
                      word_pairs: List,
                      n_blank: int = 3,
                      topk: int = 5,
+                     seed_type: str = 'middle',
                      batch_size: int = 4,
                      perplexity_filter: bool = True,
-                     debug: bool = False):
+                     debug: bool = False,
+                     n_blank_prefix: int = 2,
+                     n_blank_suffix: int = 2):
         if type(word_pairs[0]) is not list:
             word_pairs = [word_pairs]
-        seed_sentences = list(map(lambda x: self.pair_to_seed(x, n_blank), word_pairs))
-        shared = dict(topk=topk, debug=debug, batch_size=batch_size, perplexity_filter=perplexity_filter)
+        shared = {'n_blank': n_blank, 'seed_type': seed_type, 'n_blank_prefix': n_blank_prefix,
+                  'n_blank_suffix': n_blank_suffix, 'batch_size': batch_size}
+        seed_sentences = list(map(lambda x: self.pair_to_seed(x, **shared), word_pairs))
+        shared = {'topk': topk, 'debug': debug, 'batch_size': batch_size, 'perplexity_filter': perplexity_filter}
         for i in range(n_blank):
             seed_sentences = self.replace_single_mask(seed_sentences, **shared)
         return seed_sentences
@@ -211,7 +250,8 @@ class Prompter:
             best_edit = []
             for s in greedy_filling:
                 ppl = self.get_perplexity(s)
-                best_edit.append(s[ppl.index(max(ppl))])
+                best_edit.append(s[ppl.index(min(ppl))])
+                # best_edit.append(s[ppl.index(max(ppl))])
         else:
             best_edit = list(map(lambda x: x[0], greedy_filling))
 
@@ -226,15 +266,15 @@ class Prompter:
         """
         param = {'max_length': self.max_length, 'truncation': True, 'padding': 'max_length'}
         if self.is_causal:
-            encode = self.tokenizer.encode_plus(sentence, **param)
-            encode['labels'] = self.input_ids_to_labels(encode['input_ods'])
-            return [encode]
+            raise NotImplementedError('TODO')
         else:
             token_list = self.tokenizer.tokenize(sentence)
 
             def encode_with_single_mask_id(mask_position: int):
                 _token_list = token_list.copy()  # can not be encode outputs because of prefix
                 masked_token_id = self.tokenizer.convert_tokens_to_ids(_token_list[mask_position])
+                if masked_token_id == self.tokenizer.mask_token_id:
+                    return None
                 _token_list[mask_position] = self.tokenizer.mask_token
                 tmp_string = self.tokenizer.convert_tokens_to_string(_token_list)
                 _encode = self.tokenizer.encode_plus(tmp_string, **param)
@@ -245,9 +285,9 @@ class Prompter:
                 return _encode
 
             length = min(self.max_length - len(self.sp_token_prefix), len(token_list))
-            return list(map(encode_with_single_mask_id, range(length)))
+            return list(filter(None, map(encode_with_single_mask_id, range(length))))
 
-    def get_perplexity(self, sentences, batch_size: int = 64):
+    def get_perplexity(self, sentences, batch_size: int = 4):
         """ compute perplexity on each sentence
 
         :param batch_size:
@@ -281,15 +321,18 @@ class Prompter:
                     lambda x: x[0] / sum(map(lambda y: y != PAD_TOKEN_LABEL_ID, x[1])),
                     zip(loss.cpu().tolist(), labels.cpu().tolist())
                 ))
-        # return nll, partition
         perplexity = list(map(lambda x: math.exp(sum(nll[x[0]:x[1]]) / (x[1] - x[0])), partition))
         return perplexity
 
 
 if __name__ == '__main__':
-    lm = Prompter('roberta-large', max_length=32)
-    stem = ["beauty", "aesthete"]
-    candidates = [["pleasure", "hedonist"], ["emotion", "demagogue"], ["opinion", "sympathizer"],
-                  ["seance", "medium"], ["luxury", "ascetic"]]
-    o = lm.replace_mask(candidates + [stem], debug=True, perplexity_filter=True, topk=5)
-    print(o)
+    lm = Prompter('roberta-large', max_length=12)
+    # stem = ["beauty", "aesthete"]
+    candidates_ = [["pleasure", "hedonist"], ["emotion", "demagogue"], ["opinion", "sympathizer"],
+                   ["seance", "medium"], ["luxury", "ascetic"]]
+    o_ = lm.replace_mask(candidates_,
+                         seed_type='best',
+                         debug=True,
+                         perplexity_filter=True,
+                         topk=5)
+    print(o_)

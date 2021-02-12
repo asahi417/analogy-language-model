@@ -17,4 +17,5 @@ df_test['accuracy_test'] = accuracy_test
 df_test['accuracy'] = (accuracy_val * 37 + accuracy_test * 337)/(37 + 337)
 df_test = df_test.sort_values(by=['accuracy'], ascending=False)
 df_test.to_csv('./experiments_results/summary/main3.combined.csv')
+print(df_test['accuracy'].head(10))
 

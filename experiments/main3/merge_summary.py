@@ -11,4 +11,4 @@ accuracy_test = df_test.pop('accuracy')
 
 assert df_val.shape == df_test.shape
 df_test['accuracy_validation'] = accuracy_val
-df_test.to_csv('./experiments_results/summary/main3.test.csv', index_col=0)
+df_test.to_csv('./experiments_results/summary/main3.test.csv')

@@ -223,10 +223,10 @@ class GridSearch:
                 print(len(ppl_scores))
                 # normalized ppl
                 norm = sum(map(lambda x: x[0], ppl_scores))
-                print(list(map(
-                    lambda x: x[0] / norm + ppl_hyp_eta_head * x[1] + ppl_hyp_eta_tail * x[2],
-                    ppl_scores)))
-                input()
+                # print(list(map(
+                #     lambda x: x[0] / norm + ppl_hyp_eta_head * x[1] + ppl_hyp_eta_tail * x[2],
+                #     ppl_scores)))
+                # input()
                 # ppl, ppl_head, ppl_tail = ppl_scores
 
 

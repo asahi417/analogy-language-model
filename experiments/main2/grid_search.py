@@ -10,7 +10,7 @@ negative_permutation_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1', 
 ppl_pmi_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1']
 ppl_pmi_alpha = [-0.4, -0.2, 0, 0.2, 0.4]
 negative_permutation_weight = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
-export_prefix = 'main2'
+export_prefix = 'main2.ppl_pmi'
 
 for _model, _max_length, _batch in models:
     scorer = alm.RelationScorer(model=_model, max_length=_max_length)

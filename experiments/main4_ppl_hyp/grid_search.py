@@ -16,18 +16,20 @@ for _model, _max_length, _batch in models:
     scorer = alm.RelationScorer(model=_model, max_length=_max_length)
     for _data in data:
         for _temp in all_templates:
-            scorer.analogy_test(
-                scoring_method='ppl_hyp',
-                data=_data,
-                template_type=_temp,
-                batch_size=_batch,
-                export_prefix=export_prefix,
-                ppl_hyp_eta_head=ppl_hyp_eta_head,
-                ppl_hyp_eta_tail=ppl_hyp_eta_tail,
-                negative_permutation=True,
-                positive_permutation_aggregation=positive_permutation_aggregation,
-                negative_permutation_aggregation=negative_permutation_aggregation,
-                negative_permutation_weight=negative_permutation_weight)
-            scorer.release_cache()
+            for test in [True, False]:
+                scorer.analogy_test(
+                    scoring_method='ppl_hyp',
+                    data=_data,
+                    template_type=_temp,
+                    batch_size=_batch,
+                    export_prefix=export_prefix,
+                    ppl_hyp_eta_head=ppl_hyp_eta_head,
+                    ppl_hyp_eta_tail=ppl_hyp_eta_tail,
+                    negative_permutation=True,
+                    positive_permutation_aggregation=positive_permutation_aggregation,
+                    negative_permutation_aggregation=negative_permutation_aggregation,
+                    negative_permutation_weight=negative_permutation_weight,
+                    test=test)
+                scorer.release_cache()
 
 alm.export_report(export_prefix=export_prefix, test=True)

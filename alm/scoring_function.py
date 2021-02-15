@@ -219,17 +219,12 @@ class GridSearch:
         elif self.scoring_method == 'ppl_hyp':
 
             def compute_ppl(ppl_scores):
-                # assert len(ppl_scores) == 3, len(ppl_scores)
-                opt_length = len(ppl_scores) ** 0.5
-                print(opt_length, len(ppl_scores))
-                # assert opt_length.is_integer(), 'something wrong'
-                opt_length = int(opt_length)
-
-                if all(s == 0 for s in ppl_scores):
-                    return [0] * opt_length
-
-                # print(ppl_scores)
-                # input()
+                print(ppl_scores)
+                print(len(ppl_scores))
+                print(list(map(
+                    lambda x: x[0] / norm + ppl_hyp_eta_head * x[1] + ppl_hyp_eta_tail * x[2],
+                    ppl_scores)))
+                input()
                 # ppl, ppl_head, ppl_tail = ppl_scores
 
                 # normalized ppl

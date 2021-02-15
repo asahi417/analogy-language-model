@@ -16,7 +16,7 @@ for _model, _max_length, _batch in models:
     scorer = alm.RelationScorer(model=_model, max_length=_max_length)
     for _data in data:
         for _temp in all_templates:
-            for test in [True, False]:
+            for test in [False, True]:
                 scorer.analogy_test(
                     scoring_method='ppl_hyp',
                     data=_data,

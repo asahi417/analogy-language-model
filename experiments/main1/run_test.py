@@ -11,7 +11,7 @@ models = [('roberta-large', 32, 512), ('bert-large-cased', 32, 1024)]
 #######################################################################
 # get test accuracy on each combination of model and scoring function #
 #######################################################################
-methods = ['ppl_pmi', 'ppl_tail_masked', 'ppl_head_masked', 'embedding_similarity', 'ppl_add_masked', 'pmi']
+methods = ['ppl', 'ppl_pmi', 'ppl_tail_masked', 'ppl_head_masked', 'embedding_similarity', 'ppl_add_masked', 'pmi']
 export_prefix = 'main1'
 df = alm.get_report(export_prefix=export_prefix)
 

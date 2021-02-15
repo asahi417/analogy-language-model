@@ -76,7 +76,7 @@ class GridSearch:
                  scoring_method, score, data_instance,
                  ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
                  negative_permutation_aggregation, negative_permutation_weight,
-                 ppl_pmi_marginal_version,
+                 ppl_pmi_marginal_version, ppl_hyp_eta_head, ppl_hyp_eta_tail,
                  export_prediction: bool = False):
         """ Grid Search Aggregator: multiprocessing-oriented """
         # global variables
@@ -99,16 +99,22 @@ class GridSearch:
             negative_permutation_aggregation = [negative_permutation_aggregation]
         if type(negative_permutation_weight) is not list:
             negative_permutation_weight = [negative_permutation_weight]
+        if type(ppl_hyp_eta_head) is not list:
+            ppl_hyp_eta_head = [ppl_hyp_eta_head]
+        if type(ppl_hyp_eta_tail) is not list:
+            ppl_hyp_eta_tail = [ppl_hyp_eta_tail]
         self.all_config = list(product(
             ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
-            negative_permutation_aggregation, negative_permutation_weight
+            negative_permutation_aggregation, negative_permutation_weight,
+            ppl_hyp_eta_head, ppl_hyp_eta_tail
         ))
         self.index = list(range(len(self.all_config)))
 
     def single_run(self, config_index: int):
         PBAR.update(1)
         ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,\
-            negative_permutation_aggregation, negative_permutation_weight = self.all_config[config_index]
+            negative_permutation_aggregation, negative_permutation_weight,\
+            ppl_hyp_eta_head, ppl_hyp_eta_tail = self.all_config[config_index]
 
         aggregator_pos = AGGREGATOR[positive_permutation_aggregation]
         aggregator_neg = AGGREGATOR[negative_permutation_aggregation]
@@ -210,7 +216,45 @@ class GridSearch:
                     ))
                 ),
                 score))
+        elif self.scoring_method == 'ppl_hyp':
 
+            def compute_ppl(ppl_scores):
+                # assert len(ppl_scores) == 3, len(ppl_scores)
+                opt_length = len(ppl_scores) ** 0.5
+                assert opt_length.is_integer(), 'something wrong'
+                opt_length = int(opt_length)
+
+                if all(s == 0 for s in ppl_scores):
+                    return [0] * opt_length
+
+                print(ppl_scores)
+                input()
+                # ppl, ppl_head, ppl_tail = ppl_scores
+
+                # normalized ppl
+                norm = sum(map(lambda x: x[0], ppl_scores))
+                # ppl_normalized = list(map(lambda x: log(x / sum(ppl_in_option)), ppl_in_option))
+                # ppl_head_mask = list(map(lambda x: x[1], ppl_scores))
+                # ppl_tail_mask = list(map(lambda x: x[2], ppl_scores))
+
+                return list(map(
+                    lambda x: x[0] / norm + ppl_hyp_eta_head * x[1] + ppl_hyp_eta_tail * x[2],
+                    ppl_scores))
+
+            score = list(map(
+                lambda o: (
+                    list(map(lambda perm: compute_ppl(list(map(lambda s: s[0][perm], o))), range(8))),
+                    list(map(lambda perm: compute_ppl(list(map(lambda s: s[1][perm] if len(s[1]) != 0 else 0, o))),
+                         range(16)))
+                ), self.score))
+            logit_pn = list(map(
+                lambda s: (
+                    list(zip(
+                        list(map(lambda o: aggregator_pos(o), list(zip(*s[0])))),
+                        list(map(lambda o: aggregator_neg(o), list(zip(*s[1]))))
+                    ))
+                ),
+                score))
         else:
             logit_pn = list(map(
                 lambda o: list(map(
@@ -285,6 +329,8 @@ class RelationScorer:
                      no_inference: bool = False,
                      export_prediction: bool = False,
                      ppl_pmi_marginal_version: bool = False,
+                     ppl_hyp_eta_tail: (float, List) = 1.0,
+                     ppl_hyp_eta_head: (float, List)  = 1.0,
                      val_accuracy: float = None):
         """ relation scoring test on analogy dataset
 
@@ -361,6 +407,7 @@ class RelationScorer:
             ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
             negative_permutation_aggregation, negative_permutation_weight,
             ppl_pmi_marginal_version,
+            ppl_hyp_eta_head, ppl_hyp_eta_tail,
             export_prediction=export_prediction)
         logging.info('start grid search: {} combinations'.format(len(searcher)))
         logging.info('multiprocessing  : {} cpus'.format(os.cpu_count()))
@@ -442,7 +489,44 @@ class RelationScorer:
             else:
                 input_data = [input_data]
             for input_data_sub in input_data:
-                if scoring_method in ['ppl_pmi', 'ppl']:
+                if scoring_method == 'ppl_hyp':
+                    logging.info(' * ppl_hype computation')
+                    shared_ = dict(
+                        export_dir=export_dir,
+                        test=test,
+                        model=self.model_name,
+                        max_length=self.lm.max_length,
+                        data=data,
+                        template_type=template_type,
+                        pmi_lambda=pmi_lambda
+                    )
+                    config_ppl = ConfigManager(scoring_method='ppl', **shared_)
+                    if config_ppl.flatten_score[prefix]:
+                        logging.info(' * ppl_hype computation: ppl from cache')
+                        full_score_ppl = config_ppl.flatten_score[prefix]
+                    else:
+                        logging.info(' * ppl_hype computation: ppl')
+                        full_score_ppl = self.lm.get_perplexity(word=input_data_sub, **shared)
+                    config_tail = ConfigManager(scoring_method='ppl_tail_masked', **shared_)
+                    if config_tail.flatten_score[prefix]:
+                        logging.info(' * ppl_hype computation: ppl_tail_masked masked from cache')
+                        full_score_tail = config_tail.flatten_score[prefix]
+                    else:
+                        logging.info(' * ppl_hype computation: ppl_head_masked masked')
+                        full_score_tail = self.lm.get_perplexity(
+                            word=input_data_sub, mask_index_condition=[-1] * len(input_data_sub), **shared)
+                    config_head = ConfigManager(scoring_method='ppl_head_masked', **shared_)
+                    if config_head.flatten_score[prefix]:
+                        logging.info(' * ppl_hype computation: ppl_head_masked from cache')
+                        full_score_head = config_head.flatten_score[prefix]
+                    else:
+                        logging.info(' * ppl_hype computation: head masked')
+                        full_score_head = self.lm.get_perplexity(
+                            word=input_data_sub, mask_index_condition=[-2] * len(input_data_sub), **shared)
+                    assert len(full_score_ppl) == len(full_score_tail) == len(full_score_head),\
+                        str([len(full_score_ppl), len(full_score_tail), len(full_score_head)])
+                    full_score = list(zip(*[full_score_ppl, full_score_tail, full_score_head]))
+                elif scoring_method in ['ppl_pmi', 'ppl']:
                     logging.info(' * ppl computation')
                     full_score = self.lm.get_perplexity(word=input_data_sub, **shared)
                 elif scoring_method in ['ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked']:

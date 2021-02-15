@@ -219,8 +219,8 @@ class GridSearch:
         elif self.scoring_method == 'ppl_hyp':
 
             def compute_ppl(ppl_scores):
-                print(ppl_scores)
-                print(len(ppl_scores))
+                # print(ppl_scores)
+                # print(len(ppl_scores))
                 # normalized ppl
                 norm = sum(map(lambda x: x[0], ppl_scores))
                 # print(list(map(

@@ -1,13 +1,16 @@
 import seaborn as sns
+import os
 import pandas as pd
 from matplotlib import pyplot as plt
 plt.rcParams.update({"text.usetex": True, "font.family": "sans-serif", "font.sans-serif": ["Helvetica"]})
 sns.set_theme(style="darkgrid")
 model_order = ['PMI', 'FastText', 'BERT', 'GPT2', 'RoBERTa']
+export_prefix = 'main2.ppl_pmi'
+os.makedirs('./experiments_results/summary/figure', exist_ok=True)
 for d in ['sat', 'u2', 'u4', 'google', 'bats']:
-    bert = pd.read_csv('./experiments_results/summary/main2.test.prediction.{}.bert-large-cased.csv'.format(d))
-    roberta = pd.read_csv('./experiments_results/summary/main2.test.prediction.{}.roberta-large.csv'.format(d))
-    gpt = pd.read_csv('./experiments_results/summary/main2.test.prediction.{}.gpt2-xl.csv'.format(d))
+    bert = pd.read_csv('./experiments_results/summary/{}.test.prediction.{}.bert-large-cased.csv'.format(export_prefix, d))
+    roberta = pd.read_csv('./experiments_results/summary/{}.test.prediction.{}.roberta-large.csv'.format(export_prefix, d))
+    gpt = pd.read_csv('./experiments_results/summary/{}.test.prediction.{}.gpt2-xl.csv'.format(export_prefix, d))
     we = pd.read_csv('./experiments_results/summary/statistics.test.prediction.{}.csv'.format(d))
     pmi = pd.read_csv('./experiments_results/summary/statistics.test.prediction.pmi.1.{}.csv'.format(d))
     # gpt = pmi
@@ -63,7 +66,7 @@ for d in ['sat', 'u2', 'u4', 'google', 'bats']:
         ax.tick_params(labelsize=15)
         fig = ax.get_figure()
         plt.tight_layout()
-        fig.savefig('./experiments_results/summary/main2_figure/bar.{}.png'.format(d))
+        fig.savefig('./experiments_results/summary/figure/{}.bar.{}.png'.format(export_prefix, d))
         plt.close()
 
     if d in ['u4', 'u2']:
@@ -85,5 +88,5 @@ for d in ['sat', 'u2', 'u4', 'google', 'bats']:
         ax.tick_params(labelsize=15)
         fig = ax.get_figure()
         plt.tight_layout()
-        fig.savefig('./experiments_results/summary/main2_figure/line.{}.png'.format(d))
+        fig.savefig('./experiments_results/summary/figure/{}.line.{}.png'.format(export_prefix, d))
         plt.close()

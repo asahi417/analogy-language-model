@@ -4,8 +4,8 @@ import alm
 import json
 import os
 plt.rcParams.update({"text.usetex": True, "font.family": "sans-serif", "font.sans-serif": ["Helvetica"]})
-os.makedirs('./experiments_results/summary/main2_figure', exist_ok=True)
-export_prefix = 'main2'
+os.makedirs('./experiments_results/summary/figure', exist_ok=True)
+export_prefix = 'main2.ppl_pmi'
 df = alm.get_report(export_prefix=export_prefix)
 df['accuracy'] = df['accuracy'].round(3) * 100
 df['ppl_pmi_aggregation'] = df['ppl_pmi_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
@@ -56,7 +56,7 @@ def plot(df_, s, d):
     labels = [i.replace('bert-large-cased', 'BERT').replace('roberta-large', 'RoBERTa').replace('gpt2-xl', 'GPT2') for i
               in labels]
     ax.legend(handles=handles, labels=labels, loc='upper right')
-    fig.savefig('./experiments_results/summary/main2_figure/box.{}.{}.png'.format(d, s))
+    fig.savefig('./experiments_results/summary/figure/{}.box.{}.{}.png'.format(export_prefix, d, s))
     plt.close()
 
 

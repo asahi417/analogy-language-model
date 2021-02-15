@@ -5,7 +5,7 @@ from itertools import product
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 import alm
 
-export_prefix = 'main2'
+export_prefix = 'main2.ppl_pmi'
 models = ['roberta-large', 'gpt2-xl', 'bert-large-cased']
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 df = alm.get_report(export_prefix=export_prefix, test=True)

@@ -222,7 +222,9 @@ class GridSearch:
                 # print(ppl_scores)
                 # print(len(ppl_scores))
                 # normalized ppl
-                norm = sum(map(lambda x: x[0], ppl_scores))
+                norm_ppl = sum(map(lambda x: x[0], ppl_scores))
+                norm_head = sum(map(lambda x: x[1], ppl_scores))
+                norm_tail = sum(map(lambda x: x[2], ppl_scores))
                 # print(list(map(
                 #     lambda x: x[0] / norm + ppl_hyp_eta_head * x[1] + ppl_hyp_eta_tail * x[2],
                 #     ppl_scores)))
@@ -235,8 +237,9 @@ class GridSearch:
                 # ppl_tail_mask = list(map(lambda x: x[2], ppl_scores))
 
                 return list(map(
-                    lambda x: x[0] / norm + ppl_hyp_eta_head * x[1] + ppl_hyp_eta_tail * x[2],
-                    ppl_scores))
+                    lambda x: log(x[0] / norm_ppl)
+                            + ppl_hyp_eta_head * log(x[1] / norm_head) + ppl_hyp_eta_tail * log(x[2]/norm_tail),
+                            ppl_scores))
 
             score = list(map(
                 lambda o: (

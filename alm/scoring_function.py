@@ -221,14 +221,15 @@ class GridSearch:
             def compute_ppl(ppl_scores):
                 print(ppl_scores)
                 print(len(ppl_scores))
+                # normalized ppl
+                norm = sum(map(lambda x: x[0], ppl_scores))
                 print(list(map(
                     lambda x: x[0] / norm + ppl_hyp_eta_head * x[1] + ppl_hyp_eta_tail * x[2],
                     ppl_scores)))
                 input()
                 # ppl, ppl_head, ppl_tail = ppl_scores
 
-                # normalized ppl
-                norm = sum(map(lambda x: x[0], ppl_scores))
+
                 # ppl_normalized = list(map(lambda x: log(x / sum(ppl_in_option)), ppl_in_option))
                 # ppl_head_mask = list(map(lambda x: x[1], ppl_scores))
                 # ppl_tail_mask = list(map(lambda x: x[2], ppl_scores))

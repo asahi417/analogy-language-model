@@ -82,9 +82,6 @@ class Prompter:
         self.sp_token_prefix = tokens_encode[:tokens_encode.index(tokens[0])]
         self.sp_token_suffix = tokens_encode[tokens_encode.index(tokens[-1]) + 1:]
 
-        self.exclude_id = self.tokenizer.all_special_id.copy()
-        self.exclude_id.pop(self.exclude_id.index(self.tokenizer.mask_token_id))
-
     def input_ids_to_labels(self, input_ids, label_position: List = None, label_id: List = None):
         """ Generate label for likelihood computation
 
@@ -170,19 +167,52 @@ class Prompter:
             raise ValueError('unknown seed type: {}'.format(seed_type))
 
     def encode_plus(self, sentence):
+        """ Encode with mask flag, that is masked position if sentence has masked token, otherwise is the entire
+        sequence except for special tokens.
+
+        :param sentence:
+        :return:
+        """
         param = {'max_length': self.max_length, 'truncation': True, 'padding': 'max_length'}
-        encode = self.tokenizer.encode_plus(sentence, **param)
-
-        assert self.tokenizer.mask_token_id in encode['input_ids']
-
-        # encode['mask_flag'] = list(map(lambda x: int(x == self.tokenizer.mask_token_id), encode['input_ids']))
-        encode['mask_flag'] = list(map(lambda x: int(x not in self.exclude_id), encode['input_ids']))
+        if self.tokenizer.mask_token in sentence:
+            encode = self.tokenizer.encode_plus(sentence, **param)
+            encode['mask_flag'] = list(map(lambda x: int(x == self.tokenizer.mask_token_id), encode['input_ids']))
+        else:
+            encode = self.encode_plus_perplexity(sentence)
+            encode['mask_flag'] = list(map(lambda x: int(x not in self.tokenizer.all_special_ids), encode['input_ids']))
         return encode
+
+    def encode_plus_perplexity(self, sentence):
+        """ An output from `encode_plus` for perplexity computation
+        * for pseudo perplexity, encode all text with mask on every token one by one
+        """
+        param = {'max_length': self.max_length, 'truncation': True, 'padding': 'max_length'}
+        if self.is_causal:
+            raise NotImplementedError('TODO')
+        else:
+            token_list = self.tokenizer.tokenize(sentence)
+
+            def encode_with_single_mask_id(mask_position: int):
+                _token_list = token_list.copy()  # can not be encode outputs because of prefix
+                masked_token_id = self.tokenizer.convert_tokens_to_ids(_token_list[mask_position])
+                if masked_token_id == self.tokenizer.mask_token_id:
+                    return None
+                _token_list[mask_position] = self.tokenizer.mask_token
+                tmp_string = self.tokenizer.convert_tokens_to_string(_token_list)
+                _encode = self.tokenizer.encode_plus(tmp_string, **param)
+                _encode['labels'] = self.input_ids_to_labels(
+                    _encode['input_ids'],
+                    label_position=[mask_position + len(self.sp_token_prefix)],
+                    label_id=[masked_token_id])
+                return _encode
+
+            length = min(self.max_length - len(self.sp_token_prefix), len(token_list))
+            return list(filter(None, map(encode_with_single_mask_id, range(length))))
 
     def replace_mask(self,
                      word_pairs: List,
                      n_blank: int = 3,
-                     n_iter: int = 10,
+                     n_revision: int = 10,
                      topk: int = 5,
                      seed_type: str = 'middle',
                      batch_size: int = 4,
@@ -197,15 +227,21 @@ class Prompter:
         seed_sentences = list(map(lambda x: self.pair_to_seed(x, **shared), word_pairs))
         shared = {'word_pairs': word_pairs, 'topk': topk, 'debug': debug, 'batch_size': batch_size,
                   'perplexity_filter': perplexity_filter}
-        # iter_n = n_blank if seed_type == 'middle' else n_blank + n_blank_suffix + n_blank_prefix
-        n = 0
+        logging.info('replace masked token')
+        edit = [seed_sentences]
         while True:
             seed_sentences = self.replace_single_mask(seed_sentences, **shared)
-            n += 1
-            if n > n_iter and self.tokenizer.mask_token not in seed_sentences:
+            if all(self.tokenizer.mask_token not in i for i in seed_sentences):
                 break
+            edit.append(seed_sentences)
+        logging.info('additional revision: {} steps'.format(n_revision))
+        for i in range(n_revision):
+            seed_sentences = self.replace_single_mask(seed_sentences, **shared)
+            edit.append(seed_sentences)
 
-        return seed_sentences
+        edit = list(zip(*edit))
+
+        return seed_sentences, edit
 
     def replace_single_mask(self,
                             seed_sentences,
@@ -270,7 +306,7 @@ class Prompter:
                         range(topk_per_position))
                 ))
             topk_decoded = sorted(topk_decoded, key=lambda x: x[1], reverse=True)[:min(topk, len(topk_decoded))]
-            decode = list(map(lambda x: x[1], topk_decoded))
+            decode = list(map(lambda x: x[0], topk_decoded))
             return decode
             # # to replace the position with the highest likelihood among possible masked positions
             # replace_pos, (_, ind) = sorted(filtered, key=lambda x: x[1][0][0], reverse=True)[0]
@@ -278,6 +314,8 @@ class Prompter:
             # return topk_decoded
 
         greedy_filling = list(map(edit_input, range(len(total_input))))
+        # print(greedy_filling)
+        # input()
         if perplexity_filter:
             logging.info('ppl filtering')
             best_edit = []
@@ -289,35 +327,9 @@ class Prompter:
 
         if debug:
             for o, e in zip(seed_sentences, best_edit):
-                logging.info('\n- original: {}\n- edit : {}\n'.format(o, e))
+                logging.info('- original: {}'.format(o))
+                logging.info('- edit    : {}'.format(e))
         return best_edit
-
-    def encode_plus_perplexity(self, sentence):
-        """ An output from `encode_plus` for perplexity computation
-        * for pseudo perplexity, encode all text with mask on every token one by one
-        """
-        param = {'max_length': self.max_length, 'truncation': True, 'padding': 'max_length'}
-        if self.is_causal:
-            raise NotImplementedError('TODO')
-        else:
-            token_list = self.tokenizer.tokenize(sentence)
-
-            def encode_with_single_mask_id(mask_position: int):
-                _token_list = token_list.copy()  # can not be encode outputs because of prefix
-                masked_token_id = self.tokenizer.convert_tokens_to_ids(_token_list[mask_position])
-                if masked_token_id == self.tokenizer.mask_token_id:
-                    return None
-                _token_list[mask_position] = self.tokenizer.mask_token
-                tmp_string = self.tokenizer.convert_tokens_to_string(_token_list)
-                _encode = self.tokenizer.encode_plus(tmp_string, **param)
-                _encode['labels'] = self.input_ids_to_labels(
-                    _encode['input_ids'],
-                    label_position=[mask_position + len(self.sp_token_prefix)],
-                    label_id=[masked_token_id])
-                return _encode
-
-            length = min(self.max_length - len(self.sp_token_prefix), len(token_list))
-            return list(filter(None, map(encode_with_single_mask_id, range(length))))
 
     def get_perplexity(self, sentences, batch_size: int = 4):
         """ compute perplexity on each sentence
@@ -363,9 +375,7 @@ if __name__ == '__main__':
     # stem = ["beauty", "aesthete"]
     candidates_ = [["pleasure", "hedonist"], ["emotion", "demagogue"], ["opinion", "sympathizer"],
                    ["seance", "medium"], ["luxury", "ascetic"]]
-    o_ = lm.replace_mask(candidates_,
-                         seed_type='middle',
-                         debug=True,
-                         perplexity_filter=True,
-                         topk=5)
+    o_, e_ = lm.replace_mask(
+        candidates_, seed_type='middle', perplexity_filter=True, topk=5, debug=True)
     print(o_)
+    print(e_)

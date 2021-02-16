@@ -2,7 +2,8 @@ import alm
 
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
 data = ['sat', 'u2', 'u4', 'google', 'bats']
-data_test = ['sat']
+# data_test = ['sat']
+data_test = ['sat', 'u2', 'u4', 'google', 'bats']
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 256), ('bert-large-cased', 32, 1024)]
 
 

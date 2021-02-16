@@ -2,7 +2,7 @@ import json
 from typing import List
 from itertools import chain
 
-__all__ = 'AnalogyData'
+__all__ = ['AnalogyData', 'get_dataset_raw']
 VALID_DATA = ['sat', 'u2', 'u4', 'google', 'bats']
 
 

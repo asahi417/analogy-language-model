@@ -82,6 +82,9 @@ class Prompter:
         self.sp_token_prefix = tokens_encode[:tokens_encode.index(tokens[0])]
         self.sp_token_suffix = tokens_encode[tokens_encode.index(tokens[-1]) + 1:]
 
+        self.exclude_id = self.tokenizer.all_special_id.copy()
+        self.exclude_id.pop(self.exclude_id.index(self.tokenizer.mask_token_id))
+
     def input_ids_to_labels(self, input_ids, label_position: List = None, label_id: List = None):
         """ Generate label for likelihood computation
 
@@ -104,14 +107,14 @@ class Prompter:
 
     def cleanup_decode(self, sentence):
         # give a space around <mask>
-        cleaned_sent = re.sub(r'({})'.format(self.tokenizer.mask_token), r' \1 ', sentence)
+        cleaned_sent = re.sub(r'({})'.format(self.tokenizer.mask_token).replace('[', '\[').replace(']', '\]'),
+                              r' \1 ', sentence)
         cleaned_sent = re.sub(r'\s+', ' ', cleaned_sent)  # reduce more than two space to one
 
         # remove special tokens but mask
         to_remove = list(filter(lambda x: x != self.tokenizer.mask_token, self.tokenizer.all_special_tokens))
         to_remove = '|'.join(to_remove).replace('[', '\[').replace(']', '\]')
         cleaned_sent = re.sub(r'{}'.format(to_remove), '', cleaned_sent)
-
         # remove redundant spaces at the prefix
         return re.sub(r'\A\s*', '', cleaned_sent)
 
@@ -159,9 +162,9 @@ class Prompter:
             logging.info('find best seed position for head and tail by perplexity: {} in total'.format(len(candidates)))
             ppl = self.get_perplexity(candidates, batch_size=batch_size)
             best_seed = candidates[ppl.index(min(ppl))]
-            print(candidates)
-            print(ppl)
-            print(best_seed)
+            # print(candidates)
+            # print(ppl)
+            # print(best_seed)
             return best_seed
         else:
             raise ValueError('unknown seed type: {}'.format(seed_type))
@@ -169,13 +172,17 @@ class Prompter:
     def encode_plus(self, sentence):
         param = {'max_length': self.max_length, 'truncation': True, 'padding': 'max_length'}
         encode = self.tokenizer.encode_plus(sentence, **param)
+
         assert self.tokenizer.mask_token_id in encode['input_ids']
-        encode['mask_flag'] = list(map(lambda x: int(x == self.tokenizer.mask_token_id), encode['input_ids']))
+
+        # encode['mask_flag'] = list(map(lambda x: int(x == self.tokenizer.mask_token_id), encode['input_ids']))
+        encode['mask_flag'] = list(map(lambda x: int(x not in self.exclude_id), encode['input_ids']))
         return encode
 
     def replace_mask(self,
                      word_pairs: List,
                      n_blank: int = 3,
+                     n_iter: int = 10,
                      topk: int = 5,
                      seed_type: str = 'middle',
                      batch_size: int = 4,
@@ -185,25 +192,36 @@ class Prompter:
                      n_blank_suffix: int = 2):
         if type(word_pairs[0]) is not list:
             word_pairs = [word_pairs]
-        shared = {'n_blank': n_blank, 'seed_type': seed_type, 'n_blank_prefix': n_blank_prefix,
-                  'n_blank_suffix': n_blank_suffix, 'batch_size': batch_size}
+        shared = {'n_blank': n_blank, 'seed_type': seed_type,
+                  'n_blank_prefix': n_blank_prefix, 'n_blank_suffix': n_blank_suffix, 'batch_size': batch_size}
         seed_sentences = list(map(lambda x: self.pair_to_seed(x, **shared), word_pairs))
-        shared = {'topk': topk, 'debug': debug, 'batch_size': batch_size, 'perplexity_filter': perplexity_filter}
-        for i in range(n_blank):
+        shared = {'word_pairs': word_pairs, 'topk': topk, 'debug': debug, 'batch_size': batch_size,
+                  'perplexity_filter': perplexity_filter}
+        # iter_n = n_blank if seed_type == 'middle' else n_blank + n_blank_suffix + n_blank_prefix
+        n = 0
+        while True:
             seed_sentences = self.replace_single_mask(seed_sentences, **shared)
+            n += 1
+            if n > n_iter and self.tokenizer.mask_token not in seed_sentences:
+                break
+
         return seed_sentences
 
     def replace_single_mask(self,
                             seed_sentences,
+                            word_pairs,
                             batch_size: int = 4,
                             topk: int = 5,
+                            topk_per_position: int = 5,
                             perplexity_filter: bool = True,
                             debug: bool = False):
+        assert len(seed_sentences) == len(word_pairs), '{} != {}'.format(len(seed_sentences), len(word_pairs))
         if self.model is None:
             self.load_model()
         if type(seed_sentences) is str:
             seed_sentences = [seed_sentences]
 
+        # data = list(map(lambda x: self.encode_plus(*x), zip(seed_sentences, word_pairs)))
         data = list(map(self.encode_plus, seed_sentences))
         data_loader = torch.utils.data.DataLoader(
             Dataset(data),
@@ -223,26 +241,41 @@ class Prompter:
                 mask_flag = encode.pop('mask_flag')
                 output = self.model(**encode, return_dict=True)
                 prediction_scores = output['logits']
-                values, indices = prediction_scores.topk(topk, dim=-1)
+                values, indices = prediction_scores.topk(topk_per_position, dim=-1)
                 total_input += encode.pop('input_ids').tolist()
                 total_mask += mask_flag.tolist()
                 total_val += values.tolist()
                 total_ind += indices.tolist()
+        assert len(word_pairs) == len(total_input), '{} != {}'.format(len(word_pairs), len(total_input))
 
         def edit_input(batch_i):
             inp, mas, val, ind = total_input[batch_i], total_mask[batch_i], total_val[batch_i], total_ind[batch_i]
+            head, tail = word_pairs[batch_i]
             filtered = list(filter(lambda x: mas[x[0]] == 1, enumerate(zip(val, ind))))
-            # to replace the position with the highest likelihood among possible masked positions
-            replace_pos, (_, ind) = sorted(filtered, key=lambda x: x[1][0][0], reverse=True)[0]
 
-            def decode_topk(k):
+            def decode_topk(k, replace_pos, ind_, likelihood):
                 inp_ = deepcopy(inp)
-                inp_[replace_pos] = ind[k]
+                inp_[replace_pos] = ind_[k]
                 decoded = self.tokenizer.decode(inp_, skip_special_tokens=False)
-                return self.cleanup_decode(decoded)
+                decoded = self.cleanup_decode(decoded)
+                if head in decoded and tail in decoded:
+                    return decoded, likelihood[k]
+                return None
 
-            topk_decoded = list(map(decode_topk, range(topk)))
-            return topk_decoded
+            topk_decoded = []
+            for _replace_pos, (_val, _ind) in filtered:
+                topk_decoded += list(filter(
+                    None,
+                    map(lambda x: decode_topk(x, _replace_pos, _ind, _val),
+                        range(topk_per_position))
+                ))
+            topk_decoded = sorted(topk_decoded, key=lambda x: x[1], reverse=True)[:min(topk, len(topk_decoded))]
+            decode = list(map(lambda x: x[1], topk_decoded))
+            return decode
+            # # to replace the position with the highest likelihood among possible masked positions
+            # replace_pos, (_, ind) = sorted(filtered, key=lambda x: x[1][0][0], reverse=True)[0]
+            # topk_decoded = list(filter(None, map(decode_topk, range(topk))))
+            # return topk_decoded
 
         greedy_filling = list(map(edit_input, range(len(total_input))))
         if perplexity_filter:
@@ -251,7 +284,6 @@ class Prompter:
             for s in greedy_filling:
                 ppl = self.get_perplexity(s)
                 best_edit.append(s[ppl.index(min(ppl))])
-                # best_edit.append(s[ppl.index(max(ppl))])
         else:
             best_edit = list(map(lambda x: x[0], greedy_filling))
 
@@ -326,12 +358,13 @@ class Prompter:
 
 
 if __name__ == '__main__':
-    lm = Prompter('roberta-large', max_length=12)
+    lm = Prompter('albert-base-v1', max_length=12)
+    # lm = Prompter('roberta-base', max_length=12)
     # stem = ["beauty", "aesthete"]
     candidates_ = [["pleasure", "hedonist"], ["emotion", "demagogue"], ["opinion", "sympathizer"],
                    ["seance", "medium"], ["luxury", "ascetic"]]
     o_ = lm.replace_mask(candidates_,
-                         seed_type='best',
+                         seed_type='middle',
                          debug=True,
                          perplexity_filter=True,
                          topk=5)

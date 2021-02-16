@@ -1,22 +1,32 @@
+import logging
+import json
+import os
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
+
 import alm
+from itertools import chain
 
-data = ['sat', 'u2', 'u4', 'google', 'bats']
-models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
+export_dit = './experiments_results/prompt'
+os.makedirs(export_dit, exist_ok=True)
 
 
-for _model, _max_length, _batch in models:
-    for scoring_method in methods:
-        if scoring_method in ['pmi', 'ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked'] and 'gpt' in _model:
-            continue
-        scorer = alm.RelationScorer(model=_model, max_length=_max_length)
-        for _data in data:
-            for _temp in all_templates:
-                scorer.analogy_test(
-                    scoring_method=scoring_method,
-                    data=_data,
-                    template_type=_temp,
-                    batch_size=_batch,
-                    skip_scoring_prediction=True
-                )
-                scorer.release_cache()
+def get_prompt(model, max_length, batch, dataset):
+    val, test = alm.get_dataset_raw(dataset)
+    word_pairs = list(chain(*[[i['stem']] + i['choice'] for i in val]))
+    word_pairs += list(chain(*[[i['stem']] + i['choice'] for i in test]))
+    word_pairs = word_pairs[:10]
+    logging.info('dataset ({}) has {} word pairs'.format(dataset, len(word_pairs)))
+    lm = alm.Prompter(model, max_length)
+    prompts = lm.replace_mask(word_pairs,
+                              seed_type='whole',
+                              batch_size=batch,
+                              topk=1)
+    assert len(word_pairs) == len(prompts)
+    prompt_dict = {'||'.join(w): p for w, p in zip(word_pairs, prompts)}
+    with open('{}/{}.json'.format(export_dit, dataset), 'w') as f:
+        json.dump(prompt_dict, f)
 
+
+if __name__ == '__main__':
+    get_prompt('albert-base-v1', 12, 512, 'sat')
+    # get_prompt('roberta-large', 12, 512, 'sat')

@@ -45,7 +45,7 @@ class Prompter:
 
     def __init__(self,
                  model: str,
-                 max_length: int = None,
+                 max_length: int = 32,
                  cache_dir: str = './cache',
                  num_worker: int = 0):
         """ transformers language model based sentence-mining

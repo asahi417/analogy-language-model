@@ -291,7 +291,7 @@ class Prompter:
             num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False)
         assert len(word_pairs) == len(partition), '{} != {}'.format(len(word_pairs), len(partition))
 
-        logging.info('prediction on masked tokens')
+        logging.info(' * prediction on masked tokens')
         total_input = []
         total_val = []  # batch, mask_size, topk
         total_ind = []
@@ -346,11 +346,14 @@ class Prompter:
             return topk_sentence
 
         greedy_filling = list(map(process_single_sentence, range(len(partition))))
-        logging.info('ppl filtering')
+        logging.info(' * ppl filtering')
+        partition = get_partition(greedy_filling)
+        list_ppl = self.get_perplexity(list(chain(*greedy_filling)), batch_size=batch_size)
+        list_ppl = [list_ppl[s:e] for s, e in partition]
         best_edit = []
         best_ppl = []
-        for sent in tqdm(greedy_filling):
-            ppl = self.get_perplexity(sent)
+        for sent, ppl in zip(greedy_filling, list_ppl):
+            # ppl = self.get_perplexity(sent, batch_size=batch_size)
             best_edit.append(sent[ppl.index(min(ppl))])
             best_ppl.append(min(ppl))
             if debug:
@@ -383,7 +386,7 @@ class Prompter:
         loss_fct = nn.CrossEntropyLoss(reduction='none')
         nll = []
         with torch.no_grad():
-            for encode in data_loader:
+            for encode in tqdm(data_loader):
                 encode = {k: v.to(self.device) for k, v in encode.items()}
                 labels = encode.pop('labels')
                 output = self.model(**encode, return_dict=True)

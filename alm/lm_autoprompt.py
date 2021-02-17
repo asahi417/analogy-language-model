@@ -220,10 +220,11 @@ class Prompter:
         seed_sentences = list(map(lambda x: self.pair_to_seed(x, **shared), word_pairs))
         shared = {'word_pairs': word_pairs, 'topk': topk, 'topk_per_position': topk_per_position, 'debug': debug,
                   'batch_size': batch_size}
-        logging.info('replace masked token')
+        logging.info('\n################\n# REPLACE MASK #\n################')
         edit = [seed_sentences]
         edit_ppl = []
         while True:
+            logging.info('REPLACE MASK: step {}'.format(len(edit_ppl)))
             seed_sentences, ppl = self.replace_single_mask(seed_sentences, **shared)
             edit.append(seed_sentences)
             edit_ppl.append(ppl)
@@ -235,10 +236,13 @@ class Prompter:
         edit_ppl = list(zip(*edit_ppl))
         output_dict = {}
         if n_revision != 0:
-            logging.info('additional revision to improve perplexity: max {} steps'.format(n_revision))
+            logging.info('#####################\n# PERPLEXITY FILTER #\n#####################')
+            logging.info('PERPLEXITY FILTER: max {} steps'.format(n_revision))
             shared = {'topk': topk, 'topk_per_position': topk_per_position, 'debug': debug, 'batch_size': batch_size}
             for i in range(n_revision):
+                logging.info('PERPLEXITY FILTER: step {}/{}'.format(i, n_revision))
                 if len(seed_sentences) == 0:
+                    logging.info('PERPLEXITY FILTER: all sentences reached the best perplexity')
                     break
                 seed_sentences, ppl = self.replace_single_mask(seed_sentences, word_pairs=word_pairs, **shared)
 
@@ -287,7 +291,7 @@ class Prompter:
             num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False)
         assert len(word_pairs) == len(partition), '{} != {}'.format(len(word_pairs), len(partition))
 
-        logging.info('Inference on masked token')
+        logging.info('prediction on masked tokens')
         total_input = []
         total_val = []  # batch, mask_size, topk
         total_ind = []
@@ -327,10 +331,16 @@ class Prompter:
                     ))
 
             # drop duplicated decode and keep the one with tje highest likelihood
-            topk_decoded = list(map(
-                lambda d: max(filter(lambda x: x[0] == d, topk_decoded), key=lambda x: x[1]),
-                set(list(zip(*topk_decoded))[0])
-            ))
+            try:
+                topk_decoded = list(map(
+                    lambda d: max(filter(lambda x: x[0] == d, topk_decoded), key=lambda x: x[1]),
+                    set(list(zip(*topk_decoded))[0])
+                ))
+            except Exception:
+                logging.exception('error')
+                print(topk_decoded)
+                print(head, tail)
+                print(s, e)
             topk_decoded = sorted(topk_decoded, key=lambda x: x[1], reverse=True)
             topk_sentence = list(zip(*topk_decoded))[0][:min(topk, len(topk_decoded))]
             return topk_sentence
@@ -339,7 +349,7 @@ class Prompter:
         logging.info('ppl filtering')
         best_edit = []
         best_ppl = []
-        for sent in greedy_filling:
+        for sent in tqdm(greedy_filling):
             ppl = self.get_perplexity(sent)
             best_edit.append(sent[ppl.index(min(ppl))])
             best_ppl.append(min(ppl))
@@ -373,7 +383,7 @@ class Prompter:
         loss_fct = nn.CrossEntropyLoss(reduction='none')
         nll = []
         with torch.no_grad():
-            for encode in tqdm(data_loader):
+            for encode in data_loader:
                 encode = {k: v.to(self.device) for k, v in encode.items()}
                 labels = encode.pop('labels')
                 output = self.model(**encode, return_dict=True)

@@ -26,5 +26,5 @@ def get_prompt(model, max_length, batch, dataset):
 
 
 if __name__ == '__main__':
-    get_prompt('albert-base-v1', 32, 512, 'sat')
-    # get_prompt('roberta-large', 12, 512, 'sat')
+    # get_prompt('albert-base-v1', 32, 512, 'sat')
+    get_prompt('roberta-large', 12, 512, 'sat')

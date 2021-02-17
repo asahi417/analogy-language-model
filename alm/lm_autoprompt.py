@@ -241,19 +241,24 @@ class Prompter:
                 if len(seed_sentences) == 0:
                     break
                 seed_sentences, ppl = self.replace_single_mask(seed_sentences, word_pairs=word_pairs, **shared)
-                index_unfixed = list(filter(lambda x: seed_sentences[x] != edit[x][-1], range(len(seed_sentences))))
+
                 index_fixed = list(filter(lambda x: seed_sentences[x] == edit[x][-1], range(len(seed_sentences))))
-
-                # sentence keep improving
-                for n in index_unfixed:
-                    edit[n] = tuple(list(edit[n]) + [seed_sentences[n]])
-                    edit_ppl[n] = tuple(list(edit_ppl[n]) + [ppl[n]])
-
                 # extract stable sentence
                 for n in index_fixed:
-                    seed_sentences.pop(n)
-                    output_dict['||'.join(word_pairs.pop(n))] = [edit.pop(n), edit_ppl.pop(n)]
+                    output_dict['||'.join(word_pairs[n])] = [edit[n], edit_ppl[n]]
 
+                # sentence keep improving
+                index_unfixed = list(filter(lambda x: seed_sentences[x] != edit[x][-1], range(len(seed_sentences))))
+                seed_sentences = list(map(lambda x: seed_sentences[x], index_unfixed))
+                ppl = list(map(lambda x: ppl[x], index_unfixed))
+                word_pairs = list(map(lambda x: word_pairs[x], index_unfixed))
+                edit = list(map(lambda x: edit[x], index_unfixed))
+                edit_ppl = list(map(lambda x: edit_ppl[x], index_unfixed))
+
+                for n in range(len(index_unfixed)):
+                    edit[n] = tuple(list(edit[n]) + [seed_sentences[n]])
+                    edit_ppl[n] = tuple(list(edit_ppl[n]) + [ppl[n]])
+                
         output_dict_remains = {
             '||'.join(pair): [edit[n], edit_ppl[n]] for n, pair in enumerate(word_pairs)
         }

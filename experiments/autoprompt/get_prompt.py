@@ -21,7 +21,7 @@ def get_prompt(model, max_length, batch, dataset):
                               seed_type='middle',
                               batch_size=batch)
     assert len(word_pairs) == len(prompts)
-    with open('{}/{}.json'.format(export_dit, dataset), 'w') as f:
+    with open('{}/{}.{}.json'.format(export_dit, dataset, model), 'w') as f:
         json.dump(prompts, f)
 
 

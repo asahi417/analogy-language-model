@@ -18,13 +18,11 @@ def get_prompt(model, max_length, batch, dataset):
     logging.info('dataset ({}) has {} word pairs'.format(dataset, len(word_pairs)))
     lm = alm.Prompter(model, max_length)
     prompts = lm.replace_mask(word_pairs,
-                              seed_type='whole',
-                              batch_size=batch,
-                              topk=1)
+                              seed_type='middle',
+                              batch_size=batch)
     assert len(word_pairs) == len(prompts)
-    prompt_dict = {'||'.join(w): p for w, p in zip(word_pairs, prompts)}
     with open('{}/{}.json'.format(export_dit, dataset), 'w') as f:
-        json.dump(prompt_dict, f)
+        json.dump(prompts, f)
 
 
 if __name__ == '__main__':

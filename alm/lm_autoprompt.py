@@ -147,22 +147,19 @@ class Prompter:
         elif seed_type == 'whole':
             return ' '.join([self.tokenizer.mask_token] * n_blank_prefix + [h] + [self.tokenizer.mask_token] * n_blank
                             + [t] + [self.tokenizer.mask_token] * n_blank_suffix)
-        elif seed_type == 'best':
-            # build candidates
-            candidates = []
-            for pre_n in range(self.max_length - 2):
-                prefix = [self.tokenizer.mask_token] * pre_n + [h]
-                for mid_n in range(1, self.max_length - 1 - pre_n):
-                    middle = [self.tokenizer.mask_token] * mid_n + [t]
-                    candidates.append(' '.join(prefix + middle))
-            # compute perplexity
-            logging.info('find best seed position for head and tail by perplexity: {} in total'.format(len(candidates)))
-            ppl = self.get_perplexity(candidates, batch_size=batch_size)
-            best_seed = candidates[ppl.index(min(ppl))]
-            # print(candidates)
-            # print(ppl)
-            # print(best_seed)
-            return best_seed
+        # elif seed_type == 'best':
+        #     # build candidates
+        #     candidates = []
+        #     for pre_n in range(self.max_length - 2):
+        #         prefix = [self.tokenizer.mask_token] * pre_n + [h]
+        #         for mid_n in range(1, self.max_length - 1 - pre_n):
+        #             middle = [self.tokenizer.mask_token] * mid_n + [t]
+        #             candidates.append(' '.join(prefix + middle))
+        #     # compute perplexity
+        #     logging.info('find best seed position for head and tail by perplexity: {} in total'.format(len(candidates)))
+        #     ppl = self.get_perplexity(candidates, batch_size=batch_size)
+        #     best_seed = candidates[ppl.index(min(ppl))]
+        #     return best_seed
         else:
             raise ValueError('unknown seed type: {}'.format(seed_type))
 
@@ -207,22 +204,22 @@ class Prompter:
 
     def replace_mask(self,
                      word_pairs: List,
-                     n_blank: int = 2,
+                     n_blank: int = 4,
                      n_revision: int = 10,
-                     topk: int = 5,
+                     topk: int = 10,
                      topk_per_position: int = 15,
                      seed_type: str = 'middle',
                      batch_size: int = 4,
                      debug: bool = False,
-                     n_blank_prefix: int = 2,
-                     n_blank_suffix: int = 2):
+                     n_blank_prefix: int = 1,
+                     n_blank_suffix: int = 1):
         if type(word_pairs[0]) is not list:
             word_pairs = [word_pairs]
-        shared = {'n_blank': n_blank, 'seed_type': seed_type,
-                  'n_blank_prefix': n_blank_prefix, 'n_blank_suffix': n_blank_suffix, 'batch_size': batch_size}
+        shared = {'n_blank': n_blank, 'seed_type': seed_type, 'n_blank_prefix': n_blank_prefix,
+                  'n_blank_suffix': n_blank_suffix, 'batch_size': batch_size}
         seed_sentences = list(map(lambda x: self.pair_to_seed(x, **shared), word_pairs))
-        shared = {'word_pairs': word_pairs, 'topk': topk, 'topk_per_position': topk_per_position,
-                  'debug': debug, 'batch_size': batch_size}
+        shared = {'word_pairs': word_pairs, 'topk': topk, 'topk_per_position': topk_per_position, 'debug': debug,
+                  'batch_size': batch_size}
         logging.info('replace masked token')
         edit = [seed_sentences]
         edit_ppl = []

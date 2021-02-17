@@ -207,7 +207,7 @@ class Prompter:
                      n_blank: int = 4,
                      n_revision: int = 10,
                      topk: int = 10,
-                     topk_per_position: int = 15,
+                     topk_per_position: int = 1000,
                      seed_type: str = 'middle',
                      batch_size: int = 4,
                      debug: bool = False,
@@ -269,13 +269,8 @@ class Prompter:
         output_dict.update(output_dict_remains)
         return output_dict
 
-    def replace_single_mask(self,
-                            seed_sentences,
-                            word_pairs,
-                            batch_size: int = 4,
-                            topk: int = 5,
-                            topk_per_position: int = 5,
-                            debug: bool = False):
+    def replace_single_mask(self, seed_sentences, word_pairs, batch_size: int = 4, topk: int = 5,
+                            topk_per_position: int = 5, debug: bool = False):
         assert len(seed_sentences) == len(word_pairs), '{} != {}'.format(len(seed_sentences), len(word_pairs))
         if self.model is None:
             self.load_model()
@@ -312,7 +307,6 @@ class Prompter:
             topk_decoded = []
             for i in range(s, e):
                 inp, val, ind = total_input[i], total_val[i], total_ind[i]
-                print(inp, val, ind)
                 filtered = list(filter(lambda x: inp[x[0]] == self.tokenizer.mask_token_id, enumerate(zip(val, ind))))
 
                 def decode_topk(k, replace_pos, token_index, token_likelihood):
@@ -332,16 +326,10 @@ class Prompter:
                     ))
 
             # drop duplicated decode and keep the one with tje highest likelihood
-            try:
-                topk_decoded = list(map(
-                    lambda d: max(filter(lambda x: x[0] == d, topk_decoded), key=lambda x: x[1]),
-                    set(list(zip(*topk_decoded))[0])
-                ))
-            except Exception:
-                logging.exception('error')
-                print(topk_decoded)
-                print(head, tail)
-                print(s, e)
+            topk_decoded = list(map(
+                lambda d: max(filter(lambda x: x[0] == d, topk_decoded), key=lambda x: x[1]),
+                set(list(zip(*topk_decoded))[0])
+            ))
             topk_decoded = sorted(topk_decoded, key=lambda x: x[1], reverse=True)
             topk_sentence = list(zip(*topk_decoded))[0][:min(topk, len(topk_decoded))]
             return topk_sentence

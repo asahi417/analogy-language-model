@@ -219,22 +219,9 @@ class GridSearch:
         elif self.scoring_method == 'ppl_hyp':
 
             def compute_ppl(ppl_scores):
-                # print(ppl_scores)
-                # print(len(ppl_scores))
-                # normalized ppl
                 norm_ppl = sum(map(lambda x: x[0], ppl_scores))
                 norm_head = sum(map(lambda x: x[1], ppl_scores))
                 norm_tail = sum(map(lambda x: x[2], ppl_scores))
-                # print(list(map(
-                #     lambda x: x[0] / norm + ppl_hyp_eta_head * x[1] + ppl_hyp_eta_tail * x[2],
-                #     ppl_scores)))
-                # input()
-                # ppl, ppl_head, ppl_tail = ppl_scores
-
-
-                # ppl_normalized = list(map(lambda x: log(x / sum(ppl_in_option)), ppl_in_option))
-                # ppl_head_mask = list(map(lambda x: x[1], ppl_scores))
-                # ppl_tail_mask = list(map(lambda x: x[2], ppl_scores))
 
                 return list(map(
                     lambda x: log(x[0] / norm_ppl)
@@ -276,7 +263,10 @@ class GridSearch:
             'positive_permutation_aggregation': positive_permutation_aggregation,
             'negative_permutation_aggregation': negative_permutation_aggregation,
             'negative_permutation_weight': negative_permutation_weight,
-            'accuracy': accuracy}
+            'accuracy': accuracy,
+            'ppl_hyp_eta_head': ppl_hyp_eta_head,
+            'ppl_hyp_eta_tail': ppl_hyp_eta_tail
+        }
         tmp_config.update(self.shared_config)
         if self.export_prediction:
             tmp_config['prediction'] = pred

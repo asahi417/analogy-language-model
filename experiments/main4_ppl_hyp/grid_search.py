@@ -33,4 +33,5 @@ for _model, _max_length, _batch in models:
                     test=test)
                 scorer.release_cache()
 
+alm.export_report(export_prefix=export_prefix)
 alm.export_report(export_prefix=export_prefix, test=True)

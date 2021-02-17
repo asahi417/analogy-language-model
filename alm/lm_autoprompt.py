@@ -182,8 +182,10 @@ class Prompter:
             raise NotImplementedError('only available with masked LM')
         if not token_wise_mask:
             assert self.tokenizer.mask_token in sentence, sentence
-
             encode = self.tokenizer.encode_plus(sentence, **param)
+            print(encode['input_ids'])
+            print(self.tokenizer.pad_token_id)
+            input()
             assert len(encode['input_ids']) < self.max_length, 'exceed max_length'
             # encode['labels'] = list(map(lambda x: int(x == self.tokenizer.mask_token_id), encode['input_ids']))
             return [encode]

@@ -336,9 +336,10 @@ class Prompter:
         best_ppl = []
         for sent in greedy_filling:
             ppl = self.get_perplexity(sent)
-            logging.info(str(list(zip(sent, ppl))))
             best_edit.append(sent[ppl.index(min(ppl))])
             best_ppl.append(min(ppl))
+            if debug:
+                logging.info(str(list(zip(sent, ppl))))
 
         if debug:
             for o, ed, bp in zip(seed_sentences, best_edit, best_ppl):

@@ -312,6 +312,7 @@ class Prompter:
             topk_decoded = []
             for i in range(s, e):
                 inp, val, ind = total_input[i], total_val[i], total_ind[i]
+                print(inp, val, ind)
                 filtered = list(filter(lambda x: inp[x[0]] == self.tokenizer.mask_token_id, enumerate(zip(val, ind))))
 
                 def decode_topk(k, replace_pos, token_index, token_likelihood):

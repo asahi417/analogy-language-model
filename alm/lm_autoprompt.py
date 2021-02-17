@@ -320,10 +320,14 @@ class Prompter:
                     return None
 
                 for _replace_pos, (_val, _ind) in filtered:
-                    topk_decoded += list(filter(
-                        None,
-                        map(lambda x: decode_topk(x, _replace_pos, _ind, _val), range(topk_per_position))
+                    tmp_topk_decoded = list(filter(
+                        None, map(lambda x: decode_topk(x, _replace_pos, _ind, _val), range(topk))
                     ))
+                    if len(tmp_topk_decoded) == 0:
+                        tmp_topk_decoded = list(filter(
+                            None, map(lambda x: decode_topk(x, _replace_pos, _ind, _val), range(topk_per_position))
+                        ))
+                    topk_decoded += tmp_topk_decoded
 
             # drop duplicated decode and keep the one with tje highest likelihood
             topk_decoded = list(map(

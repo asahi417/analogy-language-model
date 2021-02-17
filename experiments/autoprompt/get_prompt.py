@@ -18,7 +18,8 @@ def get_prompt(model, max_length, batch, dataset):
     lm = alm.Prompter(model, max_length)
     prompts = lm.replace_mask(word_pairs,
                               seed_type='middle',
-                              batch_size=batch)
+                              batch_size=batch,
+                              debug=True)
     assert len(word_pairs) == len(prompts)
     with open('{}/{}.{}.json'.format(export_dit, dataset, model), 'w') as f:
         json.dump(prompts, f)

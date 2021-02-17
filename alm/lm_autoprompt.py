@@ -236,7 +236,7 @@ class Prompter:
         edit_ppl = list(zip(*edit_ppl))
         output_dict = {}
         if n_revision != 0:
-            logging.info('#####################\n# PERPLEXITY FILTER #\n#####################')
+            logging.info('\n#####################\n# PERPLEXITY FILTER #\n#####################')
             logging.info('PERPLEXITY FILTER: max {} steps'.format(n_revision))
             shared = {'topk': topk, 'topk_per_position': topk_per_position, 'debug': debug, 'batch_size': batch_size}
             for i in range(n_revision):
@@ -355,13 +355,12 @@ class Prompter:
         for sent, ppl in zip(greedy_filling, list_ppl):
             best_edit.append(sent[ppl.index(min(ppl))])
             best_ppl.append(min(ppl))
-            # if debug:
-            #     logging.info(str(list(zip(sent, ppl))))
 
         if debug:
+            logging.info(' * edit sample')
             for n, (o, ed, bp) in enumerate(zip(seed_sentences, best_edit, best_ppl)):
-                logging.info('- original: {}'.format(o))
-                logging.info('- edit    : {} (ppl: {})'.format(ed, bp))
+                logging.info('  - original: {}'.format(o))
+                logging.info('  - edit    : {} (ppl: {})'.format(ed, bp))
                 if n > 5:
                     break
         return best_edit, best_ppl

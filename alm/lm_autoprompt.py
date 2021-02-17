@@ -207,7 +207,7 @@ class Prompter:
                      n_blank: int = 4,
                      n_revision: int = 10,
                      topk: int = 10,
-                     topk_per_position: int = 1000,
+                     topk_per_position: int = 500,
                      seed_type: str = 'middle',
                      batch_size: int = 4,
                      debug: bool = False,
@@ -300,10 +300,10 @@ class Prompter:
                 total_val += values.tolist()
                 total_ind += indices.tolist()
 
-        def process_single_sentence(partition_n):
-            """ single partition with multiple masks or multiple partitions with single mask """
+        greedy_filling = []
+        logging.info(' * filter to top {} prediction'.format(topk))
+        for partition_n, (s, e) in enumerate(tqdm(partition)):
             head, tail = word_pairs[partition_n]
-            s, e = partition[partition_n]
             topk_decoded = []
             for i in range(s, e):
                 inp, val, ind = total_input[i], total_val[i], total_ind[i]
@@ -331,10 +331,9 @@ class Prompter:
                 set(list(zip(*topk_decoded))[0])
             ))
             topk_decoded = sorted(topk_decoded, key=lambda x: x[1], reverse=True)
-            topk_sentence = list(zip(*topk_decoded))[0][:min(topk, len(topk_decoded))]
-            return topk_sentence
+            greedy_filling.append(list(zip(*topk_decoded))[0][:min(topk, len(topk_decoded))])
 
-        greedy_filling = list(map(process_single_sentence, range(len(partition))))
+        # greedy_filling = list(map(process_single_sentence, tqdm(range(len(partition)))))
         logging.info(' * ppl filtering')
         partition = get_partition(greedy_filling)
         list_ppl = self.get_perplexity(list(chain(*greedy_filling)), batch_size=batch_size)

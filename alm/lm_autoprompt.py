@@ -353,16 +353,17 @@ class Prompter:
         best_edit = []
         best_ppl = []
         for sent, ppl in zip(greedy_filling, list_ppl):
-            # ppl = self.get_perplexity(sent, batch_size=batch_size)
             best_edit.append(sent[ppl.index(min(ppl))])
             best_ppl.append(min(ppl))
-            if debug:
-                logging.info(str(list(zip(sent, ppl))))
+            # if debug:
+            #     logging.info(str(list(zip(sent, ppl))))
 
         if debug:
-            for o, ed, bp in zip(seed_sentences, best_edit, best_ppl):
+            for n, (o, ed, bp) in enumerate(zip(seed_sentences, best_edit, best_ppl)):
                 logging.info('- original: {}'.format(o))
                 logging.info('- edit    : {} (ppl: {})'.format(ed, bp))
+                if n > 5:
+                    break
         return best_edit, best_ppl
 
     def get_perplexity(self, sentences, batch_size: int = 4):
@@ -414,9 +415,9 @@ if __name__ == '__main__':
     out = lm.replace_mask(
         candidates_,
         batch_size=1,
-        seed_type='whole',
+        seed_type='middle',
         topk=5,
-        n_blank=3,
-        n_revision=3,
+        n_blank=2,
+        n_revision=2,
         debug=True)
     pprint(out)

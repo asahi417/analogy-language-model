@@ -1,6 +1,15 @@
+import argparse
 import alm
 
-export_prefix = 'main2.ppl_pmi'
+
+def get_options():
+    parser = argparse.ArgumentParser(description='Fine-tune transformers on NER dataset')
+    parser.add_argument('-e', '--export-prefix', help='checkpoint directory', default='main2.ppl_pmi', type=str)
+    return parser.parse_args()
+
+
+opt = get_options()
+export_prefix = opt.export_prefix
 df_val = alm.get_report(export_prefix=export_prefix)
 df_val = df_val[df_val.data == 'sat']
 df_test = alm.get_report(export_prefix=export_prefix, test=True)

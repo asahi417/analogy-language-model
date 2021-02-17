@@ -258,7 +258,7 @@ class Prompter:
                 for n in range(len(index_unfixed)):
                     edit[n] = tuple(list(edit[n]) + [seed_sentences[n]])
                     edit_ppl[n] = tuple(list(edit_ppl[n]) + [ppl[n]])
-                
+
         output_dict_remains = {
             '||'.join(pair): [edit[n], edit_ppl[n]] for n, pair in enumerate(word_pairs)
         }

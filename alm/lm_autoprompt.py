@@ -2,7 +2,7 @@ import re
 import os
 import logging
 import math
-from itertools import chain, groupby
+from itertools import chain
 from typing import List
 from tqdm import tqdm
 from copy import deepcopy
@@ -207,7 +207,7 @@ class Prompter:
                      n_blank: int = 4,
                      n_revision: int = 10,
                      topk: int = 10,
-                     topk_per_position: int = 5000,
+                     topk_per_position: int = 500,
                      seed_type: str = 'middle',
                      batch_size: int = 4,
                      debug: bool = False,
@@ -287,9 +287,7 @@ class Prompter:
         assert len(word_pairs) == len(partition), '{} != {}'.format(len(word_pairs), len(partition))
 
         logging.info(' * prediction on masked tokens')
-        total_input = []
-        total_val = []  # batch, mask_size, topk
-        total_ind = []
+        total_input, total_val, total_ind = [], [], []
         with torch.no_grad():
             for encode in tqdm(data_loader):
                 encode = {k: v.to(self.device) for k, v in encode.items()}
@@ -330,7 +328,10 @@ class Prompter:
                     topk_decoded += tmp_topk_decoded
 
             if len(topk_decoded) == 0:
-                print(head, tail)
+                raise ValueError('no valid sentence found: ({}, {})\n- current prompt: {}'.format(
+                    head, tail, seed_sentences[partition_n]))
+                # greedy_filling.append(seed_sentences[partition_n])
+
             # drop duplicated decode and keep the one with tje highest likelihood
             topk_decoded = list(map(
                 lambda d: max(filter(lambda x: x[0] == d, topk_decoded), key=lambda x: x[1]),

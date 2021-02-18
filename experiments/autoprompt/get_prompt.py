@@ -13,6 +13,8 @@ n_blanks = [3, 4, 5]
 
 
 def get_prompt(model, max_length, batch, dataset, n_blank, seed_type):
+    if os.path.exists('{}/{}.{}.{}.{}.json'.format(export_dit, dataset, model, n_blank, seed_type)):
+        return
     val, test = alm.get_dataset_raw(dataset)
     word_pairs = list(chain(*[[i['stem']] + i['choice'] for i in val]))
     word_pairs += list(chain(*[[i['stem']] + i['choice'] for i in test]))
@@ -31,8 +33,5 @@ def get_prompt(model, max_length, batch, dataset, n_blank, seed_type):
 
 if __name__ == '__main__':
     for s, b in product(seed_types, n_blanks):
-        try:
-            get_prompt('roberta-large', 32, 512, 'sat', b, s)
-        except Exception:
-            print('\n\n\nERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR\n\n\n')
-            pass
+        print(s, b)
+        get_prompt('roberta-large', 32, 512, 'sat', b, s)

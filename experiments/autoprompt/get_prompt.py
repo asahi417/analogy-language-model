@@ -9,7 +9,7 @@ from itertools import chain, product
 export_dit = './experiments_results/prompt'
 os.makedirs(export_dit, exist_ok=True)
 seed_types = ['middle', 'whole']
-n_blanks = [5, 6, 7]
+n_blanks = [3, 4, 5]
 
 
 def get_prompt(model, max_length, batch, dataset, n_blank, seed_type):

@@ -307,31 +307,39 @@ class Prompter:
                 inp, val, ind = total_input[i], total_val[i], total_ind[i]
                 filtered = list(filter(lambda x: inp[x[0]] == self.tokenizer.mask_token_id, enumerate(zip(val, ind))))
 
-                def decode_topk(k, replace_pos, token_index, token_likelihood):
+                def decode_topk(k, replace_pos, token_index, token_likelihood, allow_extension=False):
                     tokens = deepcopy(inp)
                     tokens[replace_pos] = token_index[k]
                     decoded = self.tokenizer.decode(tokens, skip_special_tokens=False)
                     decoded = self.cleanup_decode(decoded)
+                    # skip if target word is not in the decoded (allow to be a part of bigger word)
+                    if allow_extension:
+                        if head in decoded and tail in decoded:
+                            return decoded, token_likelihood[k]
+                        return None
                     # skip if target word is replaced or merged into other words
                     if re.findall(r'\b{}\b'.format(head), decoded) and re.findall(r'\b{}\b'.format(tail), decoded):
                         return decoded, token_likelihood[k]
                     return None
 
                 for _replace_pos, (_val, _ind) in filtered:
-                    tmp_topk_decoded = list(filter(
+                    topk_decoded += list(filter(
                         None, map(lambda x: decode_topk(x, _replace_pos, _ind, _val), range(topk))
                     ))
-                    if len(tmp_topk_decoded) == 0:
-                        tmp_topk_decoded = list(filter(
+                    if len(topk_decoded) == 0:
+                        topk_decoded += list(filter(
                             None, map(lambda x: decode_topk(x, _replace_pos, _ind, _val), range(topk_per_position))
                         ))
-                    topk_decoded += tmp_topk_decoded
+                    if len(topk_decoded) == 0:
+                        logging.warning('prompt includes subword: {} ({}, {})'.format(
+                            seed_sentences[partition_n], head, tail))
+                        topk_decoded += list(filter(
+                            None, map(lambda x: decode_topk(x, _replace_pos, _ind, _val, True), range(topk_per_position))
+                        ))
 
             if len(topk_decoded) == 0:
                 raise ValueError('no valid sentence found: ({}, {})\n- current prompt: {}'.format(
                     head, tail, seed_sentences[partition_n]))
-                # greedy_filling.append(seed_sentences[partition_n])
-
             # drop duplicated decode and keep the one with tje highest likelihood
             topk_decoded = list(map(
                 lambda d: max(filter(lambda x: x[0] == d, topk_decoded), key=lambda x: x[1]),

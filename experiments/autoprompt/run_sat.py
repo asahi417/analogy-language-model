@@ -9,7 +9,7 @@ from itertools import chain, product
 
 export_dit = './experiments_results/prompt'
 seed_types = ['middle', 'whole']
-n_blanks = [5, 6, 7]
+n_blanks = [4, 5, 6]
 dataset = 'sat'
 model = 'roberta-large'
 batch = 512

@@ -207,7 +207,7 @@ class Prompter:
                      n_blank: int = 4,
                      n_revision: int = 10,
                      topk: int = 10,
-                     topk_per_position: int = 500,
+                     topk_per_position: int = 5000,
                      seed_type: str = 'middle',
                      batch_size: int = 4,
                      debug: bool = False,
@@ -329,6 +329,8 @@ class Prompter:
                         ))
                     topk_decoded += tmp_topk_decoded
 
+            if len(topk_decoded) == 0:
+                print(head, tail)
             # drop duplicated decode and keep the one with tje highest likelihood
             topk_decoded = list(map(
                 lambda d: max(filter(lambda x: x[0] == d, topk_decoded), key=lambda x: x[1]),

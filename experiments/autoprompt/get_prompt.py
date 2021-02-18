@@ -31,4 +31,8 @@ def get_prompt(model, max_length, batch, dataset, n_blank, seed_type):
 
 if __name__ == '__main__':
     for s, b in product(seed_types, n_blanks):
-        get_prompt('roberta-large', 32, 512, 'sat', b, s)
+        try:
+            get_prompt('roberta-large', 32, 512, 'sat', b, s)
+        except Exception:
+            print('\n\n\nERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR\n\n\n')
+            pass

@@ -211,6 +211,7 @@ class Prompter:
                      seed_type: str = 'middle',
                      batch_size: int = 4,
                      debug: bool = False,
+                     no_repetition: bool = False,
                      n_blank_prefix: int = 1,
                      n_blank_suffix: int = 1):
         if type(word_pairs[0]) is not list:
@@ -238,7 +239,8 @@ class Prompter:
         if n_revision != 0:
             logging.info('\n#####################\n# PERPLEXITY FILTER #\n#####################')
             logging.info('PERPLEXITY FILTER: max {} steps'.format(n_revision))
-            shared = {'topk': topk, 'topk_per_position': topk_per_position, 'debug': debug, 'batch_size': batch_size}
+            shared = {'topk': topk, 'topk_per_position': topk_per_position, 'debug': debug, 'batch_size': batch_size,
+                      'no_repetition': no_repetition}
             for i in range(n_revision):
                 logging.info('PERPLEXITY FILTER: step {}/{}'.format(i, n_revision))
                 if len(seed_sentences) == 0:
@@ -270,7 +272,8 @@ class Prompter:
         return output_dict
 
     def replace_single_mask(self, seed_sentences, word_pairs, batch_size: int = 4, topk: int = 5,
-                            topk_per_position: int = 5, debug: bool = False):
+                            topk_per_position: int = 5, debug: bool = False,
+                            no_repetition: bool = False):
         assert len(seed_sentences) == len(word_pairs), '{} != {}'.format(len(seed_sentences), len(word_pairs))
         if self.model is None:
             self.load_model()
@@ -315,11 +318,21 @@ class Prompter:
                     # skip if target word is not in the decoded (allow to be a part of bigger word)
                     if allow_extension:
                         if head in decoded and tail in decoded:
-                            return decoded, token_likelihood[k]
+                            if no_repetition:
+                                if len(re.findall(head, decoded)) == 1 and len(re.findall(tail, decoded)) == 1:
+                                    return decoded, token_likelihood[k]
+                                return None
+                            else:
+                                return decoded, token_likelihood[k]
                         return None
                     # skip if target word is replaced or merged into other words
                     if re.findall(r'\b{}\b'.format(head), decoded) and re.findall(r'\b{}\b'.format(tail), decoded):
-                        return decoded, token_likelihood[k]
+                        if no_repetition:
+                            if len(re.findall(head, decoded)) == 1 and len(re.findall(tail, decoded)) == 1:
+                                return decoded, token_likelihood[k]
+                            return None
+                        else:
+                            return decoded, token_likelihood[k]
                     return None
 
                 for _replace_pos, (_val, _ind) in filtered:
@@ -331,11 +344,12 @@ class Prompter:
                             None, map(lambda x: decode_topk(x, _replace_pos, _ind, _val), range(topk_per_position))
                         ))
                     if len(topk_decoded) == 0:
-                        logging.warning('prompt includes subword: {} ({}, {})'.format(
-                            seed_sentences[partition_n], head, tail))
                         topk_decoded += list(filter(
                             None, map(lambda x: decode_topk(x, _replace_pos, _ind, _val, True), range(topk_per_position))
                         ))
+                        if len(topk_decoded) != 0:
+                            logging.warning('prompt may include subword: `{}` ({}, {})'.format(
+                                topk_decoded[0], head, tail))
 
             if len(topk_decoded) == 0:
                 raise ValueError('no valid sentence found: ({}, {})\n- current prompt: {}'.format(
@@ -416,6 +430,7 @@ if __name__ == '__main__':
     # candidates_ = ["emotion", "demagogue"]
     out = lm.replace_mask(
         candidates_,
+        no_repetition=True,
         batch_size=1,
         seed_type='middle',
         topk=5,

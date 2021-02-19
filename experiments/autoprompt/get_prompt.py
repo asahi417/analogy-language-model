@@ -24,6 +24,7 @@ def get_prompt(model, max_length, batch, dataset, n_blank, seed_type, no_repetit
     word_pairs += list(chain(*[[i['stem']] + i['choice'] for i in test]))
     word_pairs_reverse = [[p[1], p[0]] for p in word_pairs]
     word_pairs += word_pairs_reverse
+    word_pairs = [['evaporate', 'vapor']]
     logging.info('dataset ({}) has {} word pairs'.format(dataset, len(word_pairs)))
     lm = alm.Prompter(model, max_length)
     prompts = lm.replace_mask(word_pairs,

@@ -207,7 +207,7 @@ class Prompter:
                      n_blank: int = 4,
                      n_revision: int = 10,
                      topk: int = 10,
-                     topk_per_position: int = 500,
+                     topk_per_position: int = 1000,
                      seed_type: str = 'middle',
                      batch_size: int = 4,
                      debug: bool = False,
@@ -305,65 +305,55 @@ class Prompter:
         logging.info(' * filter to top {} prediction'.format(topk))
         for partition_n, (s, e) in enumerate(tqdm(partition)):
             head, tail = word_pairs[partition_n]
-            topk_decoded = []
-            for i in range(s, e):
-                inp, val, ind = total_input[i], total_val[i], total_ind[i]
-                filtered = list(filter(lambda x: inp[x[0]] == self.tokenizer.mask_token_id, enumerate(zip(val, ind))))
 
-                def decode_topk(k, replace_pos, token_index, token_likelihood, allow_extension=False):
-                    tokens = deepcopy(inp)
-                    tokens[replace_pos] = token_index[k]
-                    decoded = self.tokenizer.decode(tokens, skip_special_tokens=False)
-                    decoded = self.cleanup_decode(decoded)
-                    print(decoded, re.findall(head, decoded), re.findall(tail, decoded))
-                    # skip if target word is not in the decoded (allow to be a part of bigger word)
-                    if allow_extension:
-                        if head in decoded and tail in decoded:
-                            if no_repetition:
-                                if len(re.findall(r'\b{}\b'.format(head), decoded)) == 1 \
-                                        and len(re.findall(r'\b{}\b'.format(tail), decoded)) == 1:
-                                    return decoded, token_likelihood[k]
-                                return None
-                            else:
+            def process_single_pair(_topk, allow_subword=False):
+                topk_decoded = []
+                for i in range(s, e):
+                    inp, val, ind = total_input[i], total_val[i], total_ind[i]
+                    filtered = list(filter(
+                        lambda x: inp[x[0]] == self.tokenizer.mask_token_id, enumerate(zip(val, ind))))
+
+                    def decode_topk(k, replace_pos, token_index, token_likelihood):
+                        tokens = deepcopy(inp)
+                        tokens[replace_pos] = token_index[k]
+                        decoded = self.tokenizer.decode(tokens, skip_special_tokens=False)
+                        decoded = self.cleanup_decode(decoded)
+                        # skip if target word is not in the decoded (allow to be a subwword)
+                        if allow_subword and head in decoded and tail in decoded:
+                            if not no_repetition or (len(re.findall(r'\b{}\b'.format(head), decoded)) == 1
+                                                     and len(re.findall(r'\b{}\b'.format(tail), decoded)) == 1):
+                                return decoded, token_likelihood[k]
+                        # skip if target word is replaced or merged into other words
+                        if re.findall(r'\b{}\b'.format(head), decoded) and re.findall(r'\b{}\b'.format(tail), decoded):
+                            if not no_repetition or (len(re.findall(r'\b{}\b'.format(head), decoded)) == 1
+                                                     and len(re.findall(r'\b{}\b'.format(tail), decoded)) == 1):
                                 return decoded, token_likelihood[k]
                         return None
-                    # skip if target word is replaced or merged into other words
-                    if re.findall(r'\b{}\b'.format(head), decoded) and re.findall(r'\b{}\b'.format(tail), decoded):
-                        if no_repetition:
-                            if len(re.findall(r'\b{}\b'.format(head), decoded)) == 1 \
-                                    and len(re.findall(r'\b{}\b'.format(tail), decoded)) == 1:
-                                return decoded, token_likelihood[k]
-                            return None
-                        else:
-                            return decoded, token_likelihood[k]
-                    return None
 
-                for _replace_pos, (_val, _ind) in filtered:
-                    topk_decoded += list(filter(
-                        None, map(lambda x: decode_topk(x, _replace_pos, _ind, _val), range(topk))
-                    ))
-                    if len(topk_decoded) == 0:
+                    for _replace_pos, (_val, _ind) in filtered:
                         topk_decoded += list(filter(
-                            None, map(lambda x: decode_topk(x, _replace_pos, _ind, _val), range(topk_per_position))
+                            None, map(lambda x: decode_topk(x, _replace_pos, _ind, _val), range(_topk))
                         ))
-                    if len(topk_decoded) == 0:
-                        topk_decoded += list(filter(
-                            None, map(lambda x: decode_topk(x, _replace_pos, _ind, _val, True), range(topk_per_position))
-                        ))
-                        if len(topk_decoded) != 0:
-                            logging.warning('prompt may include subword: `{}` ({}, {})'.format(
-                                topk_decoded[0], head, tail))
+                return topk_decoded
 
-            if len(topk_decoded) == 0:
+            topk_edit = process_single_pair(topk)
+            if len(topk_edit) == 0:
+                topk_edit = process_single_pair(topk_per_position)
+            if len(topk_edit) == 0:
+                topk_edit = process_single_pair(topk_per_position, True)
+                if len(topk_edit) != 0:
+                    logging.warning('prompt may include subword: `{}` ({}, {})'.format(topk_edit[0], head, tail))
+
+            if len(topk_edit) == 0:
                 raise ValueError('no valid sentence found: ({}, {})\n- current prompt: {}'.format(
                     head, tail, seed_sentences[partition_n]))
             # drop duplicated decode and keep the one with tje highest likelihood
-            topk_decoded = list(map(
-                lambda d: max(filter(lambda x: x[0] == d, topk_decoded), key=lambda x: x[1]),
-                set(list(zip(*topk_decoded))[0])
+            topk_edit = list(map(
+                lambda d: max(filter(lambda x: x[0] == d, topk_edit), key=lambda x: x[1]),
+                set(list(zip(*topk_edit))[0])
             ))
-            topk_decoded = sorted(topk_decoded, key=lambda x: x[1], reverse=True)
-            greedy_filling.append(list(zip(*topk_decoded))[0][:min(topk, len(topk_decoded))])
+            topk_edit = sorted(topk_edit, key=lambda x: x[1], reverse=True)
+            greedy_filling.append(list(zip(*topk_edit))[0][:min(topk, len(topk_edit))])
 
         # greedy_filling = list(map(process_single_sentence, tqdm(range(len(partition)))))
         logging.info(' * ppl filtering')

@@ -220,7 +220,7 @@ class Prompter:
                   'n_blank_suffix': n_blank_suffix, 'batch_size': batch_size}
         seed_sentences = list(map(lambda x: self.pair_to_seed(x, **shared), word_pairs))
         shared = {'word_pairs': word_pairs, 'topk': topk, 'topk_per_position': topk_per_position, 'debug': debug,
-                  'batch_size': batch_size}
+                  'batch_size': batch_size, 'no_repetition': no_repetition}
         logging.info('\n################\n# REPLACE MASK #\n################')
         edit = [seed_sentences]
         edit_ppl = []

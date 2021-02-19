@@ -315,7 +315,7 @@ class Prompter:
                     tokens[replace_pos] = token_index[k]
                     decoded = self.tokenizer.decode(tokens, skip_special_tokens=False)
                     decoded = self.cleanup_decode(decoded)
-                    print(decoded)
+                    print(decoded, re.findall(head, decoded), re.findall(tail, decoded))
                     # skip if target word is not in the decoded (allow to be a part of bigger word)
                     if allow_extension:
                         if head in decoded and tail in decoded:

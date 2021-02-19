@@ -38,6 +38,6 @@ def get_prompt(model, max_length, batch, dataset, n_blank, seed_type, no_repetit
 
 if __name__ == '__main__':
     for s, b in product(seed_types, n_blanks):
-        for n_rep in [True]:
+        for n_rep in [True, False]:
             print(s, b, n_rep)
             get_prompt('roberta-large', 32, 512, 'sat', b, s, n_rep)

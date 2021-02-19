@@ -320,7 +320,8 @@ class Prompter:
                     if allow_extension:
                         if head in decoded and tail in decoded:
                             if no_repetition:
-                                if len(re.findall(head, decoded)) == 1 and len(re.findall(tail, decoded)) == 1:
+                                if len(re.findall(r'\b{}\b'.format(head), decoded)) == 1 \
+                                        and len(re.findall(r'\b{}\b'.format(tail), decoded)) == 1:
                                     return decoded, token_likelihood[k]
                                 return None
                             else:
@@ -329,7 +330,8 @@ class Prompter:
                     # skip if target word is replaced or merged into other words
                     if re.findall(r'\b{}\b'.format(head), decoded) and re.findall(r'\b{}\b'.format(tail), decoded):
                         if no_repetition:
-                            if len(re.findall(head, decoded)) == 1 and len(re.findall(tail, decoded)) == 1:
+                            if len(re.findall(r'\b{}\b'.format(head), decoded)) == 1 \
+                                    and len(re.findall(r'\b{}\b'.format(tail), decoded)) == 1:
                                 return decoded, token_likelihood[k]
                             return None
                         else:

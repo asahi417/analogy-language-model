@@ -207,7 +207,7 @@ class Prompter:
                      n_blank: int = 4,
                      n_revision: int = 10,
                      topk: int = 10,
-                     topk_per_position: int = 1000,
+                     topk_per_position: int = 500,
                      seed_type: str = 'middle',
                      batch_size: int = 4,
                      debug: bool = False,

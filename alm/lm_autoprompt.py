@@ -318,16 +318,16 @@ class Prompter:
                         tokens[replace_pos] = token_index[k]
                         decoded = self.tokenizer.decode(tokens, skip_special_tokens=False)
                         decoded = self.cleanup_decode(decoded)
-                        print(decoded)
+                        decoded_no_mask = decoded.replace(self.tokenizer.mask_token, '')
                         # skip if target word is not in the decoded (allow to be a subwword)
                         if allow_subword and head in decoded and tail in decoded:
-                            if not no_repetition or (len(re.findall(r'\b{}\b'.format(head), decoded)) == 1
-                                                     and len(re.findall(r'\b{}\b'.format(tail), decoded)) == 1):
+                            if not no_repetition or (len(re.findall(r'\b{}\b'.format(head), decoded_no_mask)) == 1
+                                                     and len(re.findall(r'\b{}\b'.format(tail), decoded_no_mask)) == 1):
                                 return decoded, token_likelihood[k]
                         # skip if target word is replaced or merged into other words
                         if re.findall(r'\b{}\b'.format(head), decoded) and re.findall(r'\b{}\b'.format(tail), decoded):
-                            if not no_repetition or (len(re.findall(r'\b{}\b'.format(head), decoded)) == 1
-                                                     and len(re.findall(r'\b{}\b'.format(tail), decoded)) == 1):
+                            if not no_repetition or (len(re.findall(r'\b{}\b'.format(head), decoded_no_mask)) == 1
+                                                     and len(re.findall(r'\b{}\b'.format(tail), decoded_no_mask)) == 1):
                                 return decoded, token_likelihood[k]
                         return None
 

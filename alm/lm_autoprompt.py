@@ -318,6 +318,7 @@ class Prompter:
                         tokens[replace_pos] = token_index[k]
                         decoded = self.tokenizer.decode(tokens, skip_special_tokens=False)
                         decoded = self.cleanup_decode(decoded)
+                        print(decoded)
                         # skip if target word is not in the decoded (allow to be a subwword)
                         if allow_subword and head in decoded and tail in decoded:
                             if not no_repetition or (len(re.findall(r'\b{}\b'.format(head), decoded)) == 1

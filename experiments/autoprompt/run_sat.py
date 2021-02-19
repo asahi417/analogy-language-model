@@ -27,12 +27,17 @@ def get_partition(_list):
 
 
 def main(n_blank, seed_type):
-    if os.path.exists('{}/{}.{}.{}.{}.pkl'.format(export_dit, dataset, model, n_blank, seed_type)):
-        with open('{}/{}.{}.{}.{}.pkl'.format(export_dit, dataset, model, n_blank, seed_type), "rb") as fp:
+    output_file = '{}/{}.{}.{}.{}.pkl'.format(export_dit, dataset, model, n_blank, seed_type)
+    if os.path.exists(output_file):
+        with open(output_file, "rb") as fp:
             score = pickle.load(fp)
         list_answer = [data['answer'] for data in full_data]
     else:
-        with open('{}/{}.{}.{}.{}.json'.format(export_dit, dataset, model, n_blank, seed_type), 'w') as f:
+        dict_file = '{}/{}.{}.{}.{}.json'.format(export_dit, dataset, model, n_blank, seed_type)
+        if not os.path.exists(dict_file):
+            return
+
+        with open(dict_file, 'r') as f:
             prompt_dict = json.load(f)
         list_answer = []
         list_prompt = []
@@ -44,7 +49,7 @@ def main(n_blank, seed_type):
         partition = get_partition(list_prompt)
         score = lm.get_perplexity(list(chain(*list_prompt)))
         score = [score[s:e] for s, e in partition]
-        with open('{}/{}.{}.{}.{}.pkl'.format(export_dit, dataset, model, n_blank, seed_type), 'wb') as fp:
+        with open(output_file, 'wb') as fp:
             pickle.dump(score, fp)
     accuracy = []
     for a, s in zip(list_answer, score):
@@ -56,6 +61,9 @@ def main(n_blank, seed_type):
 
 if __name__ == '__main__':
     for s, b in product(seed_types, n_blanks):
+        # for n_rep in [True]:
+        #     print(s, b, n_rep)
+        #     get_prompt('roberta-large', 32, 512, 'sat', b, s, n_rep)
         acc = main(b, s)
         print('\nseed: {}, blank: {}'.format(s, b))
         print(acc)

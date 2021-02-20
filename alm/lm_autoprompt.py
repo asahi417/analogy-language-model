@@ -41,145 +41,88 @@ class Dataset(torch.utils.data.Dataset):
 
 
 class Prompter:
-    """ transformers language model based sentence-mining """
+    """ Prompt generator based on pretrained language models """
 
     def __init__(self,
                  model: str,
                  max_length: int = 32,
-                 cache_dir: str = './cache',
+                 cache_dir: str = None,
                  num_worker: int = 0):
-        """ transformers language model based sentence-mining
+        """ Prompt generator based on pretrained language models
 
         :param model: a model name corresponding to a model card in `transformers`
         :param max_length: a model max length if specified, else use model_max_length
         """
         logging.debug('*** setting up a language model ***')
+        assert 'bert' in model, '{} is not BERT'.format(model)
         self.num_worker = num_worker
-        if self.num_worker == 1:
-            os.environ["OMP_NUM_THREADS"] = "1"  # to turn off warning message
-
-        self.model_type = None
         self.model_name = model
         self.cache_dir = cache_dir
-        self.device = 'cpu'
+        self.device = None
         self.model = None
-        self.is_causal = 'gpt' in self.model_name  # TODO: fix to be more comprehensive method
-        assert not self.is_causal
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(model, cache_dir=cache_dir)
-        if self.is_causal:
-            self.tokenizer.pad_token = self.tokenizer.eos_token
         self.config = transformers.AutoConfig.from_pretrained(model, cache_dir=cache_dir)
+        self.max_length = self.tokenizer.model_max_length
         if max_length:
-            assert self.tokenizer.model_max_length >= max_length, '{} < {}'.format(self.tokenizer.model_max_length,
-                                                                                   max_length)
+            assert self.max_length >= max_length, '{} < {}'.format(self.max_length, max_length)
             self.max_length = max_length
-        else:
-            self.max_length = self.tokenizer.model_max_length
 
-        # sentence prefix tokens
+        # sentence prefix tokens to fix offset when encoding sentence
         tokens = self.tokenizer.tokenize('get tokenizer specific prefix')
         tokens_encode = self.tokenizer.convert_ids_to_tokens(self.tokenizer.encode('get tokenizer specific prefix'))
         self.sp_token_prefix = tokens_encode[:tokens_encode.index(tokens[0])]
-        self.sp_token_suffix = tokens_encode[tokens_encode.index(tokens[-1]) + 1:]
 
-    def input_ids_to_labels(self, input_ids, label_position: List = None, label_id: List = None):
-        """ Generate label for likelihood computation
+    def __load_model(self):
+        """ Load pretrained language model """
+        if self.model:
+            return
+        logging.info('loading language model')
+        self.model = transformers.AutoModelForMaskedLM.from_pretrained(
+            self.model_name, config=self.config, cache_dir=self.cache_dir)
+        self.model.eval()
+        # GPU setup
+        self.device = 'cuda' if torch.cuda.device_count() > 0 else 'cpu'
+        self.model.to(self.device)
+        logging.info('running on {} GPU'.format(torch.cuda.device_count()))
+
+    def input_ids_to_labels(self,
+                            input_ids,
+                            label_position: List = None,
+                            label_id: List = None):
+        """ Generate a label for language model loss. If `label_position` is None, label is the original input_ids for
+        every token except padding token, or it keeps what specified by `label_position` with label defined by 
+        `label_id`.
 
         :param input_ids: input_ids given by tokenizer.encode
-        :param label_position: position to keep for label
-        :param label_id: indices to use in `label_position`
-        :return: labels, a list of indices for loss computation
+        :param label_position: (optional) position in input_ids for prediction
+        :param label_id: (optional) token id for each position in `label_position`
+        :return: `label` that can be used for loss computation
         """
-        if label_position is None and label_id is None:
-            # ignore padding token
+        if label_position is None and label_id is None:  # just to ignore padding token
             label = list(map(lambda x: PAD_TOKEN_LABEL_ID if x == self.tokenizer.pad_token_id else x, input_ids))
         else:
-            assert len(label_position) == len(label_id)
+            assert len(label_position) == len(label_id), '{} != {}'.format(len(label_position), len(label_id))
             label = [PAD_TOKEN_LABEL_ID] * len(input_ids)
             for p, i in zip(label_position, label_id):
                 label[p] = i
-        if self.is_causal:  # shift the label sequence for causal inference
-            label = label[1:] + [PAD_TOKEN_LABEL_ID]
         return label
 
-    def cleanup_decode(self, sentence):
-        # give a space around <mask>
-        cleaned_sent = re.sub(r'({})'.format(self.tokenizer.mask_token).replace('[', '\[').replace(']', '\]'),
-                              r' \1 ', sentence)
-        cleaned_sent = re.sub(r'\s+', ' ', cleaned_sent)  # reduce more than two space to one
-
-        # remove special tokens but mask
-        to_remove = list(filter(lambda x: x != self.tokenizer.mask_token, self.tokenizer.all_special_tokens))
-        to_remove = '|'.join(to_remove).replace('[', '\[').replace(']', '\]')
-        cleaned_sent = re.sub(r'{}'.format(to_remove), '', cleaned_sent)
-        # remove redundant spaces at the prefix
-        return re.sub(r'\A\s*', '', cleaned_sent)
-
-    def load_model(self):
-        """ Model setup """
-        logging.info('load language model')
-        params = dict(config=self.config, cache_dir=self.cache_dir)
-        if self.is_causal:
-            self.model = transformers.AutoModelForCausalLM.from_pretrained(self.model_name, **params)
-            self.model_type = 'causal_lm'
-        else:
-            self.model = transformers.AutoModelForMaskedLM.from_pretrained(self.model_name, **params)
-            self.model_type = 'masked_lm'
-        self.model.eval()
-        # gpu
-        n_gpu = torch.cuda.device_count()
-        assert n_gpu <= 1
-        self.device = 'cuda' if n_gpu > 0 else 'cpu'
-        self.model.to(self.device)
-        logging.info('running on {} GPU'.format(n_gpu))
-
-    def pair_to_seed(self,
-                     word_pair: List,
-                     n_blank: int = 3,
-                     n_blank_prefix: int = 2,
-                     n_blank_suffix: int = 2,
-                     batch_size: int = 4,
-                     seed_type: str = 'middle'):
-        assert len(word_pair) == 2, '{}'.format(len(word_pair))
-        h, t = word_pair
-        if seed_type == 'middle':
-            return ' '.join([h] + [self.tokenizer.mask_token] * n_blank + [t])
-        elif seed_type == 'whole':
-            return ' '.join([self.tokenizer.mask_token] * n_blank_prefix + [h] + [self.tokenizer.mask_token] * n_blank
-                            + [t] + [self.tokenizer.mask_token] * n_blank_suffix)
-        # elif seed_type == 'best':
-        #     # build candidates
-        #     candidates = []
-        #     for pre_n in range(self.max_length - 2):
-        #         prefix = [self.tokenizer.mask_token] * pre_n + [h]
-        #         for mid_n in range(1, self.max_length - 1 - pre_n):
-        #             middle = [self.tokenizer.mask_token] * mid_n + [t]
-        #             candidates.append(' '.join(prefix + middle))
-        #     # compute perplexity
-        #     logging.info('find best seed position for head and tail by perplexity: {} in total'.format(len(candidates)))
-        #     ppl = self.get_perplexity(candidates, batch_size=batch_size)
-        #     best_seed = candidates[ppl.index(min(ppl))]
-        #     return best_seed
-        else:
-            raise ValueError('unknown seed type: {}'.format(seed_type))
-
     def encode_plus(self,
-                    sentence,
+                    sentence: str,
                     token_wise_mask: bool = False):
-        """ Encode with mask flag, that is masked position if sentence has masked token, otherwise is the entire
-        sequence except for special tokens.
+        """ Encoding sentence with label that is
+        - masked token if `token_wise_mask` is False (mainly for token prediction)
+        - otherwise every token that is not mask token (mainly for perplexity computation)
 
-        :param sentence:
-        :param token_wise_mask:
-        :return:
+        :param sentence: a string sentence
+        :param token_wise_mask: (optional) to encode the sentence with a mask on each position
+        :return: a list of the output from tokenizer.encode_plus
         """
         param = {'max_length': self.max_length, 'truncation': True, 'padding': 'max_length'}
-        if self.is_causal:
-            raise NotImplementedError('only available with masked LM')
         if not token_wise_mask:
-            assert self.tokenizer.mask_token in sentence, sentence
+            assert self.tokenizer.mask_token in sentence, 'sentence has no masks: {}'.format(sentence)
             encode = self.tokenizer.encode_plus(sentence, **param)
-            assert encode['input_ids'][-1] == self.tokenizer.pad_token_id, 'exceed max_length'
+            assert encode['input_ids'][-1] == self.tokenizer.pad_token_id, 'exceeded max_length'
             return [encode]
         else:
             token_list = self.tokenizer.tokenize(sentence)
@@ -192,7 +135,7 @@ class Prompter:
                 _token_list[mask_position] = self.tokenizer.mask_token
                 tmp_string = self.tokenizer.convert_tokens_to_string(_token_list)
                 _encode = self.tokenizer.encode_plus(tmp_string, **param)
-                assert _encode['input_ids'][-1] == self.tokenizer.pad_token_id, 'exceed max_length'
+                assert _encode['input_ids'][-1] == self.tokenizer.pad_token_id, 'exceeded max_length'
                 _encode['labels'] = self.input_ids_to_labels(
                     _encode['input_ids'],
                     label_position=[mask_position + len(self.sp_token_prefix)],
@@ -202,94 +145,165 @@ class Prompter:
             length = min(self.max_length - len(self.sp_token_prefix), len(token_list))
             return list(filter(None, map(encode_with_single_mask_id, range(length))))
 
-    def replace_mask(self,
-                     word_pairs: List,
-                     n_blank: int = 4,
-                     n_revision: int = 10,
-                     topk: int = 10,
-                     topk_per_position: int = 500,
-                     seed_type: str = 'middle',
-                     batch_size: int = 4,
-                     debug: bool = False,
-                     no_repetition: bool = False,
-                     n_blank_prefix: int = 1,
-                     n_blank_suffix: int = 1):
-        if type(word_pairs[0]) is not list:
-            word_pairs = [word_pairs]
-        shared = {'n_blank': n_blank, 'seed_type': seed_type, 'n_blank_prefix': n_blank_prefix,
-                  'n_blank_suffix': n_blank_suffix, 'batch_size': batch_size}
-        seed_sentences = list(map(lambda x: self.pair_to_seed(x, **shared), word_pairs))
-        shared = {'word_pairs': word_pairs, 'topk': topk, 'topk_per_position': topk_per_position, 'debug': debug,
-                  'batch_size': batch_size, 'no_repetition': no_repetition}
+    def cleanup_decode(self, sentence):
+        """ Clean up sentence with toknizers special tokens """ 
+        mask = self.tokenizer.mask_token
+        # give a space around mask token
+        cleaned_sent = re.sub(r'({})'.format(mask).replace('[', '\[').replace(']', '\]'), r' \1 ', sentence)
+        # reduce more than two spaces to one
+        cleaned_sent = re.sub(r'\s+', ' ', cleaned_sent)
+        # remove special tokens but keep mask
+        to_remove = list(filter(lambda x: x != mask, self.tokenizer.all_special_tokens))
+        to_remove = '|'.join(to_remove).replace('[', '\[').replace(']', '\]')
+        cleaned_sent = re.sub(r'{}'.format(to_remove), '', cleaned_sent)
+        # remove redundant spaces on the beginning of the sentence
+        return re.sub(r'\A\s*', '', cleaned_sent)
+
+    def pair_to_seed(self,
+                     word_pair: List,
+                     n_blank: int = 3,
+                     n_blank_b: int = 2,
+                     n_blank_e: int = 2,
+                     seed_type: str = 'middle'):
+        """ Convert word pair to a seed template with placeholders by masking token
+
+        :param word_pair: a list of two words
+        :param n_blank: the number of mask in between word_pair
+        :param n_blank_b: the number of mask at the beginning of the template
+        :param n_blank_e: the number of mask at the end of the template
+        :param seed_type: template type where
+            'middle': word_pair[0] + ['<mask'] * n_blank + word_pair[1]
+            'whole': ['<mask'] * n_blank_b + word_pair[0] + ['<mask'] * n_blank + word_pair[1] + ['<mask'] * n_blank_e
+        :return: the generated template
+        """
+        assert len(word_pair) == 2, 'word_pair contains wrong number of tokens: {}'.format(len(word_pair))
+        mask = self.tokenizer.mask_token
+        h, t = word_pair
+        if seed_type == 'middle':
+            return ' '.join([h] + [mask] * n_blank + [t])
+        elif seed_type == 'whole':
+            return ' '.join([mask] * n_blank_b + [h] + [mask] * n_blank + [t] + [mask] * n_blank_e)
+        else:
+            raise ValueError('unknown seed type: {}'.format(seed_type))
+
+    def generate(self,
+                 word_pairs: List = None,
+                 seed_sentences: List = None,
+                 n_revision: int = 10,
+                 topk: int = 10,
+                 batch_size: int = 4,
+                 debug: bool = False,
+                 seed_type: str = 'middle',
+                 n_blank: int = 4,
+                 n_blank_b: int = 1,
+                 n_blank_e: int = 1):
+        """ Generate/rewrite prompt based on perplexity
+
+        :param word_pairs: a list of two words
+        :param seed_sentences: a list of sentences
+        :param n_revision: the number of revision after replacing all the mask
+        :param batch_size: batch size
+        :param topk: see Prompter.replace_single_token
+        :param debug: see Prompter.replace_single_token
+        :param seed_type: see Prompter.pair_to_seed
+        :param n_blank: see Prompter.pair_to_seed
+        :param n_blank_b: see Prompter.pair_to_seed
+        :param n_blank_e: see Prompter.pair_to_seed
+        :return: 
+        """
+        if seed_sentences:
+            assert not word_pairs, 'both of `seed_sentences` and `word_pairs` are given'
+            if type(seed_sentences) is str:
+                seed_sentences = [seed_sentences]
+            edit = [[s] for s in seed_sentences]
+            data_key = {k: v for k, v in enumerate(seed_sentences)}
+        else:
+            assert word_pairs, 'either of `seed_sentences` or `word_pairs` is required'
+            if type(word_pairs[0]) is not list:
+                word_pairs = [word_pairs]
+            seed_sentences = list(map(lambda x: self.pair_to_seed(
+                x, seed_type=seed_type, n_blank=n_blank, n_blank_b=n_blank_b, n_blank_e=n_blank_e), word_pairs))
+            data_key = {k: '||'.join(v) for k, v in enumerate(word_pairs)}
         logging.info('\n################\n# REPLACE MASK #\n################')
         edit = [seed_sentences]
         edit_ppl = []
         while True:
-            logging.info('REPLACE MASK: step {}'.format(len(edit_ppl)))
-            seed_sentences, ppl = self.replace_single_mask(seed_sentences, **shared)
-            edit.append(seed_sentences)
-            edit_ppl.append(ppl)
-            if any(self.tokenizer.mask_token not in i for i in seed_sentences):
+            if any(map(lambda x: self.tokenizer.mask_token not in x, seed_sentences)):
                 # mask should be removed one by one, but some has skipped if this raises error
                 assert all(self.tokenizer.mask_token not in i for i in seed_sentences), 'some masks got lost'
                 break
+            logging.info('REPLACE MASK: step {}'.format(len(edit_ppl)))
+            seed_sentences, ppl = self.replace_single_token(
+                seed_sentences, vocab_to_keep=word_pairs, topk=topk, debug=debug, batch_size=batch_size)
+            edit.append(seed_sentences)
+            edit_ppl.append(ppl)
         edit = list(zip(*edit))
-        edit_ppl = list(zip(*edit_ppl))
+        edit_ppl = [[]] * len(seed_sentences) if len(edit_ppl) == 0 else list(zip(*edit_ppl))
+
+        logging.info('\n######################\n# ITERATIVE REVISION #\n######################')
         output_dict = {}
-        if n_revision != 0:
-            logging.info('\n#####################\n# PERPLEXITY FILTER #\n#####################')
-            logging.info('PERPLEXITY FILTER: max {} steps'.format(n_revision))
-            shared = {'topk': topk, 'topk_per_position': topk_per_position, 'debug': debug, 'batch_size': batch_size,
-                      'no_repetition': no_repetition}
-            for i in range(n_revision):
-                logging.info('PERPLEXITY FILTER: step {}/{}'.format(i, n_revision))
-                if len(seed_sentences) == 0:
-                    logging.info('PERPLEXITY FILTER: all sentences reached the best perplexity')
-                    break
-                seed_sentences, ppl = self.replace_single_mask(seed_sentences, word_pairs=word_pairs, **shared)
+        data_index = list(data_key.keys())
+        for i in range(n_revision):
+            logging.info('ITERATIVE REVISION: step {}/{}'.format(i, n_revision))
+            seed_sentences, ppl = self.replace_single_token(
+                seed_sentences, vocab_to_keep=word_pairs, topk=topk, debug=debug, batch_size=batch_size)
 
-                index_fixed = list(filter(lambda x: seed_sentences[x] == edit[x][-1], range(len(seed_sentences))))
-                # extract stable sentence
-                for n in index_fixed:
-                    output_dict['||'.join(word_pairs[n])] = [edit[n], edit_ppl[n]]
+            # extract stable sentence
+            index_fixed = list(filter(lambda x: seed_sentences[x] == edit[x][-1], range(len(seed_sentences))))
+            output_dict.update({data_key[data_index[n]]: [edit[n], edit_ppl[n]] for n in index_fixed})
 
-                # sentence keep improving
-                index_unfixed = list(filter(lambda x: seed_sentences[x] != edit[x][-1], range(len(seed_sentences))))
-                seed_sentences = list(map(lambda x: seed_sentences[x], index_unfixed))
-                ppl = list(map(lambda x: ppl[x], index_unfixed))
+            # sentence keep improving
+            index_unfixed = list(filter(lambda x: seed_sentences[x] != edit[x][-1], range(len(seed_sentences))))
+            edit = list(map(lambda x: tuple(list(edit[x]) + [seed_sentences[x]]), index_unfixed))
+            edit_ppl = list(map(lambda x: tuple(list(edit_ppl[x]) + [ppl[x]]), index_unfixed))
+
+            seed_sentences = list(map(lambda x: seed_sentences[x], index_unfixed))
+            ppl = list(map(lambda x: ppl[x], index_unfixed))
+            data_index = list(map(lambda x: data_index[x], index_unfixed))
+            if word_pairs:
                 word_pairs = list(map(lambda x: word_pairs[x], index_unfixed))
-                edit = list(map(lambda x: edit[x], index_unfixed))
-                edit_ppl = list(map(lambda x: edit_ppl[x], index_unfixed))
 
-                for n in range(len(index_unfixed)):
-                    edit[n] = tuple(list(edit[n]) + [seed_sentences[n]])
-                    edit_ppl[n] = tuple(list(edit_ppl[n]) + [ppl[n]])
+            if len(seed_sentences) == 0:
+                logging.info('ITERATIVE REVISION: all sentences reached the best perplexity')
+                break
 
-        output_dict_remains = {
-            '||'.join(pair): [edit[n], edit_ppl[n]] for n, pair in enumerate(word_pairs)
-        }
-        output_dict.update(output_dict_remains)
+        output_dict.update({data_key[i]: [edit[i], edit_ppl[i]] for n, i in enumerate(data_index)})
         return output_dict
 
-    def replace_single_mask(self, seed_sentences, word_pairs, batch_size: int = 4, topk: int = 5,
-                            topk_per_position: int = 5, debug: bool = False,
-                            no_repetition: bool = False):
-        assert len(seed_sentences) == len(word_pairs), '{} != {}'.format(len(seed_sentences), len(word_pairs))
-        if self.model is None:
-            self.load_model()
+    def replace_single_token(self,
+                             seed_sentences: List,
+                             vocab_to_keep: List = None,
+                             batch_size: int = 4,
+                             topk: int = 5,
+                             debug: bool = False):
+        """ Replace single token (run parallel over given lists)
+        - (i) Greedy token prediction: predict token by masking each token or masked token if sentence consists of mask
+        - (ii) Perplexity re-ranking: choose the best replaced sentence that achieves the best perplexity
+
+        :param seed_sentences: a list of sentence
+        :param vocab_to_keep: (optional) a list of token to keep while replacing
+        # :param vocab_to_keep_unique: (optional) limit the tokens from vocab_to_keep be unique while replacing
+        :param batch_size: batch size
+        :param topk: keep topk prediction on masked token for perplexity filtering
+        :param debug: to show a few replaced sentence
+        :return:
+        """
+        if vocab_to_keep:
+            assert len(seed_sentences) == len(vocab_to_keep), '{} != {}'.format(len(seed_sentences), len(vocab_to_keep))
+        topk_per_position = 100
+        self.__load_model()
         if type(seed_sentences) is str:
             seed_sentences = [seed_sentences]
 
-        # sentence without masked token will perform token wise mask
-        data = list(map(
-            lambda x: self.encode_plus(x, token_wise_mask=self.tokenizer.mask_token not in x), seed_sentences))
+        # if mask is in sentence, it is first replaced, otherwise all tokens are considered
+        data = map(lambda x: self.encode_plus(x, token_wise_mask=self.tokenizer.mask_token not in x), seed_sentences)
+        data = list(data)
         partition = get_partition(data)
         data_loader = torch.utils.data.DataLoader(
             Dataset(list(chain(*data))),
             num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False)
-        assert len(word_pairs) == len(partition), '{} != {}'.format(len(word_pairs), len(partition))
 
-        logging.info(' * prediction on masked tokens')
+        logging.info('\t* prediction on masked tokens')
         total_input, total_val, total_ind = [], [], []
         with torch.no_grad():
             for encode in tqdm(data_loader):
@@ -302,9 +316,8 @@ class Prompter:
                 total_ind += indices.tolist()
 
         greedy_filling = []
-        logging.info(' * filter to top {} prediction'.format(topk))
+        logging.info('\t* filter to top {} prediction'.format(topk))
         for partition_n, (s, e) in enumerate(tqdm(partition)):
-            head, tail = word_pairs[partition_n]
 
             def process_single_pair(_topk, allow_subword=False):
                 topk_decoded = []
@@ -319,17 +332,22 @@ class Prompter:
                         decoded = self.tokenizer.decode(tokens, skip_special_tokens=False)
                         decoded = self.cleanup_decode(decoded)
                         decoded_no_mask = decoded.replace(self.tokenizer.mask_token, '')
-                        # skip if target word is not in the decoded (allow to be a subwword)
-                        if allow_subword and head in decoded and tail in decoded:
-                            if not no_repetition or (len(re.findall(r'\b{}\b'.format(head), decoded_no_mask)) == 1
-                                                     and len(re.findall(r'\b{}\b'.format(tail), decoded_no_mask)) == 1):
-                                return decoded, token_likelihood[k]
-                        # skip if target word is replaced or merged into other words
-                        if re.findall(r'\b{}\b'.format(head), decoded) and re.findall(r'\b{}\b'.format(tail), decoded):
-                            if not no_repetition or (len(re.findall(r'\b{}\b'.format(head), decoded_no_mask)) == 1
-                                                     and len(re.findall(r'\b{}\b'.format(tail), decoded_no_mask)) == 1):
-                                return decoded, token_likelihood[k]
-                        return None
+                        # check if all tokens from keep_vocab in the decoded sentence
+                        if vocab_to_keep is None:
+                            count = [1]
+                        elif allow_subword:
+                            count = list(map(lambda x: len(re.findall(x, decoded_no_mask)), vocab_to_keep[partition_n]))
+                        else:
+                            count = list(map(lambda x: len(re.findall(r'\b{}\b'.format(x), decoded_no_mask)),
+                                             vocab_to_keep[partition_n]))
+                        if not all(count):
+                            return None
+
+                        # check if all tokens from keep_vocab just appeared once
+                        # if vocab_to_keep_unique:
+                        if not all(map(lambda x: x == 1, count)):
+                            return None
+                        return decoded, token_likelihood[k]
 
                     for _replace_pos, (_val, _ind) in filtered:
                         topk_decoded += list(filter(
@@ -338,16 +356,17 @@ class Prompter:
                 return topk_decoded
 
             topk_edit = process_single_pair(topk)
-            if len(topk_edit) == 0:
+            if len(topk_edit) == 0 and topk_per_position > topk:
                 topk_edit = process_single_pair(topk_per_position)
             if len(topk_edit) == 0:
                 topk_edit = process_single_pair(topk_per_position, True)
-                if len(topk_edit) != 0:
-                    logging.warning('prompt may include subword: `{}` ({}, {})'.format(topk_edit[0], head, tail))
+                if len(topk_edit) != 0 and vocab_to_keep is not None:
+                    logging.warning('prompt may include subword: `{}` ({})'.format(
+                        topk_edit[0], vocab_to_keep[partition_n]))
 
             if len(topk_edit) == 0:
-                raise ValueError('no valid sentence found: ({}, {})\n- current prompt: {}'.format(
-                    head, tail, seed_sentences[partition_n]))
+                raise ValueError('no valid sentence found: ({})\n- current prompt: {}'.format(
+                    vocab_to_keep[partition_n], seed_sentences[partition_n]))
             # drop duplicated decode and keep the one with tje highest likelihood
             topk_edit = list(map(
                 lambda d: max(filter(lambda x: x[0] == d, topk_edit), key=lambda x: x[1]),
@@ -356,8 +375,7 @@ class Prompter:
             topk_edit = sorted(topk_edit, key=lambda x: x[1], reverse=True)
             greedy_filling.append(list(zip(*topk_edit))[0][:min(topk, len(topk_edit))])
 
-        # greedy_filling = list(map(process_single_sentence, tqdm(range(len(partition)))))
-        logging.info(' * ppl filtering')
+        logging.info('\t* ppl re-ranking')
         partition = get_partition(greedy_filling)
         list_ppl = self.get_perplexity(list(chain(*greedy_filling)), batch_size=batch_size)
         list_ppl = [list_ppl[s:e] for s, e in partition]
@@ -368,29 +386,26 @@ class Prompter:
             best_ppl.append(min(ppl))
 
         if debug:
-            logging.info(' * edit sample')
+            logging.info('\t* edit sample')
             for n, (o, ed, bp) in enumerate(zip(seed_sentences, best_edit, best_ppl)):
-                logging.info('  - original: {}'.format(o))
-                logging.info('  - edit    : {} (ppl: {})'.format(ed, bp))
+                logging.info('\t\t- original: {}'.format(o))
+                logging.info('\t\t- edit    : {} (ppl: {})'.format(ed, bp))
                 if n > 5:
                     break
         return best_edit, best_ppl
 
     def get_perplexity(self, sentences, batch_size: int = 4):
-        """ compute perplexity on each sentence
+        """ Compute perplexity on sentences
 
         :param batch_size:
-        :param sentences:
+        :param sentences: a list of strings
         :return: a list of perplexity
         """
-        if self.model is None:
-            self.load_model()
+        self.__load_model()
         if type(sentences) is str:
             sentences = [sentences]
-
         data = list(map(lambda x: self.encode_plus(x, token_wise_mask=True), sentences))
         partition = get_partition(data)
-
         data_loader = torch.utils.data.DataLoader(
             Dataset(list(chain(*data))),
             num_workers=self.num_worker, batch_size=batch_size, shuffle=False, drop_last=False)
@@ -409,26 +424,16 @@ class Prompter:
                     lambda x: x[0] / sum(map(lambda y: y != PAD_TOKEN_LABEL_ID, x[1])),
                     zip(loss.cpu().tolist(), labels.cpu().tolist())
                 ))
-        perplexity = list(map(lambda x: math.exp(sum(nll[x[0]:x[1]]) / (x[1] - x[0])), partition))
-        return perplexity
+        return list(map(lambda x: math.exp(sum(nll[x[0]:x[1]]) / (x[1] - x[0])), partition))
 
 
 if __name__ == '__main__':
     from pprint import pprint
-    # lm = Prompter('albert-base-v1', max_length=12)
+    # lm = Prompter('albert-base-v1', max_length=16)
     lm = Prompter('roberta-base', max_length=16)
-    # stem = ["beauty", "aesthete"]
-    candidates_ = [["pleasure", "hedonist"],
-                   ["emotion", "demagogue"],
-                   ["opinion", "sympathizer"]]
-    # candidates_ = ["emotion", "demagogue"]
-    out = lm.replace_mask(
-        candidates_,
-        no_repetition=True,
-        batch_size=1,
-        seed_type='middle',
-        topk=5,
-        n_blank=2,
-        n_revision=2,
-        debug=True)
-    pprint(out)
+
+    # test_candidates = [["pleasure", "hedonist"], ["emotion", "demagogue"], ["opinion", "sympathizer"]]
+    # pprint(lm.generate(word_pairs=test_candidates, debug=True))
+
+    test_sentences = ['emotion and violence: demagogue', 'opinion of a communist sympathizer']
+    pprint(lm.generate(seed_sentences=test_sentences, debug=True))

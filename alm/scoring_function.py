@@ -12,7 +12,7 @@ logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logg
 import torch
 import pandas as pd
 from . import TransformersLM
-from .data import AnalogyData, get_dataset_raw
+from .data_analogy import AnalogyData, get_dataset_raw
 from .config_manager import ConfigManager
 
 AGGREGATOR = {

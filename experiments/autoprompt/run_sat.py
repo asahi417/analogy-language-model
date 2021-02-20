@@ -33,7 +33,7 @@ def main(n_blank, seed_type):
             score = pickle.load(fp)
         list_answer = [data['answer'] for data in full_data]
     else:
-        dict_file = '{}/{}.{}.{}.{}.json'.format(export_dit, dataset, model, n_blank, seed_type)
+        dict_file = '{}/{}.{}.{}.{}.no_rep.json'.format(export_dit, dataset, model, n_blank, seed_type)
         if not os.path.exists(dict_file):
             return
 
@@ -60,11 +60,8 @@ def main(n_blank, seed_type):
 
 
 if __name__ == '__main__':
-    for s, b in product(seed_types, n_blanks):
-        # for n_rep in [True]:
-        #     print(s, b, n_rep)
-        #     get_prompt('roberta-large', 32, 512, 'sat', b, s, n_rep)
-        acc = main(b, s)
-        print('\nseed: {}, blank: {}'.format(s, b))
+    for _s, b in product(seed_types, n_blanks):
+        acc = main(b, _s)
+        print('\nseed: {}, blank: {}'.format(_s, b))
         print(acc)
 

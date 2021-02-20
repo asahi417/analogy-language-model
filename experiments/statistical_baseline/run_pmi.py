@@ -26,7 +26,7 @@ for i in DATA:
     pmi_2 = load_pmi('./data/{}/pmi/pmi.0.5.csv'.format(i))
     output[i] = {}
     for pmi, pmi_prefix in zip([pmi_1, pmi_2], ['pmi.1', 'pmi.0.5']):
-        val, test = alm.data.get_dataset_raw(i)
+        val, test = alm.data_analogy.get_dataset_raw(i)
         output[i][pmi_prefix] = {}
         for data, prefix in zip([val, test], ['valid', 'test']):
             line_oov = []

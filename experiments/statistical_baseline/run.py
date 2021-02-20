@@ -85,7 +85,7 @@ if __name__ == '__main__':
         for i in DATA:
             oov = {'data': i}
             all_accuracy = {'data': i}
-            val, test = alm.data.get_dataset_raw(i)
+            val, test = alm.data_analogy.get_dataset_raw(i)
             if prefix == 'valid':
                 test = val
             answer = {n: o['answer'] for n, o in enumerate(test)}

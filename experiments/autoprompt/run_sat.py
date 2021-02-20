@@ -9,7 +9,7 @@ from itertools import chain, product
 
 export_dit = './experiments_results/prompt'
 seed_types = ['middle', 'whole']
-n_blanks = [4, 5, 6]
+n_blanks = [3, 4, 5]
 dataset = 'sat'
 model = 'roberta-large'
 batch = 512
@@ -28,8 +28,8 @@ def get_partition(_list):
 
 def main(n_blank, seed_type):
     output_file = '{}/{}.{}.{}.{}.pkl'.format(export_dit, dataset, model, n_blank, seed_type)
-    if False:
-    # if os.path.exists(output_file):
+    # if False:
+    if os.path.exists(output_file):
         with open(output_file, "rb") as fp:
             score = pickle.load(fp)
         list_answer = [data['answer'] for data in full_data]
@@ -50,7 +50,7 @@ def main(n_blank, seed_type):
             assert h in template and t in template, '{} and {} not in {}'.format(h, t, template)
             list_prompt.append([template.replace(h, h_c).replace(t, t_c) for h_c, t_c in data['choice']])
         partition = get_partition(list_prompt)
-        score = lm.get_perplexity(list(chain(*list_prompt)))
+        score = lm.get_perplexity(list(chain(*list_prompt)), batch_size=512)
         score = [score[s:e] for s, e in partition]
         with open(output_file, 'wb') as fp:
             pickle.dump(score, fp)
@@ -58,7 +58,6 @@ def main(n_blank, seed_type):
     assert len(score) == len(list_answer)
     for a, s in zip(list_answer, score):
         p = s.index(min(s))
-        print(a, p)
         accuracy.append(int(a == p))
     accuracy = sum(accuracy)/len(accuracy)
     return accuracy

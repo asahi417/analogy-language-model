@@ -27,12 +27,11 @@ def get_prompt(model, max_length, batch, dataset, n_blank, seed_type, no_repetit
     # word_pairs = [['mask', 'frighten']]
     logging.info('dataset ({}) has {} word pairs'.format(dataset, len(word_pairs)))
     lm = alm.Prompter(model, max_length)
-    prompts = lm.replace_mask(word_pairs,
-                              no_repetition=no_repetition,
-                              seed_type=seed_type,
-                              n_blank=n_blank,
-                              batch_size=batch,
-                              debug=True)
+    prompts = lm.generate(word_pairs,
+                          seed_type=seed_type,
+                          n_blank=n_blank,
+                          batch_size=batch,
+                          debug=True)
     with open(path, 'w') as f:
         json.dump(prompts, f)
 

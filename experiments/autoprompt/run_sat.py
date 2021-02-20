@@ -28,7 +28,8 @@ def get_partition(_list):
 
 def main(n_blank, seed_type):
     output_file = '{}/{}.{}.{}.{}.pkl'.format(export_dit, dataset, model, n_blank, seed_type)
-    if os.path.exists(output_file):
+    if False:
+    # if os.path.exists(output_file):
         with open(output_file, "rb") as fp:
             score = pickle.load(fp)
         list_answer = [data['answer'] for data in full_data]
@@ -47,14 +48,14 @@ def main(n_blank, seed_type):
             all_template, all_score = prompt_dict['||'.join([h, t])]
             template = all_template[-1]
             assert h in template and t in template, '{} and {} not in {}'.format(h, t, template)
-            list_prompt = [template.replace(h, h_c).replace(t, t_c) for h_c, t_c in data['choice']]
+            list_prompt.append([template.replace(h, h_c).replace(t, t_c) for h_c, t_c in data['choice']])
         partition = get_partition(list_prompt)
         score = lm.get_perplexity(list(chain(*list_prompt)))
         score = [score[s:e] for s, e in partition]
         with open(output_file, 'wb') as fp:
             pickle.dump(score, fp)
     accuracy = []
-    print(len(score))
+    assert len(score) == len(list_answer)
     for a, s in zip(list_answer, score):
         p = s.index(min(s))
         print(a, p)

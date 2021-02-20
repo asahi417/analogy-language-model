@@ -9,8 +9,8 @@ from itertools import chain, product
 export_dit = './experiments_results/prompt'
 os.makedirs(export_dit, exist_ok=True)
 n_blanks = [1, 2, 3, 4, 5]
-n_blanks_b = [1, 2, 3]
-n_blanks_e = [1, 2, 3]
+n_blanks_b = [0, 1, 2, 3]
+n_blanks_e = [0, 1, 2, 3]
 
 
 def get_prompt(model, max_length, batch, dataset, n_blank, n_blank_b, n_blank_e):

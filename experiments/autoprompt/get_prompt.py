@@ -9,13 +9,12 @@ from itertools import chain, product
 export_dit = './experiments_results/prompt'
 os.makedirs(export_dit, exist_ok=True)
 seed_types = ['middle', 'whole']
-n_blanks = [3, 4, 5]
+# n_blanks = [3, 4, 5]
+n_blanks = [1, 2, 3]
 
 
-def get_prompt(model, max_length, batch, dataset, n_blank, seed_type, no_repetition):
+def get_prompt(model, max_length, batch, dataset, n_blank, seed_type):
     path = '{}/{}.{}.{}.{}.json'.format(export_dit, dataset, model, n_blank, seed_type)
-    if no_repetition:
-        path = path.replace('.json', '.no_rep.json')
 
     if os.path.exists(path):
         return
@@ -38,6 +37,4 @@ def get_prompt(model, max_length, batch, dataset, n_blank, seed_type, no_repetit
 
 if __name__ == '__main__':
     for s, b in product(seed_types, n_blanks):
-        for n_rep in [True, False]:
-            print(s, b, n_rep)
-            get_prompt('roberta-large', 32, 512, 'sat', b, s, n_rep)
+        get_prompt('roberta-large', 32, 512, 'sat', b, s)

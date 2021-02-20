@@ -162,9 +162,8 @@ class Prompter:
     def pair_to_seed(self,
                      word_pair: List,
                      n_blank: int = 3,
-                     n_blank_b: int = 2,
-                     n_blank_e: int = 2,
-                     seed_type: str = 'middle'):
+                     n_blank_b: int = 0,
+                     n_blank_e: int = 0):
         """ Convert word pair to a seed template with placeholders by masking token
 
         :param word_pair: a list of two words
@@ -179,12 +178,7 @@ class Prompter:
         assert len(word_pair) == 2, 'word_pair contains wrong number of tokens: {}'.format(len(word_pair))
         mask = self.tokenizer.mask_token
         h, t = word_pair
-        if seed_type == 'middle':
-            return ' '.join([h] + [mask] * n_blank + [t])
-        elif seed_type == 'whole':
-            return ' '.join([mask] * n_blank_b + [h] + [mask] * n_blank + [t] + [mask] * n_blank_e)
-        else:
-            raise ValueError('unknown seed type: {}'.format(seed_type))
+        return ' '.join([mask] * n_blank_b + [h] + [mask] * n_blank + [t] + [mask] * n_blank_e)
 
     def generate(self,
                  word_pairs: List = None,
@@ -193,7 +187,6 @@ class Prompter:
                  topk: int = 10,
                  batch_size: int = 4,
                  debug: bool = False,
-                 seed_type: str = 'middle',
                  n_blank: int = 4,
                  n_blank_b: int = 1,
                  n_blank_e: int = 1):
@@ -222,7 +215,7 @@ class Prompter:
             if type(word_pairs[0]) is not list:
                 word_pairs = [word_pairs]
             seed_sentences = list(map(lambda x: self.pair_to_seed(
-                x, seed_type=seed_type, n_blank=n_blank, n_blank_b=n_blank_b, n_blank_e=n_blank_e), word_pairs))
+                x, n_blank=n_blank, n_blank_b=n_blank_b, n_blank_e=n_blank_e), word_pairs))
             data_key = {k: '||'.join(v) for k, v in enumerate(word_pairs)}
         logging.info('\n################\n# REPLACE MASK #\n################')
         edit = [seed_sentences]

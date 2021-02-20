@@ -46,7 +46,8 @@ def main(n_blank, seed_type):
             h, t = data['stem']
             all_template, all_score = prompt_dict['||'.join([h, t])]
             template = all_template[-1]
-            list_prompt = [template.copy().replace(h, h_c).replace(t, t_c) for h_c, t_c in data['choice']]
+            assert h in template and t in template, '{} and {} not in {}'.format(h, t, template)
+            list_prompt = [template.replace(h, h_c).replace(t, t_c) for h_c, t_c in data['choice']]
         partition = get_partition(list_prompt)
         score = lm.get_perplexity(list(chain(*list_prompt)))
         score = [score[s:e] for s, e in partition]

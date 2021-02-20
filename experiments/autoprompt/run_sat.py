@@ -54,9 +54,10 @@ def main(n_blank, seed_type):
         with open(output_file, 'wb') as fp:
             pickle.dump(score, fp)
     accuracy = []
+    print(len(score))
     for a, s in zip(list_answer, score):
-        print(a, s)
         p = s.index(min(s))
+        print(a, p)
         accuracy.append(int(a == p))
     accuracy = sum(accuracy)/len(accuracy)
     return accuracy

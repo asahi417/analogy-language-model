@@ -22,15 +22,20 @@ for i in glob('./experiments_results/logit/*/*'):
     move('{}/ppl_hyp'.format(i), '{}/ppl_hypothesis_bias'.format(i))
     move('{}/ppl_pmi'.format(i), '{}/ppl_based_pmi'.format(i))
 
-for i in glob('./experiments_results/logit/*/*/*/*/config.json'):
-    with open(i, 'r') as f:
-        config = json.load(f)
-    if 'pmi_feldman' in i:
-        config['pmi_feldman_lambda'] = config.pop('pmi_lambda')
-    else:
-        config.pop('pmi_lambda')
-    with open(i, 'w') as f:
-        json.dump(config, f)
-    print(config.keys())
+for i in glob('./experiments_results/logit/*/*/ppl_add_masked'):
+    shutil.rmtree(i)
+for i in glob('./experiments_results/logit/*/gpt2-large'):
+    shutil.rmtree(i)
 
-
+# for i in glob('./experiments_results/logit/*/*/*/*/config.json'):
+#     with open(i, 'r') as f:
+#         config = json.load(f)
+#     if 'pmi_feldman' in i:
+#         config['pmi_feldman_lambda'] = config.pop('pmi_lambda')
+#     else:
+#         config.pop('pmi_lambda')
+#     with open(i, 'w') as f:
+#         json.dump(config, f)
+#     print(config.keys())
+#
+#

@@ -119,16 +119,12 @@ if __name__ == '__main__':
             all_accuracy['glove'] = sum([answer[n] == glove_prediction[n] for n in range(len(answer))]) / len(answer)
             line_oov.append(oov)
             line_accuracy.append(all_accuracy)
-            print(all_accuracy)
-            print(oov)
 
             if prefix == 'test':
                 for n, d in enumerate(test):
                     d['prediction'] = ft_prediction[n]
                 pd.DataFrame(test).to_csv('experiments_results/summary/statistics.test.prediction.{}.csv'.format(i))
 
-        print(pd.DataFrame(line_accuracy))
-        print(pd.DataFrame(line_oov))
         pd.DataFrame(line_accuracy).to_csv('experiments_results/summary/statistics.{}.csv'.format(prefix))
         pd.DataFrame(line_oov).to_csv('experiments_results/summary/statistics.{}.oov.csv'.format(prefix))
 

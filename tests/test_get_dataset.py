@@ -13,7 +13,6 @@ class Test(unittest.TestCase):
         for i in [False, True]:
             data_instance = AnalogyData(test=False, data='sat', negative_permutation=i)
             logging.info(data_instance.flatten_pos[:10])
-            input()
             out = data_instance.insert_score(data_instance.flatten_pos, data_instance.flatten_neg)
             logging.info(out[:10])
             # logging.info(data_instance.list_nested_permutation)
@@ -51,7 +50,6 @@ class Test(unittest.TestCase):
     #         prompt, relation = data_instance.get_prompt()
     #         for i in relation:
     #             assert len(list(set(i))) == 4, i
-
 
 
 if __name__ == "__main__":

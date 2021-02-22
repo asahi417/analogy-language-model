@@ -2,12 +2,12 @@
 import logging
 import json
 from itertools import product
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 import alm
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
-
+no_inference = True
 #######################################################################
 # get test accuracy on each combination of model and scoring function #
 #######################################################################
@@ -15,7 +15,7 @@ methods = [
     'pmi_feldman', 'embedding_similarity', 'ppl', 'ppl_based_pmi', 'ppl_head_masked', 'ppl_tail_masked',
     'ppl_add_masked', 'ppl_marginal_bias', 'ppl_hypothesis_bias'
 ]
-export_prefix = 'main1.scoring_comparison'
+export_prefix = 'experiment.scoring_comparison'
 df = alm.get_report(export_prefix=export_prefix)
 
 for i, m, s in product(data, models, methods):
@@ -34,7 +34,12 @@ for i, m, s in product(data, models, methods):
         config.pop('max_length')
         scorer = alm.RelationScorer(model=config.pop('model'), max_length=_len)
         scorer.analogy_test(
-            test=True, export_prefix=export_prefix, batch_size=_batch, val_accuracy=val_accuracy, **config
+            no_inference=no_inference,
+            test=True,
+            export_prefix=export_prefix,
+            batch_size=_batch,
+            val_accuracy=val_accuracy,
+            **config
         )
         scorer.release_cache()
 
@@ -43,18 +48,21 @@ alm.export_report(export_prefix=export_prefix, test=True)
 ###################################################################################
 # get test accuracy on each default configuration of model and (ppl, and ppl_pmi) #
 ###################################################################################
-shared = {
-    'export_prefix': 'main1_scoring_comparison.default',
-    'template_type': 'is-to-as',
-    'scoring_method': 'ppl_pmi',
-}
-
+shared = {'template_type': 'is-to-as', 'scoring_method': 'ppl'}
+export_prefix = 'experiment.scoring_comparison.default'
 for i, m in product(data, models):
     _model, _len, _batch = m
     scorer = alm.RelationScorer(model=_model, max_length=_len)
     val_accuracy = scorer.analogy_test(batch_size=_batch, data=i, test=False, **shared)
     assert len(val_accuracy) == 0
-    scorer.analogy_test(batch_size=_batch, data=i, val_accuracy=val_accuracy, test=True, **shared)
+    scorer.analogy_test(
+        no_inference=no_inference,
+        batch_size=_batch,
+        data=i,
+        val_accuracy=val_accuracy,
+        export_prefix=export_prefix,
+        test=True,
+        **shared)
     scorer.release_cache()
 
-alm.export_report(export_prefix='main1_scoring_comparison.default', test=True)
+alm.export_report(export_prefix=export_prefix, test=True)

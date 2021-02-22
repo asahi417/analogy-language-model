@@ -19,14 +19,13 @@ for _model, _max_length, _batch in models:
         for _temp in all_templates:
             for v in [True, False]:
                 scorer.analogy_test(
-                    ppl_pmi_marginal_version=v,
                     scoring_method='ppl_pmi',
                     data=_data,
                     template_type=_temp,
                     batch_size=_batch,
                     export_prefix=export_prefix,
-                    ppl_pmi_aggregation=ppl_pmi_aggregation,
-                    ppl_pmi_alpha=ppl_pmi_alpha,
+                    ppl_based_pmi_aggregation=ppl_pmi_aggregation,
+                    ppl_based_pmi_alpha=ppl_pmi_alpha,
                     negative_permutation=True,
                     positive_permutation_aggregation=positive_permutation_aggregation,
                     negative_permutation_aggregation=negative_permutation_aggregation,
@@ -34,7 +33,6 @@ for _model, _max_length, _batch in models:
                 scorer.release_cache()
                 if _data in data_test:
                     scorer.analogy_test(
-                        ppl_pmi_marginal_version=v,
                         scoring_method='ppl_pmi',
                         data=_data,
                         template_type=_temp,

@@ -15,8 +15,8 @@ pmi_feldman_aggregation = [
     'index_8', 'index_9', 'index_10', 'index_11'
 ]
 ppl_based_pmi_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1']
-export_prefix = 'main1.scoring_comparison'
-
+export_prefix = 'experiment.scoring_comparison'
+no_inference = True
 for _model, _max_length, _batch in models:
     for scoring_method in methods:
         if scoring_method in ['pmi', 'ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked', 'ppl_hypothesis_bias'] \
@@ -31,7 +31,7 @@ for _model, _max_length, _batch in models:
                     template_type=_temp,
                     batch_size=_batch,
                     export_prefix=export_prefix,
-                    no_inference=True,
+                    no_inference=no_inference,
                     positive_permutation_aggregation=positive_permutation_aggregation,
                     ppl_based_pmi_aggregation=ppl_based_pmi_aggregation
                 )

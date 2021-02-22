@@ -23,11 +23,12 @@ for i in glob('./experiments_results/logit/*/*'):
     move('{}/ppl_pmi'.format(i), '{}/ppl_based_pmi'.format(i))
 
 for i in glob('./experiments_results/logit/*/*/*/*/config.json'):
-    if 'pmi_feldman' in i:
-        continue
     with open(i, 'r') as f:
         config = json.load(f)
-    config.pop('pmi_lambda')
+    if 'pmi_feldman' in i:
+        config['pmi_feldman_lambda'] = config.pop('pmi_lambda')
+    else:
+        config.pop('pmi_lambda')
     with open(i, 'w') as f:
         json.dump(config, f)
     print(config.keys())

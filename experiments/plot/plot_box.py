@@ -5,10 +5,10 @@ import json
 import os
 plt.rcParams.update({"text.usetex": True, "font.family": "sans-serif", "font.sans-serif": ["Helvetica"]})
 os.makedirs('./experiments_results/summary/figure', exist_ok=True)
-export_prefix = 'main2.ppl_pmi'
+export_prefix = 'experiment.ppl_variants'
 df = alm.get_report(export_prefix=export_prefix)
 df['accuracy'] = df['accuracy'].round(3) * 100
-df['ppl_pmi_aggregation'] = df['ppl_pmi_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
+df['ppl_based_pmi_aggregation'] = df['ppl_based_pmi_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
     '{', (int(x.replace('index_', '')) + 1), '}') if 'index' in x else x)
 df['negative_permutation_aggregation'] = df['negative_permutation_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
     '{', (int(x.replace('index_', '')) + 1), '}') if 'index' in x else x)

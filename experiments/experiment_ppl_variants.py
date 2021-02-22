@@ -1,7 +1,6 @@
 import logging
 import json
 from pprint import pprint
-from itertools import product
 import alm
 
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']

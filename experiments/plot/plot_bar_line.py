@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 plt.rcParams.update({"text.usetex": True, "font.family": "sans-serif", "font.sans-serif": ["Helvetica"]})
 sns.set_theme(style="darkgrid")
 model_order = ['PMI', 'FastText', 'BERT', 'GPT2', 'RoBERTa']
-export_prefix = 'main2.ppl_pmi'
+export_prefix = 'experiment.ppl_variants'
 os.makedirs('./experiments_results/summary/figure', exist_ok=True)
 for d in ['sat', 'u2', 'u4', 'google', 'bats']:
     bert = pd.read_csv('./experiments_results/summary/{}.test.prediction.{}.bert-large-cased.csv'.format(export_prefix, d))

@@ -484,6 +484,7 @@ class RelationScorer:
             shared = {'batch_size': batch_size, 'template_type': template_type}
 
             full_full_score = []
+            save_score = True
             if data == 'bats':
                 s = int(len(input_data)/2)
                 input_data_list = [input_data[:s], input_data[s:]]
@@ -491,6 +492,7 @@ class RelationScorer:
                 input_data_list = [input_data]
 
             if scoring_method == 'ppl_marginal_bias':
+                save_score = False
                 config_ppl = ConfigManager(scoring_method='ppl_based_pmi', **config_config)
                 if config_ppl.flatten_score[prefix]:
                     full_full_score = config_ppl.flatten_score[prefix]
@@ -499,6 +501,7 @@ class RelationScorer:
                         full_full_score += self.lm.get_perplexity(word=input_data_sub, **shared)
                     config_ppl.cache_scores(full_full_score, positive=positive)
             elif scoring_method in ['ppl_hypothesis_bias', 'ppl_add_masked']:
+                save_score = False
                 config_ppl_tail = ConfigManager(scoring_method='ppl_tail_masked', **config_config)
                 if config_ppl_tail.flatten_score[prefix]:
                     full_score_tail = config_ppl_tail.flatten_score[prefix]
@@ -575,7 +578,8 @@ class RelationScorer:
                 config.cache_scores(full_full_score, positive=positive)
             else:
                 raise ValueError('unknown method: {}'.format(scoring_method))
-            config.cache_scores(full_full_score, positive=positive)
+            if save_score:
+                config.cache_scores(full_full_score, positive=positive)
             return full_full_score
 
         # run inference

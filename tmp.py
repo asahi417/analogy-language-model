@@ -22,7 +22,7 @@ for i in glob('./experiments_results/logit/*/*'):
     move('{}/ppl_hyp'.format(i), '{}/ppl_hypothesis_bias'.format(i))
     move('{}/ppl_pmi'.format(i), '{}/ppl_based_pmi'.format(i))
 
-for i in glob('./experiments_results/logit/*/*/ppl_add_masked'):
+for i in glob('./experiments_results/logit/*/*/ppl_hypothesis_bias'):
     shutil.rmtree(i)
 for i in glob('./experiments_results/logit/*/gpt2-large'):
     shutil.rmtree(i)

@@ -11,7 +11,7 @@ import json
 from glob import glob
 
 
-for i in glob('./experiments_results/logit/*/*/'):
+for i in glob('./experiments_results/logit/*/*'):
     shutil.move('{}/pmi'.format(i), '{}/pmi_feldman'.format(i))
     shutil.move('{}/ppl_hyp'.format(i), '{}/ppl_hypothesis_bias'.format(i))
     shutil.move('{}/ppl_pmi'.format(i), '{}/ppl_based_pmi'.format(i))

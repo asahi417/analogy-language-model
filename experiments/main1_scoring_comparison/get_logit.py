@@ -1,14 +1,14 @@
 import alm
 
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
-methods = ['ppl', 'ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked', 'embedding_similarity', 'ppl_pmi', 'pmi']
+methods = ['pmi_feldman', 'embedding_similarity', 'ppl', 'ppl_based_pmi', 'ppl_head_masked', 'ppl_tail_masked']
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
 
 
 for _model, _max_length, _batch in models:
     for scoring_method in methods:
-        if scoring_method in ['pmi', 'ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked'] and 'gpt' in _model:
+        if 'gpt' in _model and scoring_method in ['ppl', 'ppl_based_pmi']:
             continue
         scorer = alm.RelationScorer(model=_model, max_length=_max_length)
         for _data in data:
@@ -18,7 +18,6 @@ for _model, _max_length, _batch in models:
                     data=_data,
                     template_type=_temp,
                     batch_size=_batch,
-                    skip_scoring_prediction=True
-                )
+                    skip_scoring_prediction=True)
                 scorer.release_cache()
 

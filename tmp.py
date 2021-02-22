@@ -22,7 +22,7 @@ for i in glob('./experiments_results/logit/*/*'):
     move('{}/ppl_hyp'.format(i), '{}/ppl_hypothesis_bias'.format(i))
     move('{}/ppl_pmi'.format(i), '{}/ppl_based_pmi'.format(i))
 
-for i in glob('./experiments_results/logit/*/*/*/config.json'):
+for i in glob('./experiments_results/logit/*/*/*/*/config.json'):
     if 'pmi_feldman' in i:
         continue
     with open(i, 'r') as f:

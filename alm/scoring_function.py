@@ -73,56 +73,80 @@ class GridSearch:
 
     def __init__(self,
                  shared_config,
-                 scoring_method, score, data_instance,
-                 ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
-                 negative_permutation_aggregation, negative_permutation_weight,
-                 ppl_pmi_marginal_version, ppl_hyp_eta_head, ppl_hyp_eta_tail,
+                 scoring_method,
+                 score,
+                 data_instance,
+                 positive_permutation_aggregation,
+                 negative_permutation_aggregation,
+                 negative_permutation_weight,
+                 ppl_based_pmi_aggregation,
+                 ppl_based_pmi_weight,
+                 ppl_hyp_weight_head,
+                 ppl_hyp_weight_tail,
+                 ppl_mar_weight_head,
+                 ppl_mar_weight_tail,
                  export_prediction: bool = False):
         """ Grid Search Aggregator: multiprocessing-oriented """
         # global variables
-        self.ppl_pmi_marginal_version = ppl_pmi_marginal_version
         self.shared_config = shared_config
         self.score = score
         self.scoring_method = scoring_method
         self.data_instance = data_instance
         self.export_prediction = export_prediction
         # local parameters for grid search
-        if type(ppl_pmi_aggregation) is not list:
-            ppl_pmi_aggregation = [ppl_pmi_aggregation]
-        if type(ppl_pmi_lambda) is not list:
-            ppl_pmi_lambda = [ppl_pmi_lambda]
-        if type(ppl_pmi_alpha) is not list:
-            ppl_pmi_alpha = [ppl_pmi_alpha]
         if type(positive_permutation_aggregation) is not list:
             positive_permutation_aggregation = [positive_permutation_aggregation]
         if type(negative_permutation_aggregation) is not list:
             negative_permutation_aggregation = [negative_permutation_aggregation]
         if type(negative_permutation_weight) is not list:
             negative_permutation_weight = [negative_permutation_weight]
-        if type(ppl_hyp_eta_head) is not list:
-            ppl_hyp_eta_head = [ppl_hyp_eta_head]
-        if type(ppl_hyp_eta_tail) is not list:
-            ppl_hyp_eta_tail = [ppl_hyp_eta_tail]
+
+        if type(ppl_based_pmi_aggregation) is not list:
+            ppl_based_pmi_aggregation = [ppl_based_pmi_aggregation]
+        if type(ppl_based_pmi_weight) is not list:
+            ppl_based_pmi_weight = [ppl_based_pmi_weight]
+
+        if type(ppl_mar_weight_head) is not list:
+            ppl_mar_weight_head = [ppl_mar_weight_head]
+        if type(ppl_mar_weight_tail) is not list:
+            ppl_mar_weight_tail = [ppl_mar_weight_tail]
+
+        if type(ppl_hyp_weight_head) is not list:
+            ppl_hyp_weight_head = [ppl_hyp_weight_head]
+        if type(ppl_hyp_weight_tail) is not list:
+            ppl_hyp_weight_tail = [ppl_hyp_weight_tail]
+
         self.all_config = list(product(
-            ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
-            negative_permutation_aggregation, negative_permutation_weight,
-            ppl_hyp_eta_head, ppl_hyp_eta_tail
+            positive_permutation_aggregation, negative_permutation_aggregation, negative_permutation_weight,
+            ppl_based_pmi_aggregation, ppl_based_pmi_weight,
+            ppl_mar_weight_head, ppl_mar_weight_tail,
+            ppl_hyp_weight_head, ppl_hyp_weight_tail
         ))
         self.index = list(range(len(self.all_config)))
 
     def single_run(self, config_index: int):
         PBAR.update(1)
-        ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,\
-            negative_permutation_aggregation, negative_permutation_weight,\
-            ppl_hyp_eta_head, ppl_hyp_eta_tail = self.all_config[config_index]
+        positive_permutation_aggregation, negative_permutation_aggregation, negative_permutation_weight,\
+            ppl_based_pmi_aggregation, ppl_based_pmi_weight,\
+            ppl_mar_weight_head, ppl_mar_weight_tail,\
+            ppl_hyp_weight_head, ppl_hyp_weight_tail = self.all_config[config_index]
 
         aggregator_pos = AGGREGATOR[positive_permutation_aggregation]
         aggregator_neg = AGGREGATOR[negative_permutation_aggregation]
 
+        def get_logit_pn(_score):
+            return list(map(
+                lambda s: (
+                    list(zip(
+                        list(map(lambda o: aggregator_pos(o), list(zip(*s[0])))),
+                        list(map(lambda o: aggregator_neg(o), list(zip(*s[1]))))
+                    ))
+                ),
+                _score))
+
         # ppl_pmi aggregation
-        if self.scoring_method == 'ppl_pmi':
-            assert ppl_pmi_aggregation is not None
-            aggregator = AGGREGATOR[ppl_pmi_aggregation]
+        if self.scoring_method == 'ppl_based_pmi':
+            aggregator = AGGREGATOR[ppl_based_pmi_aggregation]
 
             def compute_ppl_pmi(ppl_scores):
                 opt_length = len(ppl_scores) ** 0.5
@@ -158,12 +182,21 @@ class GridSearch:
                 # negative pmi approx by perplexity difference: higher is better
                 neg_pmi = list(map(
                     lambda x: aggregator([
-                        x[0] * ppl_pmi_lambda - x[1] * ppl_pmi_alpha,
-                        x[2] * ppl_pmi_lambda - x[3] * ppl_pmi_alpha
+                        x[0] - x[1] * ppl_based_pmi_weight,
+                        x[2] - x[3] * ppl_based_pmi_weight
                     ]),
                     zip(negative_log_likelihood_cond_h, negative_log_likelihood_mar_h,
                         negative_log_likelihood_cond_t, negative_log_likelihood_mar_t)))
                 return neg_pmi
+
+            score = list(map(lambda o: (
+                list(map(lambda x: compute_ppl_pmi(list(map(lambda s: s[0][x], o))), range(8))),
+                list(map(lambda x: compute_ppl_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))),
+                         range(16)))
+            ), self.score))
+            logit_pn = get_logit_pn(score)
+
+        elif self.scoring_method == 'ppl_marginal_bias':
 
             def compute_ppl_mar(ppl_scores):
                 opt_length = len(ppl_scores) ** 0.5
@@ -190,33 +223,21 @@ class GridSearch:
                 negative_log_likelihood_mar_h = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
 
                 # negative pmi approx by perplexity difference: higher is better
+                # neg_pmi = list(map(
+                #     lambda x: x[0] - aggregator([x[1], x[2]]) * ppl_based_pmi_weigh,
+                #     zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
                 neg_pmi = list(map(
-                    lambda x: x[0] * ppl_pmi_lambda - aggregator([x[1], x[2]]) * ppl_pmi_alpha,
+                    lambda x: x[0] - ppl_hyp_weight_head * x[1] - ppl_hyp_weight_tail * x[2],
                     zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
                 return neg_pmi
 
-            if self.ppl_pmi_marginal_version:
-                score = list(map(lambda o: (
-                    list(map(lambda x: compute_ppl_mar(list(map(lambda s: s[0][x], o))), range(8))),
-                    list(map(lambda x: compute_ppl_mar(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))),
-                             range(16)))
-                ), self.score))
-            else:
-                score = list(map(lambda o: (
-                    list(map(lambda x: compute_ppl_pmi(list(map(lambda s: s[0][x], o))), range(8))),
-                    list(map(lambda x: compute_ppl_pmi(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))),
-                             range(16)))
-                ), self.score))
-
-            logit_pn = list(map(
-                lambda s: (
-                    list(zip(
-                        list(map(lambda o: aggregator_pos(o), list(zip(*s[0])))),
-                        list(map(lambda o: aggregator_neg(o), list(zip(*s[1]))))
-                    ))
-                ),
-                score))
-        elif self.scoring_method == 'ppl_hyp':
+            score = list(map(lambda o: (
+                list(map(lambda x: compute_ppl_mar(list(map(lambda s: s[0][x], o))), range(8))),
+                list(map(lambda x: compute_ppl_mar(list(map(lambda s: s[1][x] if len(s[1]) != 0 else 0, o))),
+                         range(16)))
+            ), self.score))
+            logit_pn = get_logit_pn(score)
+        elif self.scoring_method == 'ppl_hypothesis_bias':
 
             def compute_ppl(ppl_scores):
                 norm_ppl = sum(map(lambda x: x[0], ppl_scores))
@@ -225,7 +246,7 @@ class GridSearch:
 
                 return list(map(
                     lambda x: log(x[0] / norm_ppl)
-                            + ppl_hyp_eta_head * log(x[1] / norm_head) + ppl_hyp_eta_tail * log(x[2]/norm_tail),
+                            - ppl_hyp_weight_head * log(x[1] / norm_head) - ppl_hyp_weight_tail * log(x[2]/norm_tail),
                             ppl_scores))
 
             score = list(map(
@@ -234,20 +255,9 @@ class GridSearch:
                     list(map(lambda perm: compute_ppl(list(map(lambda s: s[1][perm] if len(s[1]) != 0 else 0, o))),
                          range(16)))
                 ), self.score))
-            logit_pn = list(map(
-                lambda s: (
-                    list(zip(
-                        list(map(lambda o: aggregator_pos(o), list(zip(*s[0])))),
-                        list(map(lambda o: aggregator_neg(o), list(zip(*s[1]))))
-                    ))
-                ),
-                score))
+            logit_pn = get_logit_pn(score)
         else:
-            logit_pn = list(map(
-                lambda o: list(map(
-                    lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])),
-                    o)),
-                self.score))
+            logit_pn = get_logit_pn(self.score)
 
         logit = list(map(lambda o: list(map(lambda s: negative_permutation_weight * s[1] - s[0], o)), logit_pn))
         pred = list(map(lambda x: x.index(max(x)), logit))
@@ -256,16 +266,18 @@ class GridSearch:
         label = self.data_instance.answer
         assert len(pred) == len(label)
         accuracy = sum(map(lambda x: int(x[0] == x[1]), zip(pred, label))) / len(label)
+
         tmp_config = {
-            'ppl_pmi_aggregation': ppl_pmi_aggregation,
-            'ppl_pmi_lambda': ppl_pmi_lambda,
-            'ppl_pmi_alpha': ppl_pmi_alpha,
             'positive_permutation_aggregation': positive_permutation_aggregation,
             'negative_permutation_aggregation': negative_permutation_aggregation,
             'negative_permutation_weight': negative_permutation_weight,
-            'accuracy': accuracy,
-            'ppl_hyp_eta_head': ppl_hyp_eta_head,
-            'ppl_hyp_eta_tail': ppl_hyp_eta_tail
+            'ppl_based_pmi_aggregation': ppl_based_pmi_aggregation,
+            'ppl_based_pmi_weight': ppl_based_pmi_weight,
+            'ppl_mar_weight_head': ppl_mar_weight_head,
+            'ppl_mar_weight_tail': ppl_mar_weight_tail,
+            'ppl_hyp_weight_head': ppl_hyp_weight_head,
+            'ppl_hyp_weight_tail': ppl_hyp_weight_tail,
+            'accuracy': accuracy
         }
         tmp_config.update(self.shared_config)
         if self.export_prediction:
@@ -305,41 +317,24 @@ class RelationScorer:
                      test: bool = False,
                      batch_size: int = 4,
                      scoring_method: str = 'ppl',
+                     export_dir: str = './experiments_results',
+                     no_inference: bool = False,
+                     skip_scoring_prediction: bool = False,
+                     export_prediction: bool = False,
+                     val_accuracy: float = None,
                      positive_permutation_aggregation: (str, List) = 'mean',
                      negative_permutation: bool = False,
                      negative_permutation_weight: (float, List) = 1.0,
                      negative_permutation_aggregation: (str, List) = 'none',
-                     pmi_aggregation: str = None,
-                     pmi_lambda: float = 1.0,
-                     ppl_pmi_aggregation: (str, List) = None,
-                     ppl_pmi_lambda: (float, List) = 1.0,
-                     ppl_pmi_alpha: (float, List) = 0.0,
-                     skip_scoring_prediction: bool = False,
-                     export_dir: str = './experiments_results',
-                     no_inference: bool = False,
-                     export_prediction: bool = False,
-                     ppl_pmi_marginal_version: bool = False,
-                     ppl_hyp_eta_tail: (float, List) = 1.0,
-                     ppl_hyp_eta_head: (float, List)  = 1.0,
-                     val_accuracy: float = None):
-        """ relation scoring test on analogy dataset
-
-        :param data:
-        :param test:
-        :param scoring_method:
-        :param ppl_pmi_aggregation: upto p_1
-        :param pmi_aggregation: upto p_11
-        :param positive_permutation_aggregation: upto p_7
-        :param negative_permutation_aggregation: upto p_15
-        :param pmi_lambda:
-        :param ppl_pmi_lambda:
-        :param batch_size:
-        :param template_type: a list of templates for prompting
-        :param skip_scoring_prediction:
-        :param no_inference: use only cached score
-        :param export_dir: directory to export the result
-        :return:
-        """
+                     pmi_feldman_aggregation: str = 'mean',
+                     pmi_feldman_lambda: float = 1.0,
+                     ppl_based_pmi_aggregation: (str, List) = None,
+                     ppl_based_pmi_alpha: (float, List) = 0.0,
+                     ppl_hyp_weight_tail: (float, List) = 1.0,
+                     ppl_hyp_weight_head: (float, List) = 1.0,
+                     ppl_mar_weight_tail: (float, List) = 1.0,
+                     ppl_mar_weight_head: (float, List) = 1.0):
+        """ relation scoring test on analogy dataset """
         assert val_accuracy is None or type(val_accuracy) is float
         ##############
         # get scores #
@@ -352,7 +347,7 @@ class RelationScorer:
             data=data,
             batch_size=batch_size,
             scoring_method=scoring_method,
-            pmi_lambda=pmi_lambda,
+            pmi_feldman_lambda=pmi_feldman_lambda,
             negative_permutation=negative_permutation,
             no_inference=no_inference
         )
@@ -363,16 +358,13 @@ class RelationScorer:
         # restore scores #
         ##################
         # negative pmi score aggregation
-        if scoring_method == 'pmi':
-            assert pmi_aggregation, 'undefined pmi aggregation'
+        if scoring_method == 'pmi_feldman':
             # we use same aggregation method for both positive/negative permutations
-            logging.info("PMI aggregator: {}".format(pmi_aggregation))
-            aggregator = AGGREGATOR[pmi_aggregation]
+            logging.info("PMI aggregator: {}".format(pmi_feldman_aggregation))
+            aggregator = AGGREGATOR[pmi_feldman_aggregation]
             score_pos = list(map(lambda x: aggregator(x), score_pos))
             if score_neg:
                 score_neg = list(map(lambda x: aggregator(x), score_neg))
-        else:
-            assert pmi_lambda == 1.0 and pmi_aggregation is None, 'pmi_lambda/pmi_aggregation should be default'
         # restore the nested structure
         logging.info('re-format LM score')
         score = data_instance.insert_score(score_pos, score_neg)
@@ -387,17 +379,23 @@ class RelationScorer:
             'template_type': template_type,
             'scoring_method': scoring_method,
             'negative_permutation': negative_permutation,
-            'pmi_aggregation': pmi_aggregation,
-            'pmi_lambda': pmi_lambda,
-            'ppl_pmi_marginal_version': ppl_pmi_marginal_version
+            'pmi_feldman_aggregation': pmi_feldman_aggregation if scoring_method == 'pmi_feldman' else None,
+            'pmi_feldman_lambda': pmi_feldman_lambda if scoring_method == 'pmi_feldman' else None
         }
-
         searcher = GridSearch(
-            shared_config, scoring_method, score, data_instance,
-            ppl_pmi_aggregation, ppl_pmi_lambda, ppl_pmi_alpha, positive_permutation_aggregation,
-            negative_permutation_aggregation, negative_permutation_weight,
-            ppl_pmi_marginal_version,
-            ppl_hyp_eta_head, ppl_hyp_eta_tail,
+            shared_config,
+            scoring_method,
+            score,
+            data_instance,
+            positive_permutation_aggregation,
+            negative_permutation_aggregation,
+            negative_permutation_weight,
+            ppl_based_pmi_aggregation if scoring_method == 'ppl_based_pmi' else None,
+            ppl_based_pmi_alpha if scoring_method == 'ppl_based_pmi' else None,
+            ppl_hyp_weight_head if scoring_method == 'ppl_hypothesis_bias' else None,
+            ppl_hyp_weight_tail if scoring_method == 'ppl_hypothesis_bias' else None,
+            ppl_mar_weight_head if scoring_method == 'ppl_marginal_bias' else None,
+            ppl_mar_weight_tail if scoring_method == 'ppl_marginal_bias' else None,
             export_prediction=export_prediction)
         logging.info('start grid search: {} combinations'.format(len(searcher)))
         logging.info('multiprocessing  : {} cpus'.format(os.cpu_count()))
@@ -424,8 +422,8 @@ class RelationScorer:
             for d, p in zip(data_raw, prediction):
                 d['prediction'] = p
             os.makedirs('{}/summary/prediction_file'.format(export_dir), exist_ok=True)
-            _file = '{}/summary/prediction_file/{}.prediction.{}.{}.{}.{}'.format(
-                export_dir, export_prefix, data, self.model_name, scoring_method, ppl_pmi_marginal_version)
+            _file = '{}/summary/prediction_file/{}.prediction.{}.{}.{}'.format(
+                export_dir, export_prefix, data, self.model_name, scoring_method)
             pd.DataFrame(data_raw).to_csv('{}.csv'.format(_file))
             with open('{}.json'.format(_file), 'w') as f:
                 json.dump(json_line, f)
@@ -443,21 +441,33 @@ class RelationScorer:
                     writer.write('\n'.join(list(map(lambda x: json.dumps(x), json_line))))
             return list(map(lambda x: x['accuracy'], json_line))
 
-    def get_score(self, export_dir, test, template_type, data, batch_size, scoring_method, pmi_lambda,
-                  negative_permutation, no_inference):
-        config = ConfigManager(
+    def get_score(self,
+                  export_dir,
+                  test,
+                  template_type,
+                  data,
+                  batch_size,
+                  scoring_method,
+                  pmi_feldman_lambda,
+                  negative_permutation,
+                  no_inference):
+        config_config = dict(
             export_dir=export_dir,
             test=test,
             model=self.model_name,
             max_length=self.lm.max_length,
             data=data,
             template_type=template_type,
-            scoring_method=scoring_method,
-            pmi_lambda=pmi_lambda
         )
+        if scoring_method == 'pmi_feldman':
+            config_config['pmi_feldman_lambda'] = pmi_feldman_lambda
+
+        config = ConfigManager(scoring_method=scoring_method, **config_config)
         data_instance = AnalogyData(
-            test=test, data=data, negative_permutation=negative_permutation,
-            marginalize_permutation=scoring_method in ['ppl_pmi'])
+            test=test,
+            data=data,
+            negative_permutation=negative_permutation,
+            marginalize_permutation=scoring_method in ['ppl_based_pmi', 'ppl_marginal_bias'])
 
         def prediction(positive: bool = True):
             prefix = 'positive' if positive else 'negative'
@@ -472,90 +482,99 @@ class RelationScorer:
             assert not no_inference, '"no_inference==True" but no cache found'
             logging.info('# run scoring: {}'.format(scoring_method))
             shared = {'batch_size': batch_size, 'template_type': template_type}
+
             full_full_score = []
             if data == 'bats':
                 s = int(len(input_data)/2)
-                input_data = [input_data[:s], input_data[s:]]
+                input_data_list = [input_data[:s], input_data[s:]]
             else:
-                input_data = [input_data]
-            for input_data_sub in input_data:
-                if scoring_method == 'ppl_hyp':
-                    logging.info(' * ppl_hype computation')
-                    shared_ = dict(
-                        export_dir=export_dir,
-                        test=test,
-                        model=self.model_name,
-                        max_length=self.lm.max_length,
-                        data=data,
-                        template_type=template_type,
-                        pmi_lambda=pmi_lambda
-                    )
-                    config_ppl = ConfigManager(scoring_method='ppl', **shared_)
+                input_data_list = [input_data]
+
+            if scoring_method == 'ppl_marginal_bias':
+                config_ppl = ConfigManager(scoring_method='ppl_based_pmi', **config_config)
+                if config_ppl.flatten_score[prefix]:
+                    full_full_score = config_ppl.flatten_score[prefix]
+                else:
+                    for input_data_sub in input_data_list:
+                        full_full_score += self.lm.get_perplexity(word=input_data_sub, **shared)
+                    config_ppl.cache_scores(full_full_score, positive=positive)
+            elif scoring_method in ['ppl_hypothesis_bias', 'ppl_add_masked']:
+                config_ppl_tail = ConfigManager(scoring_method='ppl_tail_masked', **config_config)
+                if config_ppl_tail.flatten_score[prefix]:
+                    full_score_tail = config_ppl_tail.flatten_score[prefix]
+                else:
+                    full_score_tail = []
+                    for input_data_sub in input_data_list:
+                        full_score_tail += self.lm.get_perplexity(
+                            word=input_data_sub, mask_index_condition=[-2] * len(input_data_sub), **shared)
+                    config_ppl_tail.cache_scores(full_score_tail, positive=positive)
+                config_ppl_head = ConfigManager(scoring_method='ppl_head_masked', **config_config)
+
+                if config_ppl_head.flatten_score[prefix]:
+                    full_score_head = config_ppl_head.flatten_score[prefix]
+                else:
+                    full_score_head = []
+                    for input_data_sub in input_data_list:
+                        full_score_head += self.lm.get_perplexity(
+                            word=input_data_sub, mask_index_condition=[-2] * len(input_data_sub), **shared)
+                    config_ppl_head.cache_scores(full_score_head, positive=positive)
+
+                if scoring_method == 'ppl_add_masked':
+                    full_full_score = list(map(lambda x: sum(x), zip(full_score_head, full_score_tail)))
+                else:
+                    config_ppl = ConfigManager(scoring_method='ppl', **config_config)
                     if config_ppl.flatten_score[prefix]:
-                        logging.info(' * ppl_hype computation: ppl from cache')
                         full_score_ppl = config_ppl.flatten_score[prefix]
                     else:
-                        logging.info(' * ppl_hype computation: ppl')
-                        full_score_ppl = self.lm.get_perplexity(word=input_data_sub, **shared)
-                    config_tail = ConfigManager(scoring_method='ppl_tail_masked', **shared_)
-                    if config_tail.flatten_score[prefix]:
-                        logging.info(' * ppl_hype computation: ppl_tail_masked masked from cache')
-                        full_score_tail = config_tail.flatten_score[prefix]
-                    else:
-                        logging.info(' * ppl_hype computation: ppl_head_masked masked')
-                        full_score_tail = self.lm.get_perplexity(
-                            word=input_data_sub, mask_index_condition=[-1] * len(input_data_sub), **shared)
-                    config_head = ConfigManager(scoring_method='ppl_head_masked', **shared_)
-                    if config_head.flatten_score[prefix]:
-                        logging.info(' * ppl_hype computation: ppl_head_masked from cache')
-                        full_score_head = config_head.flatten_score[prefix]
-                    else:
-                        logging.info(' * ppl_hype computation: head masked')
-                        full_score_head = self.lm.get_perplexity(
-                            word=input_data_sub, mask_index_condition=[-2] * len(input_data_sub), **shared)
-                    assert len(full_score_ppl) == len(full_score_tail) == len(full_score_head),\
+                        full_score_ppl = []
+                        for input_data_sub in input_data_list:
+                            full_score_ppl += self.lm.get_perplexity(word=input_data_sub, **shared)
+                        config_ppl.cache_scores(full_score_ppl, positive=positive)
+                    assert len(full_score_ppl) == len(full_score_tail) == len(full_score_head), \
                         str([len(full_score_ppl), len(full_score_tail), len(full_score_head)])
-                    full_score = list(zip(*[full_score_ppl, full_score_tail, full_score_head]))
-                elif scoring_method in ['ppl_pmi', 'ppl']:
-                    logging.info(' * ppl computation')
-                    full_score = self.lm.get_perplexity(word=input_data_sub, **shared)
-                elif scoring_method in ['ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked']:
-                    logging.info(' * ppl computation ({})'.format(scoring_method))
-                    if scoring_method == 'ppl_tail_masked':
-                        full_score = self.lm.get_perplexity(
-                            word=input_data_sub, mask_index_condition=[-1] * len(input_data_sub), **shared)
-                    elif scoring_method == 'ppl_head_masked':
-                        full_score = self.lm.get_perplexity(
-                            word=input_data_sub, mask_index_condition=[-2] * len(input_data_sub), **shared)
-                    else:
-                        full_score_tail = self.lm.get_perplexity(
-                            word=input_data_sub, mask_index_condition=[-1] * len(input_data_sub), **shared)
-                        full_score_head = self.lm.get_perplexity(
-                            word=input_data_sub, mask_index_condition=[-2] * len(input_data_sub), **shared)
-                        full_score = list(map(lambda x: sum(x), zip(full_score_head, full_score_tail)))
-                elif scoring_method == 'embedding_similarity':
-                    logging.info(' * embedding similarity')
-                    full_score = self.lm.get_embedding_similarity(word=input_data_sub, **shared)
-                elif scoring_method == 'pmi':
-                    score_list = []
-                    for n, (i, k) in enumerate(list(permutations(range(4), 2))):
-                        logging.info(' * PMI permutation: {}, {} ({}/12)'.format(i, k, n + 1))
-                        key = '{}-{}'.format(i, k)
-                        if config.pmi_logits[prefix] and key in config.pmi_logits[prefix].keys():
-                            _score = config.pmi_logits[prefix][key]
-                            continue
-                        _score = self.lm.get_negative_pmi(
-                            word=input_data_sub,
-                            mask_index=[i] * len(input_data_sub),
-                            mask_index_condition=[k] * len(input_data_sub),
-                            weight=pmi_lambda, **shared)
-                        config.cache_scores_pmi(key, _score, positive=positive)
-                        score_list.append(_score)
-
-                    full_score = list(zip(*score_list))
-                else:
-                    raise ValueError('unknown method: {}'.format(scoring_method))
-                full_full_score += full_score
+                    full_full_score = list(zip(*[full_score_ppl, full_score_tail, full_score_head]))
+            elif scoring_method == 'ppl_tail_masked':
+                full_full_score = []
+                for input_data_sub in input_data_list:
+                    full_full_score += self.lm.get_perplexity(
+                        word=input_data_sub, mask_index_condition=[-1] * len(input_data_sub), **shared)
+            elif scoring_method == 'ppl_head_masked':
+                full_full_score = []
+                for input_data_sub in input_data_list:
+                    full_full_score += self.lm.get_perplexity(
+                        word=input_data_sub, mask_index_condition=[-2] * len(input_data_sub), **shared)
+            elif scoring_method == 'ppl_based_pmi':
+                full_full_score = []
+                for input_data_sub in input_data_list:
+                    full_full_score += self.lm.get_perplexity(word=input_data_sub, **shared)
+            elif scoring_method == 'ppl':
+                full_full_score = []
+                for input_data_sub in input_data_list:
+                    full_full_score += self.lm.get_perplexity(word=input_data_sub, **shared)
+            elif scoring_method == 'embedding_similarity':
+                full_full_score = []
+                for input_data_sub in input_data_list:
+                    full_full_score += self.lm.get_embedding_similarity(word=input_data_sub, **shared)
+            elif scoring_method == 'pmi_feldman':
+                score_list = []
+                for n, (i, k) in enumerate(list(permutations(range(4), 2))):
+                    logging.info(' * PMI permutation: {}, {} ({}/12)'.format(i, k, n + 1))
+                    key = '{}-{}'.format(i, k)
+                    if config.pmi_logits[prefix] and key in config.pmi_logits[prefix].keys():
+                        _score = config.pmi_logits[prefix][key]
+                        continue
+                    _score = self.lm.get_negative_pmi(
+                        word=input_data,
+                        mask_index=[i] * len(input_data),
+                        mask_index_condition=[k] * len(input_data),
+                        weight=pmi_feldman_lambda,
+                        **shared)
+                    config.cache_scores_pmi(key, _score, positive=positive)
+                    score_list.append(_score)
+                full_full_score = list(zip(*score_list))
+                config.cache_scores(full_full_score, positive=positive)
+            else:
+                raise ValueError('unknown method: {}'.format(scoring_method))
             config.cache_scores(full_full_score, positive=positive)
             return full_full_score
 

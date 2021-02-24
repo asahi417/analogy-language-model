@@ -340,7 +340,6 @@ class RelationScorer:
                      ppl_mar_weight_tail: (float, List) = 1.0,
                      ppl_mar_weight_head: (float, List) = 1.0):
         """ relation scoring test on analogy dataset """
-        assert val_accuracy is None or type(val_accuracy) is float
         ##############
         # get scores #
         ##############

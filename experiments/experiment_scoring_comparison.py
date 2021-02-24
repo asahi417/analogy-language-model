@@ -3,7 +3,8 @@ import json
 from itertools import product
 import alm
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
-methods_mlm = ['pmi_feldman', 'ppl_head_masked', 'ppl_tail_masked', 'ppl_add_masked', 'ppl_hypothesis_bias']
+methods_mlm = ['pmi_feldman', 'ppl_head_masked', 'ppl_tail_masked', 'ppl_add_masked', 'ppl_hypothesis_bias',
+               'embedding_similarity']
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
 methods = ['pmi_feldman', 'embedding_similarity', 'ppl', 'ppl_based_pmi', 'ppl_head_masked', 'ppl_tail_masked']
 

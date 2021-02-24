@@ -3,9 +3,10 @@ import json
 from itertools import product
 import alm
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
-
+methods_mlm = ['pmi_feldman', 'ppl_head_masked', 'ppl_tail_masked', 'ppl_add_masked', 'ppl_hypothesis_bias']
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
 methods = ['pmi_feldman', 'embedding_similarity', 'ppl', 'ppl_based_pmi', 'ppl_head_masked', 'ppl_tail_masked']
+
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
 
@@ -16,7 +17,7 @@ logging.info('################################################')
 no_inference = True
 for _model, _max_length, _batch in models:
     for scoring_method in methods:
-        if 'gpt' in _model and scoring_method in ['ppl', 'ppl_based_pmi', 'pmi_feldman']:
+        if 'gpt' in _model and scoring_method in methods_mlm:
             continue
         scorer = alm.RelationScorer(model=_model, max_length=_max_length)
         for _data in data:
@@ -47,8 +48,7 @@ export_prefix = 'experiment.scoring_comparison'
 no_inference = True
 for _model, _max_length, _batch in models:
     for scoring_method in methods:
-        if scoring_method in ['pmi', 'ppl_tail_masked', 'ppl_head_masked', 'ppl_add_masked', 'ppl_hypothesis_bias'] \
-                and 'gpt' in _model:
+        if 'gpt' in _model and scoring_method in methods_mlm:
             continue
         scorer = alm.RelationScorer(model=_model, max_length=_max_length)
         for _data in data:

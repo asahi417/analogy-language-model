@@ -264,6 +264,7 @@ class GridSearch:
                     lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])),
                     o)),
                 self.score))
+            print(logit_pn)
 
         # print(logit_pn)
         logit = list(map(lambda o: list(map(lambda s: negative_permutation_weight * s[1] - s[0], o)), logit_pn))

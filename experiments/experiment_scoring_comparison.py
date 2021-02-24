@@ -16,7 +16,7 @@ logging.info('################################################')
 no_inference = True
 for _model, _max_length, _batch in models:
     for scoring_method in methods:
-        if 'gpt' in _model and scoring_method in ['ppl', 'ppl_based_pmi']:
+        if 'gpt' in _model and scoring_method in ['ppl', 'ppl_based_pmi', 'pmi_feldman']:
             continue
         scorer = alm.RelationScorer(model=_model, max_length=_max_length)
         for _data in data:

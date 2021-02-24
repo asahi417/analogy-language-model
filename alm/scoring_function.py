@@ -241,6 +241,7 @@ class GridSearch:
         elif self.scoring_method == 'ppl_hypothesis_bias':
 
             def compute_ppl(ppl_scores):
+                print(ppl_scores)
                 norm_ppl = sum(map(lambda x: x[0], ppl_scores))
                 norm_head = sum(map(lambda x: x[1], ppl_scores))
                 norm_tail = sum(map(lambda x: x[2], ppl_scores))

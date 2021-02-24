@@ -132,7 +132,11 @@ class GridSearch:
             ppl_hyp_weight_head, ppl_hyp_weight_tail = self.all_config[config_index]
 
         aggregator_pos = AGGREGATOR[positive_permutation_aggregation]
-        aggregator_neg = AGGREGATOR[negative_permutation_aggregation]
+        aggregator_neg = AGGREGATOR['none']
+        if negative_permutation_aggregation:
+            aggregator_neg = AGGREGATOR[negative_permutation_aggregation]
+
+
 
         def get_logit_pn(_score):
             return list(map(

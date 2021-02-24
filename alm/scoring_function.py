@@ -147,6 +147,9 @@ class GridSearch:
                 _score))
 
         # ppl_pmi aggregation
+        print()
+        print(self.scoring_method)
+        print()
         if self.scoring_method == 'ppl_based_pmi':
             aggregator = AGGREGATOR[ppl_based_pmi_aggregation]
 

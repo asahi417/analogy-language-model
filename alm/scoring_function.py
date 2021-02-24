@@ -157,6 +157,7 @@ class GridSearch:
                 _score))
 
         # ppl_pmi aggregation
+        print(self.scoring_method)
         if self.scoring_method == 'ppl_based_pmi':
             aggregator = AGGREGATOR[ppl_based_pmi_aggregation]
 
@@ -268,7 +269,9 @@ class GridSearch:
                 ), self.score))
             logit_pn = get_logit_pn(score)
         else:
+            print(self.score)
             logit_pn = get_logit_pn(self.score)
+        input()
 
         # print(logit_pn)
         logit = list(map(lambda o: list(map(lambda s: negative_permutation_weight * s[1] - s[0], o)), logit_pn))

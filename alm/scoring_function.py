@@ -566,7 +566,7 @@ class RelationScorer:
                 for input_data_sub in input_data_list:
                     full_full_score += self.lm.get_embedding_similarity(word=input_data_sub, **shared)
             elif scoring_method == 'pmi_feldman':
-                assert not no_inference, '"no_inference==True" but no cache found'
+                assert not no_inference, '"no_inference==True" but no cache found at {}'.format(config.cache_dir)
                 score_list = []
                 for n, (i, k) in enumerate(list(permutations(range(4), 2))):
                     logging.info(' * PMI permutation: {}, {} ({}/12)'.format(i, k, n + 1))

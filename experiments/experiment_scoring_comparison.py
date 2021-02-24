@@ -10,33 +10,32 @@ methods = ['pmi_feldman', 'embedding_similarity', 'ppl', 'ppl_based_pmi', 'ppl_h
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
 
-#
-# logging.info('################################################')
-# logging.info('# Run LM inference to get logit (on valid set) #')
-# logging.info('################################################')
-# no_inference = True
-# for _model, _max_length, _batch in models:
-#     for scoring_method in methods:
-#         if 'gpt' in _model and scoring_method in methods_mlm:
-#             continue
-#         scorer = alm.RelationScorer(model=_model, max_length=_max_length)
-#         for _data in data:
-#             for _temp in all_templates:
-#                 scorer.analogy_test(
-#                     scoring_method=scoring_method,
-#                     data=_data,
-#                     template_type=_temp,
-#                     batch_size=_batch,
-#                     no_inference=no_inference,
-#                     skip_scoring_prediction=True)
-#                 scorer.release_cache()
+
+logging.info('################################################')
+logging.info('# Run LM inference to get logit (on valid set) #')
+logging.info('################################################')
+no_inference = True
+for _model, _max_length, _batch in models:
+    for scoring_method in methods:
+        if 'gpt' in _model and scoring_method in methods_mlm:
+            continue
+        scorer = alm.RelationScorer(model=_model, max_length=_max_length)
+        for _data in data:
+            for _temp in all_templates:
+                scorer.analogy_test(
+                    scoring_method=scoring_method,
+                    data=_data,
+                    template_type=_temp,
+                    batch_size=_batch,
+                    no_inference=no_inference,
+                    skip_scoring_prediction=True)
+                scorer.release_cache()
 
 
 logging.info('#######################################################')
 logging.info('# Get prediction on each configuration (on valid set) #')
 logging.info('#######################################################')
 methods += ['ppl_add_masked', 'ppl_marginal_bias', 'ppl_hypothesis_bias']
-methods = ['ppl_hypothesis_bias']
 positive_permutation_aggregation = [
     'max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4', 'index_5', 'index_6', 'index_7'
 ]

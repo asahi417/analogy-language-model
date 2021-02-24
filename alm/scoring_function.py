@@ -80,7 +80,7 @@ class GridSearch:
                  negative_permutation_aggregation,
                  negative_permutation_weight,
                  ppl_based_pmi_aggregation,
-                 ppl_based_pmi_weight,
+                 ppl_based_pmi_alpha,
                  ppl_hyp_weight_head,
                  ppl_hyp_weight_tail,
                  ppl_mar_weight_head,
@@ -103,8 +103,8 @@ class GridSearch:
 
         if type(ppl_based_pmi_aggregation) is not list:
             ppl_based_pmi_aggregation = [ppl_based_pmi_aggregation]
-        if type(ppl_based_pmi_weight) is not list:
-            ppl_based_pmi_weight = [ppl_based_pmi_weight]
+        if type(ppl_based_pmi_alpha) is not list:
+            ppl_based_pmi_alpha = [ppl_based_pmi_alpha]
 
         if type(ppl_mar_weight_head) is not list:
             ppl_mar_weight_head = [ppl_mar_weight_head]
@@ -118,7 +118,7 @@ class GridSearch:
 
         self.all_config = list(product(
             positive_permutation_aggregation, negative_permutation_aggregation, negative_permutation_weight,
-            ppl_based_pmi_aggregation, ppl_based_pmi_weight,
+            ppl_based_pmi_aggregation, ppl_based_pmi_alpha,
             ppl_mar_weight_head, ppl_mar_weight_tail,
             ppl_hyp_weight_head, ppl_hyp_weight_tail
         ))
@@ -127,7 +127,7 @@ class GridSearch:
     def single_run(self, config_index: int):
         PBAR.update(1)
         positive_permutation_aggregation, negative_permutation_aggregation, negative_permutation_weight,\
-            ppl_based_pmi_aggregation, ppl_based_pmi_weight,\
+            ppl_based_pmi_aggregation, ppl_based_pmi_alpha,\
             ppl_mar_weight_head, ppl_mar_weight_tail,\
             ppl_hyp_weight_head, ppl_hyp_weight_tail = self.all_config[config_index]
 
@@ -147,9 +147,6 @@ class GridSearch:
                 _score))
 
         # ppl_pmi aggregation
-        print()
-        print(self.scoring_method)
-        print()
         if self.scoring_method == 'ppl_based_pmi':
             aggregator = AGGREGATOR[ppl_based_pmi_aggregation]
 
@@ -187,8 +184,8 @@ class GridSearch:
                 # negative pmi approx by perplexity difference: higher is better
                 neg_pmi = list(map(
                     lambda x: aggregator([
-                        x[0] - x[1] * ppl_based_pmi_weight,
-                        x[2] - x[3] * ppl_based_pmi_weight
+                        x[0] - x[1] * ppl_based_pmi_alpha,
+                        x[2] - x[3] * ppl_based_pmi_alpha
                     ]),
                     zip(negative_log_likelihood_cond_h, negative_log_likelihood_mar_h,
                         negative_log_likelihood_cond_t, negative_log_likelihood_mar_t)))
@@ -241,7 +238,6 @@ class GridSearch:
         elif self.scoring_method == 'ppl_hypothesis_bias':
 
             def compute_ppl(ppl_scores):
-                print(ppl_scores)
                 norm_ppl = sum(map(lambda x: x[0], ppl_scores))
                 norm_head = sum(map(lambda x: x[1], ppl_scores))
                 norm_tail = sum(map(lambda x: x[2], ppl_scores))
@@ -281,7 +277,7 @@ class GridSearch:
             'negative_permutation_aggregation': negative_permutation_aggregation,
             'negative_permutation_weight': negative_permutation_weight,
             'ppl_based_pmi_aggregation': ppl_based_pmi_aggregation,
-            'ppl_based_pmi_weight': ppl_based_pmi_weight,
+            'ppl_based_pmi_alpha': ppl_based_pmi_alpha,
             'ppl_mar_weight_head': ppl_mar_weight_head,
             'ppl_mar_weight_tail': ppl_mar_weight_tail,
             'ppl_hyp_weight_head': ppl_hyp_weight_head,

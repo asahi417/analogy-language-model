@@ -479,7 +479,6 @@ class RelationScorer:
 
             input_data = data_instance.flatten_pos if positive else data_instance.flatten_neg
 
-            assert not no_inference, '"no_inference==True" but no cache found'
             logging.info('# run scoring: {}'.format(scoring_method))
             shared = {'batch_size': batch_size, 'template_type': template_type}
 
@@ -506,6 +505,7 @@ class RelationScorer:
                 if config_ppl_tail.flatten_score[prefix]:
                     full_score_tail = config_ppl_tail.flatten_score[prefix]
                 else:
+                    assert not no_inference, 'no cache found at {}'.format(config_ppl_tail.cache_dir)
                     full_score_tail = []
                     for input_data_sub in input_data_list:
                         full_score_tail += self.lm.get_perplexity(
@@ -516,6 +516,7 @@ class RelationScorer:
                 if config_ppl_head.flatten_score[prefix]:
                     full_score_head = config_ppl_head.flatten_score[prefix]
                 else:
+                    assert not no_inference, 'no cache found at {}'.format(config_ppl_tail.cache_dir)
                     full_score_head = []
                     for input_data_sub in input_data_list:
                         full_score_head += self.lm.get_perplexity(
@@ -529,6 +530,7 @@ class RelationScorer:
                     if config_ppl.flatten_score[prefix]:
                         full_score_ppl = config_ppl.flatten_score[prefix]
                     else:
+                        assert not no_inference, 'no cache found at {}'.format(config_ppl_tail.cache_dir)
                         full_score_ppl = []
                         for input_data_sub in input_data_list:
                             full_score_ppl += self.lm.get_perplexity(word=input_data_sub, **shared)
@@ -537,28 +539,34 @@ class RelationScorer:
                         str([len(full_score_ppl), len(full_score_tail), len(full_score_head)])
                     full_full_score = list(zip(*[full_score_ppl, full_score_tail, full_score_head]))
             elif scoring_method == 'ppl_tail_masked':
+                assert not no_inference, '"no_inference==True" but no cache found'
                 full_full_score = []
                 for input_data_sub in input_data_list:
                     full_full_score += self.lm.get_perplexity(
                         word=input_data_sub, mask_index_condition=[-1] * len(input_data_sub), **shared)
             elif scoring_method == 'ppl_head_masked':
+                assert not no_inference, '"no_inference==True" but no cache found'
                 full_full_score = []
                 for input_data_sub in input_data_list:
                     full_full_score += self.lm.get_perplexity(
                         word=input_data_sub, mask_index_condition=[-2] * len(input_data_sub), **shared)
             elif scoring_method == 'ppl_based_pmi':
+                assert not no_inference, '"no_inference==True" but no cache found'
                 full_full_score = []
                 for input_data_sub in input_data_list:
                     full_full_score += self.lm.get_perplexity(word=input_data_sub, **shared)
             elif scoring_method == 'ppl':
+                assert not no_inference, '"no_inference==True" but no cache found'
                 full_full_score = []
                 for input_data_sub in input_data_list:
                     full_full_score += self.lm.get_perplexity(word=input_data_sub, **shared)
             elif scoring_method == 'embedding_similarity':
+                assert not no_inference, '"no_inference==True" but no cache found'
                 full_full_score = []
                 for input_data_sub in input_data_list:
                     full_full_score += self.lm.get_embedding_similarity(word=input_data_sub, **shared)
             elif scoring_method == 'pmi_feldman':
+                assert not no_inference, '"no_inference==True" but no cache found'
                 score_list = []
                 for n, (i, k) in enumerate(list(permutations(range(4), 2))):
                     logging.info(' * PMI permutation: {}, {} ({}/12)'.format(i, k, n + 1))

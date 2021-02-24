@@ -262,7 +262,6 @@ class GridSearch:
             logit_pn = get_logit_pn(self.score)
 
         print(self.score)
-        input()
         logit = list(map(lambda o: list(map(lambda s: negative_permutation_weight * s[1] - s[0], o)), logit_pn))
         pred = list(map(lambda x: x.index(max(x)), logit))
 
@@ -377,7 +376,7 @@ class RelationScorer:
         ###############
         # grid search #
         ###############
-        pool = Pool(1)
+        pool = Pool()
         shared_config = {
             'model': self.model_name,
             'max_length': self.max_length,

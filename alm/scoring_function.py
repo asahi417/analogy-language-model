@@ -380,8 +380,6 @@ class RelationScorer:
         # restore the nested structure
         logging.info('re-format LM score')
         score = data_instance.insert_score(score_pos, score_neg)
-        print(score)
-        input()
         ###############
         # grid search #
         ###############

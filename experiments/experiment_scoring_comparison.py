@@ -76,7 +76,7 @@ models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased',
 logging.info('#######################################################################')
 logging.info('# get test accuracy on each combination of model and scoring function #')
 logging.info('#######################################################################')
-no_inference = True
+no_inference = False
 export_prefix = 'experiment.scoring_comparison'
 df = alm.get_report(export_prefix=export_prefix)
 for i, m, s in product(data, models, methods):

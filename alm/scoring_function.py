@@ -139,12 +139,7 @@ class GridSearch:
         def get_logit_pn(_score):
             print(
                 list(map(
-                    lambda s: (
-                        list(zip(
-                            list(map(lambda o: o, list(zip(*s[0])))),
-                            list(map(lambda o: o, list(zip(*s[1]))))
-                        ))
-                    ),
+                    lambda s: s,
                     _score))
             )
             return list(map(
@@ -269,9 +264,7 @@ class GridSearch:
                 ), self.score))
             logit_pn = get_logit_pn(score)
         else:
-            print(self.score)
             logit_pn = get_logit_pn(self.score)
-        input()
 
         # print(logit_pn)
         logit = list(map(lambda o: list(map(lambda s: negative_permutation_weight * s[1] - s[0], o)), logit_pn))

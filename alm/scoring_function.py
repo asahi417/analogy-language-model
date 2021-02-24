@@ -264,6 +264,7 @@ class GridSearch:
             logit_pn = get_logit_pn(self.score)
 
         logit = list(map(lambda o: list(map(lambda s: negative_permutation_weight * s[1] - s[0], o)), logit_pn))
+        print(logit)
         pred = list(map(lambda x: x.index(max(x)), logit))
 
         # compute accuracy

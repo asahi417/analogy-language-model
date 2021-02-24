@@ -80,10 +80,11 @@ no_inference = True
 export_prefix = 'experiment.scoring_comparison'
 df = alm.get_report(export_prefix=export_prefix)
 for i, m, s in product(data, models, methods):
-    if 'gpt' in m and s in methods_mlm:
-        continue
 
     _model, _len, _batch = m
+    if 'gpt' in _model and s in methods_mlm:
+        continue
+    print(i, m, s)
     tmp_df = df[df.data == i]
     tmp_df = tmp_df[tmp_df.model == _model]
     tmp_df = tmp_df[tmp_df.scoring_method == s]

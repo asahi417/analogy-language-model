@@ -80,6 +80,9 @@ no_inference = True
 export_prefix = 'experiment.scoring_comparison'
 df = alm.get_report(export_prefix=export_prefix)
 for i, m, s in product(data, models, methods):
+    if 'gpt' in m and s in methods_mlm:
+        continue
+
     _model, _len, _batch = m
     tmp_df = df[df.data == i]
     tmp_df = tmp_df[tmp_df.model == _model]
@@ -115,10 +118,13 @@ export_prefix = 'experiment.scoring_comparison.default'
 for i, m in product(data, models):
     _model, _len, _batch = m
     scorer = alm.RelationScorer(model=_model, max_length=_len)
+    val_accuracy = scorer.analogy_test(batch_size=_batch, data=i, test=False, **shared)
+    assert len(val_accuracy) == 0
     scorer.analogy_test(
         no_inference=no_inference,
         batch_size=_batch,
         data=i,
+        val_accuracy=val_accuracy,
         export_prefix=export_prefix,
         test=True,
         **shared)

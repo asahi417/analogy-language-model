@@ -147,7 +147,6 @@ class GridSearch:
                 _score))
 
         # ppl_pmi aggregation
-        print(self.scoring_method)
         if self.scoring_method == 'ppl_based_pmi':
             aggregator = AGGREGATOR[ppl_based_pmi_aggregation]
 
@@ -264,7 +263,6 @@ class GridSearch:
                     lambda s: (aggregator_pos(s[0]), aggregator_neg(s[1])),
                     o)),
                 self.score))
-            print(logit_pn)
 
         # print(logit_pn)
         logit = list(map(lambda o: list(map(lambda s: negative_permutation_weight * s[1] - s[0], o)), logit_pn))
@@ -396,7 +394,7 @@ class RelationScorer:
             data_instance,
             positive_permutation_aggregation,
             negative_permutation_aggregation if negative_permutation else None,
-            negative_permutation_weight if negative_permutation else None,
+            negative_permutation_weight if negative_permutation else 0.0,
             ppl_based_pmi_aggregation if scoring_method == 'ppl_based_pmi' else None,
             ppl_based_pmi_alpha if scoring_method == 'ppl_based_pmi' else None,
             ppl_hyp_weight_head if scoring_method == 'ppl_hypothesis_bias' else None,

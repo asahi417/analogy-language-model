@@ -11,7 +11,7 @@ scoring_method = ['ppl_hypothesis_bias', 'ppl_marginal_bias', 'ppl_based_pmi']
 logging.info('###############################################################')
 logging.info('# Run LM inference to get logit (both of valid and test sets) #')
 logging.info('###############################################################')
-no_inference = True
+no_inference = False
 for _model, _max_length, _batch in models:
     scorer = alm.RelationScorer(model=_model, max_length=_max_length)
     for _data in data:

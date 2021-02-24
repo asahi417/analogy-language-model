@@ -13,6 +13,7 @@ models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased',
 logging.info('################################################')
 logging.info('# Run LM inference to get logit (on valid set) #')
 logging.info('################################################')
+no_inference = True
 for _model, _max_length, _batch in models:
     for scoring_method in methods:
         if 'gpt' in _model and scoring_method in ['ppl', 'ppl_based_pmi']:
@@ -25,6 +26,7 @@ for _model, _max_length, _batch in models:
                     data=_data,
                     template_type=_temp,
                     batch_size=_batch,
+                    no_inference=no_inference,
                     skip_scoring_prediction=True)
                 scorer.release_cache()
 

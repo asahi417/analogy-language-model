@@ -255,7 +255,7 @@ class GridSearch:
                 lambda o: (
                     list(map(lambda perm: compute_ppl(list(map(lambda s: s[0][perm], o))), range(8))),
                     list(map(lambda perm: compute_ppl(
-                        list(map(lambda s: s[1][perm] if len(s[1]) != 0 else [0], o))
+                        list(map(lambda s: s[1][perm] if len(s[1]) != 0 else [0] * 3, o))
                     ),
                          range(16)))
                 ), self.score))

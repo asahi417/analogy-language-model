@@ -137,6 +137,16 @@ class GridSearch:
             aggregator_neg = AGGREGATOR[negative_permutation_aggregation]
 
         def get_logit_pn(_score):
+            print(
+                list(map(
+                    lambda s: (
+                        list(zip(
+                            list(map(lambda o: o, list(zip(*s[0])))),
+                            list(map(lambda o: o, list(zip(*s[1]))))
+                        ))
+                    ),
+                    _score))
+            )
             return list(map(
                 lambda s: (
                     list(zip(
@@ -197,7 +207,6 @@ class GridSearch:
                          range(16)))
             ), self.score))
             logit_pn = get_logit_pn(score)
-
         elif self.scoring_method == 'ppl_marginal_bias':
 
             def compute_ppl_mar(ppl_scores):
@@ -261,7 +270,7 @@ class GridSearch:
         else:
             logit_pn = get_logit_pn(self.score)
 
-        print(self.score)
+        print(logit_pn)
         logit = list(map(lambda o: list(map(lambda s: negative_permutation_weight * s[1] - s[0], o)), logit_pn))
         pred = list(map(lambda x: x.index(max(x)), logit))
 

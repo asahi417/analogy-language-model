@@ -11,6 +11,7 @@ scoring_method = ['ppl_hypothesis_bias', 'ppl_marginal_bias', 'ppl_based_pmi']
 logging.info('###############################################################')
 logging.info('# Run LM inference to get logit (both of valid and test sets) #')
 logging.info('###############################################################')
+no_inference = True
 for _model, _max_length, _batch in models:
     scorer = alm.RelationScorer(model=_model, max_length=_max_length)
     for _data in data:
@@ -24,6 +25,7 @@ for _model, _max_length, _batch in models:
                             data=_data,
                             template_type=_temp,
                             batch_size=_batch,
+                            no_inference=no_inference,
                             negative_permutation=True,
                             skip_scoring_prediction=True,
                             test=test
@@ -82,10 +84,6 @@ alm.export_report(export_prefix=export_prefix, test=True)
 logging.info('merge into one table')
 df_val = alm.get_report(export_prefix=export_prefix)
 df_test = alm.get_report(export_prefix=export_prefix, test=True)
-# for d in data:
-#     df_val = df_val[df_val.data == d]
-#     df_test = df_test[df_test.data == d]
-
 df_val = df_val.sort_values(by=list(df_val.columns))
 df_test = df_test.sort_values(by=list(df_val.columns))
 

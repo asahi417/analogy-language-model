@@ -377,7 +377,7 @@ class RelationScorer:
         ###############
         # grid search #
         ###############
-        pool = Pool()
+        pool = Pool(1)
         shared_config = {
             'model': self.model_name,
             'max_length': self.max_length,

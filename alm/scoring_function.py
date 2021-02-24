@@ -224,11 +224,8 @@ class GridSearch:
                 negative_log_likelihood_mar_h = list(map(lambda x: log(x / sum(ppl_out_option)), ppl_out_option))
 
                 # negative pmi approx by perplexity difference: higher is better
-                # neg_pmi = list(map(
-                #     lambda x: x[0] - aggregator([x[1], x[2]]) * ppl_based_pmi_weigh,
-                #     zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
                 neg_pmi = list(map(
-                    lambda x: x[0] - ppl_hyp_weight_head * x[1] - ppl_hyp_weight_tail * x[2],
+                    lambda x: x[0] - ppl_mar_weight_head * x[1] - ppl_mar_weight_tail * x[2],
                     zip(negative_log_likelihood_cond, negative_log_likelihood_mar_h, negative_log_likelihood_mar_t)))
                 return neg_pmi
 

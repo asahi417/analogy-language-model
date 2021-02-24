@@ -36,6 +36,7 @@ logging.info('#######################################################')
 logging.info('# Get prediction on each configuration (on valid set) #')
 logging.info('#######################################################')
 methods += ['ppl_add_masked', 'ppl_marginal_bias', 'ppl_hypothesis_bias']
+methods = ['ppl_based_pmi', 'ppl_head_masked', 'ppl_tail_masked', 'ppl_add_masked', 'ppl_marginal_bias', 'ppl_hypothesis_bias']
 positive_permutation_aggregation = [
     'max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4', 'index_5', 'index_6', 'index_7'
 ]

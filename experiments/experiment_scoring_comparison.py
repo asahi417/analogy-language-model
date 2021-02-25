@@ -72,8 +72,8 @@ models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased',
 #                     scorer.analogy_test(**shared)
 #                 scorer.release_cache()
 # alm.export_report(export_prefix=export_prefix)
-
-
+#
+#
 # logging.info('#######################################################################')
 # logging.info('# get test accuracy on each combination of model and scoring function #')
 # logging.info('#######################################################################')
@@ -85,7 +85,6 @@ models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased',
 #     _model, _len, _batch = m
 #     if 'gpt' in _model and s in methods_mlm:
 #         continue
-#     print(i, m, s)
 #     tmp_df = df[df.data == i]
 #     tmp_df = tmp_df[tmp_df.model == _model]
 #     tmp_df = tmp_df[tmp_df.scoring_method == s]
@@ -125,5 +124,6 @@ for i, m in product(data, models):
     scorer.analogy_test(
         no_inference=no_inference, batch_size=_batch, data=i, export_prefix=export_prefix, test=True, **shared)
     scorer.release_cache()
+alm.export_report(export_prefix=export_prefix, test=False)
 alm.export_report(export_prefix=export_prefix, test=True)
 

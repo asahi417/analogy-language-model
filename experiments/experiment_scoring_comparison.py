@@ -120,16 +120,10 @@ export_prefix = 'experiment.scoring_comparison.default'
 for i, m in product(data, models):
     _model, _len, _batch = m
     scorer = alm.RelationScorer(model=_model, max_length=_len)
-    # val_accuracy = scorer.analogy_test(batch_size=_batch, data=i, test=False, **shared)
-    # assert len(val_accuracy) == 0, val_accuracy
     scorer.analogy_test(
-        no_inference=no_inference,
-        batch_size=_batch,
-        data=i,
-        # val_accuracy=val_accuracy,
-        export_prefix=export_prefix,
-        test=True,
-        **shared)
+        no_inference=no_inference, batch_size=_batch, data=i, export_prefix=export_prefix, test=False, **shared)
+    scorer.analogy_test(
+        no_inference=no_inference, batch_size=_batch, data=i, export_prefix=export_prefix, test=True, **shared)
     scorer.release_cache()
 alm.export_report(export_prefix=export_prefix, test=True)
 

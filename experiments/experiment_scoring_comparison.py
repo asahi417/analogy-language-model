@@ -74,41 +74,41 @@ models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased',
 # alm.export_report(export_prefix=export_prefix)
 
 
-logging.info('#######################################################################')
-logging.info('# get test accuracy on each combination of model and scoring function #')
-logging.info('#######################################################################')
-no_inference = False
-export_prefix = 'experiment.scoring_comparison'
-df = alm.get_report(export_prefix=export_prefix)
-for i, m, s in product(data, models, methods):
-
-    _model, _len, _batch = m
-    if 'gpt' in _model and s in methods_mlm:
-        continue
-    print(i, m, s)
-    tmp_df = df[df.data == i]
-    tmp_df = tmp_df[tmp_df.model == _model]
-    tmp_df = tmp_df[tmp_df.scoring_method == s]
-    val_accuracy = tmp_df.sort_values(by='accuracy', ascending=False).head(1)['accuracy'].values[0]
-    logging.info("RUN TEST:\n - data: {} \n - lm: {} \n - score: {} \n - validation accuracy: {} ".format(
-        i, _model, s, val_accuracy))
-    best_configs = tmp_df[tmp_df['accuracy'] == val_accuracy]
-    logging.info("find {} configs with same accuracy".format(len(best_configs)))
-    for n, tmp_df in best_configs.iterrows():
-        config = json.loads(tmp_df.to_json())
-        config.pop('accuracy')
-        config.pop('max_length')
-        scorer = alm.RelationScorer(model=config.pop('model'), max_length=_len)
-        scorer.analogy_test(
-            no_inference=no_inference,
-            test=True,
-            export_prefix=export_prefix,
-            batch_size=_batch,
-            val_accuracy=val_accuracy,
-            **config
-        )
-        scorer.release_cache()
-alm.export_report(export_prefix=export_prefix, test=True)
+# logging.info('#######################################################################')
+# logging.info('# get test accuracy on each combination of model and scoring function #')
+# logging.info('#######################################################################')
+# no_inference = False
+# export_prefix = 'experiment.scoring_comparison'
+# df = alm.get_report(export_prefix=export_prefix)
+# for i, m, s in product(data, models, methods):
+#
+#     _model, _len, _batch = m
+#     if 'gpt' in _model and s in methods_mlm:
+#         continue
+#     print(i, m, s)
+#     tmp_df = df[df.data == i]
+#     tmp_df = tmp_df[tmp_df.model == _model]
+#     tmp_df = tmp_df[tmp_df.scoring_method == s]
+#     val_accuracy = tmp_df.sort_values(by='accuracy', ascending=False).head(1)['accuracy'].values[0]
+#     logging.info("RUN TEST:\n - data: {} \n - lm: {} \n - score: {} \n - validation accuracy: {} ".format(
+#         i, _model, s, val_accuracy))
+#     best_configs = tmp_df[tmp_df['accuracy'] == val_accuracy]
+#     logging.info("find {} configs with same accuracy".format(len(best_configs)))
+#     for n, tmp_df in best_configs.iterrows():
+#         config = json.loads(tmp_df.to_json())
+#         config.pop('accuracy')
+#         config.pop('max_length')
+#         scorer = alm.RelationScorer(model=config.pop('model'), max_length=_len)
+#         scorer.analogy_test(
+#             no_inference=no_inference,
+#             test=True,
+#             export_prefix=export_prefix,
+#             batch_size=_batch,
+#             val_accuracy=val_accuracy,
+#             **config
+#         )
+#         scorer.release_cache()
+# alm.export_report(export_prefix=export_prefix, test=True)
 
 
 logging.info('############################################################')
@@ -120,13 +120,13 @@ export_prefix = 'experiment.scoring_comparison.default'
 for i, m in product(data, models):
     _model, _len, _batch = m
     scorer = alm.RelationScorer(model=_model, max_length=_len)
-    val_accuracy = scorer.analogy_test(batch_size=_batch, data=i, test=False, **shared)
-    assert len(val_accuracy) == 0
+    # val_accuracy = scorer.analogy_test(batch_size=_batch, data=i, test=False, **shared)
+    # assert len(val_accuracy) == 0, val_accuracy
     scorer.analogy_test(
         no_inference=no_inference,
         batch_size=_batch,
         data=i,
-        val_accuracy=val_accuracy,
+        # val_accuracy=val_accuracy,
         export_prefix=export_prefix,
         test=True,
         **shared)

@@ -15,7 +15,7 @@ models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased',
 logging.info('################################################')
 logging.info('# Run LM inference to get logit (on valid set) #')
 logging.info('################################################')
-no_inference = True
+no_inference = False
 for _model, _max_length, _batch in models:
     for scoring_method in methods:
         if 'gpt' in _model and scoring_method in methods_mlm:
@@ -46,7 +46,7 @@ pmi_feldman_aggregation = [
 ]
 ppl_based_pmi_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1']
 export_prefix = 'experiment.scoring_comparison'
-no_inference = True
+no_inference = False
 for _model, _max_length, _batch in models:
     for scoring_method in methods:
         if 'gpt' in _model and scoring_method in methods_mlm:
@@ -113,7 +113,7 @@ alm.export_report(export_prefix=export_prefix, test=True)
 logging.info('############################################################')
 logging.info('# get test accuracy on each default configuration of model #')
 logging.info('############################################################')
-no_inference = True
+no_inference = False
 shared = {'template_type': 'is-to-as', 'scoring_method': 'ppl_based_pmi'}
 export_prefix = 'experiment.scoring_comparison.default'
 for i, m in product(data, models):

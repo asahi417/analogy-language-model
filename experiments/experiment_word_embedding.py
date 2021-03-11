@@ -24,7 +24,8 @@ DUMMY = -1000
 if not os.path.exists(BIN_W2V):
     logging.info('downloading word2vec model')
     alm.util.open_compressed_file(
-        url="https://drive.google.com/u/0/uc?id=0B7XkCwpI5KDYNlNUTTlSS21pQmM&export=download", cache_dir='./cache', gdrive=True)
+        url="https://drive.google.com/u/0/uc?id=0B7XkCwpI5KDYNlNUTTlSS21pQmM&export=download", cache_dir='./cache',
+        filename='GoogleNews-vectors-negative300.bin.zip', gdrive=True)
 if not os.path.exists(BIN_FASTTEXT):
     logging.info('downloading fasttext model')
     alm.util.open_compressed_file(

@@ -88,7 +88,7 @@ class TransformersLM:
     def __init__(self,
                  model: str,
                  max_length: int = None,
-                 cache_dir: str = './cache',
+                 cache_dir: str = None,
                  num_worker: int = 1):
         """ transformers language model based sentence-mining
 

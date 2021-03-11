@@ -293,7 +293,7 @@ class RelationScorer:
     def __init__(self,
                  model: str = 'roberta-base',
                  max_length: int = 32,
-                 cache_dir: str = './cache',
+                 cache_dir: str = None,
                  num_worker: int = 1):
         """ Scoring relations with language models
 

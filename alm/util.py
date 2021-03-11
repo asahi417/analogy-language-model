@@ -19,8 +19,8 @@ def fix_seed(seed: int = 12):
     torch.manual_seed(seed)
 
 
-def open_compressed_file(url, cache_dir, gdrive: bool = False):
-    path = wget(url, cache_dir, gdrive=gdrive)
+def open_compressed_file(url, cache_dir, filename: str = None, gdrive: bool = False):
+    path = wget(url, cache_dir, gdrive=gdrive, filename=filename)
     if path.endswith('.tar.gz') or path.endswith('.tgz'):
         tar = tarfile.open(path, "r:gz")
         tar.extractall(cache_dir)
@@ -30,10 +30,13 @@ def open_compressed_file(url, cache_dir, gdrive: bool = False):
             zip_ref.extractall(cache_dir)
 
 
-def wget(url, cache_dir, gdrive: bool = False):
+def wget(url, cache_dir, gdrive: bool = False, filename: str = None):
     os.makedirs(cache_dir, exist_ok=True)
     if gdrive:
-        return gdown.download(url, cache_dir, quiet=False)
+        if filename:
+            return gdown.download(url, '{}/{}'.format(cache_dir, filename), quiet=False)
+        else:
+            return gdown.download(url, cache_dir, quiet=False)
     filename = os.path.basename(url)
     with open('{}/{}'.format(cache_dir, filename), "wb") as f:
         r = requests.get(url)

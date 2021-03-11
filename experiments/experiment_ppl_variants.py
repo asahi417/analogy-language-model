@@ -7,6 +7,7 @@ import pandas as pd
 SKIP_INFERENCE = True  # skip inference step
 SKIP_GRID_SEARCH = True  # skip grid search
 SKIP_MERGE = False  # skip merging result
+SKIP_EXPORT_PREDICTION = False  # skip export prediction
 
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 logging.info('')
@@ -123,29 +124,29 @@ if not SKIP_MERGE:
             df_test__ = df_test_[df_test_['model'] == m]
             acc_full = float(df_test__.sort_values(by=['accuracy'], ascending=False)['accuracy'].head(1))
             acc_val = float(df_test__.sort_values(by=['accuracy_validation'], ascending=False)['accuracy'].head(1))
-            summary[m] = {'full': acc_full, 'validation': acc_val}
-            print(summary[m])
-    print(summary)
-    pd.DataFrame(summary).to_csv('./experiments_results/summary/{}.top.csv'.format(export_prefix))
+            summary[m][d] = {'full': acc_full, 'validation': acc_val}
+    with open('./experiments_results/summary/{}.top.json'.format(export_prefix), 'w') as f:
+        json.dump(summary, f)
 
-# logging.info('###############################################')
-# logging.info('# Export predictions for qualitative analysis #')
-# logging.info('###############################################')
-# # get prediction of what achieves the best validation accuracy
-# score = 'ppl_based_pmi'
-# data = 'sat'
-# for _model, _max_length, _batch in models:
-#     tmp_df = df_test[df_test.data == data]
-#     tmp_df = tmp_df[tmp_df.model == _model]
-#     tmp_df = tmp_df[tmp_df.scoring_method == score]
-#     accuracy = tmp_df.sort_values(by='accuracy_validation', ascending=False).head(1)['accuracy'].values[0]
-#     best_configs = tmp_df[tmp_df['accuracy_validation'] == accuracy]
-#     config = json.loads(best_configs.iloc[0].to_json())
-#     logging.info("use the first one ({})".format(data))
-#     logging.info("\t * accuracy (valid): {}".format(config.pop('accuracy_validation')))
-#     logging.info("\t * accuracy (test) : {}".format(config.pop('accuracy_test')))
-#     logging.info("\t * accuracy (full) : {}".format(config.pop('accuracy')))
-#     scorer = alm.RelationScorer(model=config.pop('model'), max_length=config.pop('max_length'))
-#     scorer.analogy_test(test=True, export_prediction=True, no_inference=True, export_prefix=export_prefix, **config)
-#     scorer.release_cache()
+if not SKIP_EXPORT_PREDICTION:
+    logging.info('###############################################')
+    logging.info('# Export predictions for qualitative analysis #')
+    logging.info('###############################################')
+    # get prediction of what achieves the best validation accuracy
+    score = 'ppl_based_pmi'
+    data = 'sat'
+    for _model, _max_length, _batch in models:
+        tmp_df = df_test[df_test.data == data]
+        tmp_df = tmp_df[tmp_df.model == _model]
+        tmp_df = tmp_df[tmp_df.scoring_method == score]
+        accuracy = tmp_df.sort_values(by='accuracy_validation', ascending=False).head(1)['accuracy'].values[0]
+        best_configs = tmp_df[tmp_df['accuracy_validation'] == accuracy]
+        config = json.loads(best_configs.iloc[0].to_json())
+        logging.info("use the first one ({})".format(data))
+        logging.info("\t * accuracy (valid): {}".format(config.pop('accuracy_validation')))
+        logging.info("\t * accuracy (test) : {}".format(config.pop('accuracy_test')))
+        logging.info("\t * accuracy (full) : {}".format(config.pop('accuracy')))
+        scorer = alm.RelationScorer(model=config.pop('model'), max_length=config.pop('max_length'))
+        scorer.analogy_test(test=True, export_prediction=True, no_inference=True, export_prefix=export_prefix, **config)
+        scorer.release_cache()
 

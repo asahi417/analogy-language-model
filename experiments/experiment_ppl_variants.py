@@ -2,12 +2,14 @@ import logging
 import os
 import json
 import alm
+import pandas as pd
 
 SKIP_INFERENCE = True  # skip inference step
 SKIP_GRID_SEARCH = True  # skip grid search
 SKIP_MERGE = False  # skip merging result
 
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
+logging.info('')
 alm.util.fix_seed(1234)
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
 data = ['sat', 'u2', 'u4', 'google', 'bats']
@@ -94,8 +96,9 @@ if not SKIP_MERGE:
     logging.info('# Merge validation and test result #')
     logging.info('####################################')
     df_val = alm.get_report(export_prefix=export_prefix)
-    df_test = alm.get_report(export_prefix=export_prefix, test=True)
     df_val = df_val.sort_values(by=list(df_val.columns))
+
+    df_test = alm.get_report(export_prefix=export_prefix, test=True)
     df_test = df_test.sort_values(by=list(df_val.columns))
 
     accuracy_val = df_val.pop('accuracy').to_numpy()
@@ -105,6 +108,8 @@ if not SKIP_MERGE:
     df_test['accuracy_validation'] = accuracy_val
     df_test['accuracy_test'] = accuracy_test
 
+    summary = {}
+
     for d in data:
         df_test_ = df_test[df_test.data == d]
         val, test = alm.get_dataset_raw(d)
@@ -112,7 +117,16 @@ if not SKIP_MERGE:
         df_test_ = df_test_.sort_values(by=['accuracy'], ascending=False)
         df_test_.to_csv('./experiments_results/summary/{}.full.{}.csv'.format(export_prefix, d))
         logging.info('Top 3 in {}'.format(d))
-        logging.info('\t {}'.format(df_test_['accuracy'].head(3)))
+        logging.info('\n{}'.format(df_test_['accuracy'].head(3)))
+
+        for m, _, _ in models:
+            df_test__ = df_test_[df_test_['model'] == m]
+            acc_full = float(df_test__.sort_values(by=['accuracy'], ascending=False).head(1).values[0])
+            acc_val = float(df_test__.sort_values(by=['accuracy_validation'], ascending=False).head(1).values[0])
+            summary[m] = {'full': acc_full, 'validation': acc_val}
+            print(summary[m])
+    print(summary)
+    pd.DataFrame(summary).to_csv('./experiments_results/summary/{}.top.csv'.format(export_prefix))
 
 # logging.info('###############################################')
 # logging.info('# Export predictions for qualitative analysis #')

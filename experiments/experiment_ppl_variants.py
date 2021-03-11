@@ -134,7 +134,7 @@ if not SKIP_EXPORT_PREDICTION:
     # get prediction of what achieves the best validation accuracy
     # score = 'ppl_based_pmi'
     data = 'sat'
-    df_test = pd.read_csv('./experiments_results/summary/{}.full.{}.csv'.format(export_prefix, data))
+    df_test = pd.read_csv('./experiments_results/summary/{}.full.{}.csv'.format(export_prefix, data), index_col=0)
     for _model, _max_length, _batch in models:
         tmp_df = df_test[df_test.model == _model]
         # tmp_df = tmp_df[tmp_df.scoring_method == score]

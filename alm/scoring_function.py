@@ -422,8 +422,8 @@ class RelationScorer:
             for d, p in zip(data_raw, prediction):
                 d['prediction'] = p
             os.makedirs('{}/summary/prediction_file'.format(export_dir), exist_ok=True)
-            _file = '{}/summary/prediction_file/{}.prediction.{}.{}.{}'.format(
-                export_dir, export_prefix, data, self.model_name, scoring_method)
+            _file = '{}/summary/prediction_file/{}.prediction.{}.{}'.format(
+                export_dir, export_prefix, data, self.model_name)
             pd.DataFrame(data_raw).to_csv('{}.csv'.format(_file))
             with open('{}.json'.format(_file), 'w') as f:
                 json.dump(json_line, f)

@@ -6,9 +6,6 @@ from typing import List
 from multiprocessing import Pool
 from itertools import permutations, product
 from math import log
-
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
-
 import torch
 import pandas as pd
 from . import TransformersLM

@@ -5,7 +5,6 @@ import logging
 import math
 from typing import List
 from itertools import chain
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
 import transformers
 import torch

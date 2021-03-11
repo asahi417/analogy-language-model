@@ -1,35 +1,20 @@
 from itertools import chain
 import os
-import logging
-import requests
-import zipfile
 import json
 from typing import List
 
+from .util import open_compressed_file
+
 __all__ = ('get_dataset_raw', 'AnalogyData')
 default_cache_dir_analogy = './data'
-root_url_analogy = 'https://github.com/asahi417/AnalogyDataset/raw/master'
-
-
-def wget(url, cache_dir):
-    logging.debug('downloading zip file from {}'.format(url))
-    os.makedirs(cache_dir, exist_ok=True)
-    filename = os.path.basename(url)
-    with open('{}/{}'.format(cache_dir, filename), "wb") as f:
-        r = requests.get(url)
-        f.write(r.content)
-
-    with zipfile.ZipFile('{}/{}'.format(cache_dir, filename), 'r') as zip_ref:
-        zip_ref.extractall(cache_dir)
-    os.remove('{}/{}'.format(cache_dir, filename))
+root_url_analogy = 'https://github.com/asahi417/AnalogyDataset/releases/download/0.0.0'
 
 
 def get_dataset_raw(data_name: str, cache_dir: str = default_cache_dir_analogy):
     """ Get SAT-type dataset: a list of (answer: int, prompts: list, stem: list, choice: list)"""
     assert data_name in ['sat', 'u2', 'u4', 'google', 'bats'], 'unknown data: {}'.format(data_name)
     if not os.path.exists('{}/{}'.format(cache_dir, data_name)):
-        url = '{}/{}.zip'.format(root_url_analogy, data_name)
-        wget(url, cache_dir)
+        open_compressed_file('{}/{}.zip'.format(root_url_analogy, data_name), cache_dir)
     with open('{}/{}/test.jsonl'.format(cache_dir, data_name), 'r') as f:
         test = list(filter(None, map(lambda x: json.loads(x) if len(x) > 0 else None, f.read().split('\n'))))
     with open('{}/{}/valid.jsonl'.format(cache_dir, data_name), 'r') as f:

@@ -1,14 +1,18 @@
+""" Solve analogy task by word embedding model """
 import os
-import alm
+import logging
 from itertools import chain
-from random import randint, seed
+from random import randint
 
+import alm
 import pandas as pd
 from gensim.models import fasttext
 from gensim.models import KeyedVectors
 from gensim.scripts.glove2word2vec import glove2word2vec
 
-seed(1234)
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
+alm.util.fix_seed(1234)
+
 BIN_W2V = './cache/GoogleNews-vectors-negative300.bin'
 BIN_FASTTEXT = './cache/crawl-300d-2M-subword.bin'
 BIN_GLOVE = './cache/glove.840B.300d.txt'
@@ -18,16 +22,19 @@ os.makedirs('./experiments_results/summary', exist_ok=True)
 DATA = ['sat', 'u2', 'u4', 'google', 'bats']
 DUMMY = -1000
 if not os.path.exists(BIN_W2V):
-    raise ValueError('download embedding from "https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUTTlSS21pQmM/edit",'
-                     'unzip, and put it as {}'.format(BIN_W2V))
+    logging.info('downloading word2vec model')
+    alm.util.open_compressed_file(
+        url="https://drive.google.com/u/0/uc?id=0B7XkCwpI5KDYNlNUTTlSS21pQmM&export=download", cache_dir='./cache', gdrive=True)
 if not os.path.exists(BIN_FASTTEXT):
-    raise ValueError('download embedding from "https://fasttext.cc/docs/en/english-vectors.html",'
-                     'unzip, and put it as {}'.format(BIN_FASTTEXT))
+    logging.info('downloading fasttext model')
+    alm.util.open_compressed_file(
+        url='https://dl.fbaipublicfiles.com/fasttext/vectors-english/crawl-300d-2M-subword.zip', cache_dir='./cache')
 if not os.path.exists(BIN_GLOVE):
-    raise ValueError('download embedding from "http://nlp.stanford.edu/data/glove.840B.300d.zip"'
-                     'unzip, and put it as {}'.format(BIN_FASTTEXT))
-
+    logging.info('downloading Glove model')
+    alm.util.open_compressed_file(
+        url='http://nlp.stanford.edu/data/glove.840B.300d.zip', cache_dir='./cache')
 if not os.path.exists(BIN_GLOVE_W2V):
+    logging.info('converting Glove model')
     glove2word2vec(glove_input_file="./cache/glove.840B.300d.txt", word2vec_output_file="./cache/glove_converted.txt")
 model_glove = KeyedVectors.load_word2vec_format(BIN_GLOVE_W2V)
 model_w2v = KeyedVectors.load_word2vec_format(BIN_W2V, binary=True)
@@ -52,11 +59,11 @@ def cos_similarity(a_, b_):
 
 def get_embedding(word_list, model_type=None):
     if model_type == 'fasttext':
-        embeddings = [(_i, embedding(_i, model_w2v)) for _i in word_list]
+        embeddings = [(_i, embedding(_i, model_ft)) for _i in word_list]
     elif model_type == 'glove':
         embeddings = [(_i, embedding(_i, model_glove)) for _i in word_list]
     else:
-        embeddings = [(_i, embedding(_i, model_ft)) for _i in word_list]
+        embeddings = [(_i, embedding(_i, model_w2v)) for _i in word_list]
     embeddings = list(filter(lambda x: x[1] is not None, embeddings))
     return dict(embeddings)
 
@@ -123,9 +130,9 @@ if __name__ == '__main__':
             if prefix == 'test':
                 for n, d in enumerate(test):
                     d['prediction'] = ft_prediction[n]
-                pd.DataFrame(test).to_csv('experiments_results/summary/statistics.test.prediction.{}.csv'.format(i))
+                pd.DataFrame(test).to_csv('experiments_results/summary/word_embedding.test.prediction.{}.csv'.format(i))
 
-        pd.DataFrame(line_accuracy).to_csv('experiments_results/summary/statistics.{}.csv'.format(prefix))
-        pd.DataFrame(line_oov).to_csv('experiments_results/summary/statistics.{}.oov.csv'.format(prefix))
+        pd.DataFrame(line_accuracy).to_csv('experiments_results/summary/word_embedding.{}.csv'.format(prefix))
+        pd.DataFrame(line_oov).to_csv('experiments_results/summary/word_embedding.{}.oov.csv'.format(prefix))
 
 

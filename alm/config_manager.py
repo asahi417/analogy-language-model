@@ -7,7 +7,6 @@ import logging
 import pickle
 from glob import glob
 from typing import List
-logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
 
 def get_random_string(length: int = 6, exclude: List = None):

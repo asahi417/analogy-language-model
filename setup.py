@@ -22,6 +22,8 @@ setup(
         "torch",
         "tqdm",
         "pandas",
-        "gensim"
+        "gensim",
+        "gdown",
+        "requests"
     ]
 )

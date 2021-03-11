@@ -131,7 +131,8 @@ if __name__ == '__main__':
                 for n, d in enumerate(data):
                     d['prediction'] = ft_prediction[n]
                 pd.DataFrame(data).to_csv(
-                    'experiments_results/summary/prediction_file/experiment.word_embedding.test.prediction.{}.prediction.fasttext.csv'.format(i))
+                    'experiments_results/summary/prediction_file/'
+                    'experiment.word_embedding.{}.prediction.{}.prediction.fasttext.csv'.format(prefix, i))
 
             pd.DataFrame(line_accuracy).to_csv('experiments_results/summary/experiment.word_embedding.{}.csv'.format(prefix))
             pd.DataFrame(line_oov).to_csv('experiments_results/summary/experiment.word_embedding.{}.oov.csv'.format(prefix))

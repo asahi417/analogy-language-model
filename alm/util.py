@@ -2,7 +2,9 @@
 import tarfile
 import zipfile
 import requests
+import gzip
 import os
+import shutil
 
 import gdown
 import random
@@ -21,13 +23,16 @@ def fix_seed(seed: int = 12):
 
 def open_compressed_file(url, cache_dir, filename: str = None, gdrive: bool = False):
     path = wget(url, cache_dir, gdrive=gdrive, filename=filename)
-    if path.endswith('.tar.gz') or path.endswith('.tgz') or path.endswith('.gz'):
-        tar = tarfile.open(path, "r:gz")
-        tar.extractall(cache_dir)
-        tar.close()
+    if path.endswith('.tar.gz') or path.endswith('.tgz'):
+        with tarfile.open(path, "r:gz") as tar:
+            tar.extractall(cache_dir)
     elif path.endswith('.zip'):
         with zipfile.ZipFile(path, 'r') as zip_ref:
             zip_ref.extractall(cache_dir)
+    elif path.endswith('.gz'):
+        with gzip.open(path, 'rb') as f_in:
+            with open(path.replace('.gz', ''), 'wb') as f_out:
+                shutil.copyfileobj(f_in, f_out)
 
 
 def wget(url, cache_dir, gdrive: bool = False, filename: str = None):

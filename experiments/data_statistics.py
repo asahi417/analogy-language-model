@@ -6,6 +6,7 @@ import pandas as pd
 os.makedirs('./experiments_results/summary', exist_ok=True)
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 
+
 line_table = []
 for i in data:
     table = {'data': i}

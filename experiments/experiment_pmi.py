@@ -21,43 +21,48 @@ def load_pmi(file_):
         return dict(list(filter(None, [_format(i_.split('\t')) for i_ in f.read().split('\n') if len(i_) > 0])))
 
 
-output = {}
-for i in DATA:
-    pmi_1 = load_pmi('./data/{}/pmi/pmi.1.csv'.format(i))
-    pmi_2 = load_pmi('./data/{}/pmi/pmi.0.5.csv'.format(i))
-    output[i] = {}
-    for pmi, pmi_prefix in zip([pmi_1, pmi_2], ['pmi.1', 'pmi.0.5']):
-        val, test = alm.data_analogy.get_dataset_raw(i)
-        output[i][pmi_prefix] = {}
-        for data, prefix in zip([val, test], ['valid', 'test']):
-            line_oov = []
-            line_accuracy = []
-            for d in data:
-                r_guess = randint(0, len(d['choice']) - 1)
-                score = [pmi['-'.join(c)] if '-'.join(c) in pmi.keys() else -100 for c in d['choice']]
-                pred = score.index(max(score))
-                if pred == -100:
-                    pred = r_guess
-                line_oov += ['-'.join(c) for c in d['choice'] if '-'.join(c) not in pmi.keys()]
-                line_accuracy.append(pred == d['answer'])
-                if prefix == 'test':
-                    d['prediction'] = pred
-            if prefix == 'test':
-                pd.DataFrame(data).to_csv('experiments_results/summary/statistics.{}.prediction.{}.{}.csv'.format(prefix, pmi_prefix, i))
-            output[i][pmi_prefix][prefix] = {'accuracy': sum(line_accuracy)/len(line_accuracy), 'oov': len(line_oov)}
+def get_prediction(pmi_, d):
+    score = [pmi_['-'.join(c)] if '-'.join(c) in pmi_.keys() else -100 for c in d['choice']]
+    return score.index(max(score))
 
-for prefix in ['valid', 'test']:
-    df = pd.read_csv('./experiments_results/summary/statistics.{}.csv'.format(prefix), index_col=0)
-    df_oov = pd.read_csv('./experiments_results/summary/statistics.{}.oov.csv'.format(prefix), index_col=0)
-    for pmi_prefix in ['pmi.1', 'pmi.0.5']:
-        list_a = []
-        list_o = []
+
+if __name__ == '__main__':
+    for prefix in ['test', 'valid']:
+        line_oov = []
+        line_accuracy = []
         for i in DATA:
-            out = output[i][pmi_prefix][prefix]
-            list_a.append(out['accuracy'])
-            list_o.append(out['oov'])
+            pmi = load_pmi('./data/{}/pmi/pmi.1.csv'.format(i))
+            val, test = alm.data_analogy.get_dataset_raw(i)
+            data = test if prefix == 'test' else val
+            oov = {'data': i}
+            all_accuracy = {'data': i}
+            answer = {n: o['answer'] for n, o in enumerate(data)}
+            random_prediction = {n: randint(0, len(o['choice']) - 1) for n, o in enumerate(data)}
+            all_accuracy['random'] = sum([answer[n] == random_prediction[n] for n in range(len(answer))]) / len(answer)
 
-        df[pmi_prefix] = list_a
-        df_oov[pmi_prefix] = list_o
-    df.to_csv('experiments_results/summary/statistics.{}.csv'.format(prefix))
-    df_oov.to_csv('experiments_results/summary/statistics.{}.oov.csv'.format(prefix))
+            prediction = {n: get_prediction(pmi, o) for n, o in enumerate(data)}
+
+            oov['pmi'] = 0
+            for k, v in random_prediction.items():
+                if prediction[k] == -100:
+                    prediction[k] = v
+                    oov['pmi'] += 1
+
+            all_accuracy['pmi'] = sum([answer[n] == prediction[n] for n in range(len(answer))]) / len(answer)
+            line_oov.append(oov)
+            line_accuracy.append(all_accuracy)
+
+            if prefix == 'test' and i == 'sat':
+                for n, d in enumerate(data):
+                    d['prediction'] = prediction[n]
+                pd.DataFrame(data).to_csv(
+                    'experiments_results/summary/prediction_file/'
+                    'experiment.pmi.{}.prediction.{}.csv'.format(prefix, i))
+
+        pd.DataFrame(line_accuracy).to_csv(
+            'experiments_results/summary/experiment.pmi.{}.csv'.format(prefix))
+        pd.DataFrame(line_oov).to_csv(
+            'experiments_results/summary/experiment.pmi.{}.oov.csv'.format(prefix))
+
+
+

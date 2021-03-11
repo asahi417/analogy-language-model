@@ -63,13 +63,8 @@ def cos_similarity(a_, b_):
     return inner / (norm_b * norm_a)
 
 
-def get_embedding(word_list, model_type: str=None):
-    if model_type == 'fasttext':
-        embeddings = [(_i, embedding(_i, model_ft)) for _i in word_list]
-    elif model_type == 'glove':
-        embeddings = [(_i, embedding(_i, model_glove)) for _i in word_list]
-    else:
-        embeddings = [(_i, embedding(_i, model_w2v)) for _i in word_list]
+def get_embedding(word_list, model):
+    embeddings = [(_i, embedding(_i, model)) for _i in word_list]
     embeddings = list(filter(lambda x: x[1] is not None, embeddings))
     return dict(embeddings)
 
@@ -105,22 +100,23 @@ if __name__ == '__main__':
 
             vocab = list(set(list(chain(*[list(chain(*[o['stem']] + o['choice'])) for o in data]))))
 
-            dict_ = get_embedding(vocab)
+            dict_ = get_embedding(vocab, model_w2v)
             w2v_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(data)}
-            dict_ = get_embedding(vocab, model_type='fasttext')
+            dict_ = get_embedding(vocab, model_ft)
             ft_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(data)}
-            dict_ = get_embedding(vocab, model_type='glove')
+            dict_ = get_embedding(vocab, model_glove)
             glove_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(data)}
+
             oov['w2v'] = 0
             oov['fasttext'] = 0
             oov['glove'] = 0
             for k, v in random_prediction.items():
                 if w2v_prediction[k] is None:
                     w2v_prediction[k] = v
-                    oov['fasttext'] += 1
+                    oov['w2v'] += 1
                 if ft_prediction[k] is None:
                     ft_prediction[k] = v
-                    oov['w2v'] += 1
+                    oov['fasttext'] += 1
                 if glove_prediction[k] is None:
                     glove_prediction[k] = v
                     oov['glove'] += 1
@@ -137,7 +133,7 @@ if __name__ == '__main__':
                 pd.DataFrame(data).to_csv(
                     'experiments_results/summary/prediction_file/experiment.word_embedding.test.prediction.{}.prediction.fasttext.csv'.format(i))
 
-        pd.DataFrame(line_accuracy).to_csv('experiments_results/summary/word_embedding.{}.csv'.format(prefix))
-        pd.DataFrame(line_oov).to_csv('experiments_results/summary/word_embedding.{}.oov.csv'.format(prefix))
+            pd.DataFrame(line_accuracy).to_csv('experiments_results/summary/experiment.word_embedding.{}.csv'.format(prefix))
+            pd.DataFrame(line_oov).to_csv('experiments_results/summary/experiment.word_embedding.{}.oov.csv'.format(prefix))
 
 

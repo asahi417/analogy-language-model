@@ -138,7 +138,7 @@ if not SKIP_EXPORT_PREDICTION:
     for _model, _max_length, _batch in models:
         tmp_df = df_test[df_test.model == _model]
         # tmp_df = tmp_df[tmp_df.scoring_method == score]
-        accuracy = tmp_df.sort_values(by='accuracy_validation', ascending=False).head(1)['accuracy'].values[0]
+        accuracy = tmp_df.sort_values(by='accuracy_validation', ascending=False).head(1)['accuracy_validation'].values[0]
         best_configs = tmp_df[tmp_df['accuracy_validation'] == accuracy]
         logging.info('found {} config for the best validation'.format(len(best_configs)))
         config = json.loads(best_configs.iloc[0].to_json())

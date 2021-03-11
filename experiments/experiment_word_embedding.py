@@ -87,11 +87,12 @@ def get_prediction(stem, choice, embedding_dict):
 
 
 if __name__ == '__main__':
-    for i in DATA:
+    for prefix in ['test', 'valid']:
         line_oov = []
         line_accuracy = []
-        val, test = alm.data_analogy.get_dataset_raw(i)
-        for prefix, data in zip(['test', 'valid'], [test, val]):
+        for i in DATA:
+            val, test = alm.data_analogy.get_dataset_raw(i)
+            data = test if prefix == 'test' else val
             oov = {'data': i}
             all_accuracy = {'data': i}
             answer = {n: o['answer'] for n, o in enumerate(data)}
@@ -134,7 +135,9 @@ if __name__ == '__main__':
                     'experiments_results/summary/prediction_file/'
                     'experiment.word_embedding.{}.prediction.{}.prediction.fasttext.csv'.format(prefix, i))
 
-            pd.DataFrame(line_accuracy).to_csv('experiments_results/summary/experiment.word_embedding.{}.csv'.format(prefix))
-            pd.DataFrame(line_oov).to_csv('experiments_results/summary/experiment.word_embedding.{}.oov.csv'.format(prefix))
+        pd.DataFrame(line_accuracy).to_csv(
+            'experiments_results/summary/experiment.word_embedding.{}.csv'.format(prefix))
+        pd.DataFrame(line_oov).to_csv(
+            'experiments_results/summary/experiment.word_embedding.{}.oov.csv'.format(prefix))
 
 

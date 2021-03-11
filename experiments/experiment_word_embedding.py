@@ -17,6 +17,8 @@ BIN_W2V = './cache/GoogleNews-vectors-negative300.bin'
 BIN_FASTTEXT = './cache/crawl-300d-2M-subword.bin'
 BIN_GLOVE = './cache/glove.840B.300d.txt'
 BIN_GLOVE_W2V = './cache/glove_converted.txt'
+
+# export_prefix = 'experiment.ppl_variants'
 os.makedirs('./cache', exist_ok=True)
 os.makedirs('./experiments_results/summary', exist_ok=True)
 DATA = ['sat', 'u2', 'u4', 'google', 'bats']
@@ -37,6 +39,7 @@ if not os.path.exists(BIN_GLOVE):
 if not os.path.exists(BIN_GLOVE_W2V):
     logging.info('converting Glove model')
     glove2word2vec(glove_input_file="./cache/glove.840B.300d.txt", word2vec_output_file="./cache/glove_converted.txt")
+
 model_glove = KeyedVectors.load_word2vec_format(BIN_GLOVE_W2V)
 model_w2v = KeyedVectors.load_word2vec_format(BIN_W2V, binary=True)
 model_ft = fasttext.load_facebook_model(BIN_FASTTEXT)
@@ -55,10 +58,12 @@ def cos_similarity(a_, b_):
     inner = (a_ * b_).sum()
     norm_a = (a_ * a_).sum() ** 0.5
     norm_b = (b_ * b_).sum() ** 0.5
+    if norm_a == 0 or norm_b == 0:
+        return DUMMY
     return inner / (norm_b * norm_a)
 
 
-def get_embedding(word_list, model_type=None):
+def get_embedding(word_list, model_type: str=None):
     if model_type == 'fasttext':
         embeddings = [(_i, embedding(_i, model_ft)) for _i in word_list]
     elif model_type == 'glove':
@@ -87,27 +92,25 @@ def get_prediction(stem, choice, embedding_dict):
 
 
 if __name__ == '__main__':
-    for prefix in ['test', 'valid']:
+    for i in DATA:
         line_oov = []
         line_accuracy = []
-        for i in DATA:
+        val, test = alm.data_analogy.get_dataset_raw(i)
+        for prefix, data in zip(['test', 'valid'], [test, val]):
             oov = {'data': i}
             all_accuracy = {'data': i}
-            val, test = alm.data_analogy.get_dataset_raw(i)
-            if prefix == 'valid':
-                test = val
-            answer = {n: o['answer'] for n, o in enumerate(test)}
-            random_prediction = {n: randint(0, len(o['choice']) - 1) for n, o in enumerate(test)}
+            answer = {n: o['answer'] for n, o in enumerate(data)}
+            random_prediction = {n: randint(0, len(o['choice']) - 1) for n, o in enumerate(data)}
             all_accuracy['random'] = sum([answer[n] == random_prediction[n] for n in range(len(answer))]) / len(answer)
 
-            vocab = list(set(list(chain(*[list(chain(*[o['stem']] + o['choice'])) for o in test]))))
+            vocab = list(set(list(chain(*[list(chain(*[o['stem']] + o['choice'])) for o in data]))))
 
             dict_ = get_embedding(vocab)
-            w2v_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
+            w2v_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(data)}
             dict_ = get_embedding(vocab, model_type='fasttext')
-            ft_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
+            ft_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(data)}
             dict_ = get_embedding(vocab, model_type='glove')
-            glove_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(test)}
+            glove_prediction = {n: get_prediction(o['stem'], o['choice'], dict_) for n, o in enumerate(data)}
             oov['w2v'] = 0
             oov['fasttext'] = 0
             oov['glove'] = 0
@@ -128,10 +131,11 @@ if __name__ == '__main__':
             line_oov.append(oov)
             line_accuracy.append(all_accuracy)
 
-            if prefix == 'test':
-                for n, d in enumerate(test):
+            if prefix == 'test' and i == 'sat':
+                for n, d in enumerate(data):
                     d['prediction'] = ft_prediction[n]
-                pd.DataFrame(test).to_csv('experiments_results/summary/word_embedding.test.prediction.{}.csv'.format(i))
+                pd.DataFrame(data).to_csv(
+                    'experiments_results/summary/prediction_file/experiment.word_embedding.test.prediction.{}.prediction.fasttext.csv'.format(i))
 
         pd.DataFrame(line_accuracy).to_csv('experiments_results/summary/word_embedding.{}.csv'.format(prefix))
         pd.DataFrame(line_oov).to_csv('experiments_results/summary/word_embedding.{}.oov.csv'.format(prefix))

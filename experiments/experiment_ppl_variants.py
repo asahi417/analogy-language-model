@@ -119,12 +119,12 @@ if not SKIP_MERGE:
         df_test_.to_csv('./experiments_results/summary/{}.full.{}.csv'.format(export_prefix, d))
         logging.info('Top 3 in {}'.format(d))
         logging.info('\n{}'.format(df_test_['accuracy'].head(3)))
-
+        summary[d] = {}
         for m, _, _ in models:
             df_test__ = df_test_[df_test_['model'] == m]
             acc_full = float(df_test__.sort_values(by=['accuracy'], ascending=False)['accuracy'].head(1))
             acc_val = float(df_test__.sort_values(by=['accuracy_validation'], ascending=False)['accuracy'].head(1))
-            summary[m][d] = {'full': acc_full, 'validation': acc_val}
+            summary[d][m] = {'full': acc_full, 'validation': acc_val}
     with open('./experiments_results/summary/{}.top.json'.format(export_prefix), 'w') as f:
         json.dump(summary, f)
 

@@ -21,7 +21,7 @@ def fix_seed(seed: int = 12):
 
 def open_compressed_file(url, cache_dir, filename: str = None, gdrive: bool = False):
     path = wget(url, cache_dir, gdrive=gdrive, filename=filename)
-    if path.endswith('.tar.gz') or path.endswith('.tgz'):
+    if path.endswith('.tar.gz') or path.endswith('.tgz') or path.endswith('.gz'):
         tar = tarfile.open(path, "r:gz")
         tar.extractall(cache_dir)
         tar.close()
@@ -34,11 +34,18 @@ def wget(url, cache_dir, gdrive: bool = False, filename: str = None):
     os.makedirs(cache_dir, exist_ok=True)
     if gdrive:
         if filename:
-            return gdown.download(url, '{}/{}'.format(cache_dir, filename), quiet=False)
+            path = '{}/{}'.format(cache_dir, filename)
+            if os.path.exists(path):
+                return path
+
+            return gdown.download(url, path, quiet=False)
         else:
             return gdown.download(url, cache_dir, quiet=False)
     filename = os.path.basename(url)
-    with open('{}/{}'.format(cache_dir, filename), "wb") as f:
+    path = '{}/{}'.format(cache_dir, filename)
+    if os.path.exists(path):
+        return path
+    with open(path, "wb") as f:
         r = requests.get(url)
         f.write(r.content)
-    return '{}/{}'.format(cache_dir, filename)
+    return path

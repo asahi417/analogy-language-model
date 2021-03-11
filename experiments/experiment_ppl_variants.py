@@ -121,7 +121,9 @@ if not SKIP_MERGE:
 
         for m, _, _ in models:
             df_test__ = df_test_[df_test_['model'] == m]
-            acc_full = float(df_test__.sort_values(by=['accuracy'], ascending=False).head(1).values[0])
+            print(df_test__.sort_values(by=['accuracy'], ascending=False).head(1))
+            print(float(df_test__.sort_values(by=['accuracy'], ascending=False).head(1)))
+            acc_full = float(df_test__.sort_values(by=['accuracy'], ascending=False).head(1).values[0][0])
             acc_val = float(df_test__.sort_values(by=['accuracy_validation'], ascending=False).head(1).values[0])
             summary[m] = {'full': acc_full, 'validation': acc_val}
             print(summary[m])

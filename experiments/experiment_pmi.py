@@ -52,7 +52,7 @@ if __name__ == '__main__':
             line_oov.append(oov)
             line_accuracy.append(all_accuracy)
 
-            if prefix == 'test' and i == 'sat':
+            if prefix == 'test':
                 for n, d in enumerate(data):
                     d['prediction'] = prediction[n]
                 pd.DataFrame(data).to_csv(

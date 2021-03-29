@@ -135,7 +135,7 @@ if not SKIP_EXPORT_PREDICTION:
     methods = ['ppl_marginal_bias', 'ppl_hypothesis_bias', 'ppl_based_pmi']
     for d in data:
         logging.info('DATASET: {}'.format(d))
-        df_test_full = pd.read_csv('./experiments_results/summary/{}.full.{}.csv'.format(export_prefix, data))
+        df_test_full = pd.read_csv('./experiments_results/summary/{}.full.{}.csv'.format(export_prefix, d))
         for method in methods:
             df_test = df_test_full[df_test_full.scoring_method == method]
             for _model, _max_length, _batch in models:

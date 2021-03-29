@@ -110,10 +110,3 @@ for d in data:
 
         acc = round(acc * 100, 1)
         print('- {:<20}: {}'.format(model, acc))
-
-
-print('\n################################################')
-print('## EXPORT PREDICTION ##')
-print('################################################')
-
-

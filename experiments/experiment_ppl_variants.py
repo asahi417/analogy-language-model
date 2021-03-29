@@ -142,6 +142,8 @@ if not SKIP_EXPORT_PREDICTION:
             for _model, _max_length, _batch in models:
                 df_tmp = df_test[df_test.model == _model]
                 df_tmp = df_tmp.sort_values(by=['accuracy_validation'], ascending=False)
+                if len(df_tmp) == 0:
+                    continue
                 acc_val = list(df_tmp.head(1)['accuracy_validation'])[0]
                 acc = df_tmp[df_tmp.accuracy_validation == acc_val].sort_values(by=['accuracy_test'])
                 acc_test = list(acc['accuracy_test'])

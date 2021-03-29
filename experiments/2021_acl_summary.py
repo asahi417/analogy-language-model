@@ -62,8 +62,8 @@ df_val_ppl = pd.read_csv('experiments_results/summary/experiment.scoring_compari
 for d in data:
     df_test_tmp = df_test[df_test.data == d]
     df_val_tmp = df_val[df_val.data == d]
-    df_test_ppl_tmp = df_test_ppl[df_test.data == d]
-    df_val_ppl_tmp = df_val_ppl[df_val.data == d]
+    df_test_ppl_tmp = df_test_ppl[df_test_ppl.data == d]
+    df_val_ppl_tmp = df_val_ppl[df_val_ppl.data == d]
     print('DATASET: {}'.format(d))
     for model, _, _ in models:
         df_val_tmp_tmp = df_val_tmp[df_val_tmp.model == model]

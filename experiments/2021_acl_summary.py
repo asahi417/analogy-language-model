@@ -34,7 +34,7 @@ print('\n############')
 print('## HYP ONLY ##')
 print('##############')
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 256), ('bert-large-cased', 32, 1024)]
-methods = ['ppl_head_mask', 'ppl_tail_mask', 'ppl_add_mask']
+methods = ['ppl_head_masked', 'ppl_tail_masked', 'ppl_add_masked']
 df = pd.read_csv('./experiments_results/summary/experiment.scoring_comparison.hyp_only.test.csv')
 for d in data:
     df_tmp = df[df.data == d]

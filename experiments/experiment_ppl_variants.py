@@ -144,6 +144,7 @@ if not SKIP_EXPORT_PREDICTION:
                 acc_val = list(df_tmp.head(1)['accuracy_validation'])[0]
                 acc = df_tmp[df_tmp.accuracy_validation == acc_val].sort_values(by=['accuracy_test'])
                 acc_test = list(acc['accuracy_test'])
+                acc_test = acc_test[int(len(acc_test) / 2)]
                 best_configs = df_tmp[df_tmp.accuracy_test == acc_test]
                 config = json.loads(best_configs.iloc[0].to_json())
                 logging.info("* {}/{}".format(method, _model))

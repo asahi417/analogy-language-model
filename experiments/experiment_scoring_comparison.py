@@ -70,6 +70,8 @@ if not SKIP_HYP:
     methods = ['ppl_head_masked', 'ppl_tail_masked', 'ppl_add_masked']
     no_inference = False
     for _model, _max_length, _batch in models:
+        if _model == 'gpt2-xl':
+            continue
         scorer = alm.RelationScorer(model=_model, max_length=_max_length)
         for method in methods:
             for d in data:

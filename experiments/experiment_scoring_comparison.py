@@ -14,6 +14,7 @@ models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased',
 
 SKIP_INFERENCE = True
 SKIP_GRID_SEARCH = True
+SKIP_PPL = False
 SKIP_TEST = True
 SKIP_DEFAULT = True
 
@@ -38,14 +39,38 @@ if not SKIP_INFERENCE:
                         skip_scoring_prediction=True)
                     scorer.release_cache()
 
+if not SKIP_PPL:
+    logging.info('##########################################')
+    logging.info('# Get perplexity baseline (on valid set) #')
+    logging.info('##########################################')
+    export_prefix = 'experiment.scoring_comparison.ppl_baseline'
+    no_inference = False
+    for _model, _max_length, _batch in models:
+        scorer = alm.RelationScorer(model=_model, max_length=_max_length)
+        for d in data:
+            scorer.analogy_test(data=d, template_type='is-to-as', scoring_method='ppl',
+                                batch_size=_batch,
+                                export_prefix=export_prefix,
+                                no_inference=no_inference)
+            scorer.analogy_test(data=d, template_type='is-to-as', scoring_method='ppl',
+                                batch_size=_batch,
+                                export_prefix=export_prefix,
+                                no_inference=no_inference, test=True)
+
+            scorer.release_cache()
+    alm.export_report(export_prefix=export_prefix)
+    alm.export_report(export_prefix=export_prefix, test=True)
+
 if not SKIP_GRID_SEARCH:
     logging.info('#######################################################')
     logging.info('# Get prediction on each configuration (on valid set) #')
     logging.info('#######################################################')
+    methods = ['pmi_feldman', 'embedding_similarity', 'ppl', 'ppl_based_pmi', 'ppl_head_masked', 'ppl_tail_masked']
     methods += ['ppl_add_masked', 'ppl_marginal_bias', 'ppl_hypothesis_bias']
-    positive_permutation_aggregation = [
-        'max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4', 'index_5', 'index_6', 'index_7'
-    ]
+    # positive_permutation_aggregation = [
+    #     'max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4', 'index_5', 'index_6', 'index_7'
+    # ]
+    positive_permutation_aggregation = 'index_0'
     pmi_feldman_aggregation = [
         'max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4', 'index_5', 'index_6', 'index_7',
         'index_8', 'index_9', 'index_10', 'index_11'

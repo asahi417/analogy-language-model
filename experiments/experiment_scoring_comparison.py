@@ -73,11 +73,11 @@ if not SKIP_HYP:
         scorer = alm.RelationScorer(model=_model, max_length=_max_length)
         for method in methods:
             for d in data:
-                scorer.analogy_test(data=d, template_type='is-to-as', scoring_method=m,
+                scorer.analogy_test(data=d, template_type='is-to-as', scoring_method=method,
                                     batch_size=_batch,
                                     export_prefix=export_prefix,
                                     no_inference=no_inference)
-                scorer.analogy_test(data=d, template_type='is-to-as', scoring_method=m,
+                scorer.analogy_test(data=d, template_type='is-to-as', scoring_method=method,
                                     batch_size=_batch,
                                     export_prefix=export_prefix,
                                     no_inference=no_inference, test=True)

@@ -68,8 +68,8 @@ for d in data:
     for model, _, _ in models:
         df_val_tmp_tmp = df_val_tmp[df_val_tmp.model == model]
         df_test_tmp_tmp = df_test_tmp[df_test_tmp.model == model]
-        df_val_ppl_tmp_tmp = df_val_tmp[df_val_ppl_tmp.model == model]
-        df_test_ppl_tmp_tmp = df_test_tmp[df_test_ppl_tmp.model == model]
+        df_val_ppl_tmp_tmp = df_val_ppl_tmp[df_val_ppl_tmp.model == model]
+        df_test_ppl_tmp_tmp = df_test_ppl_tmp[df_test_ppl_tmp.model == model]
 
         if len(set(list(df_val_tmp_tmp['accuracy']))) == 1:
             acc_val = round(list(df_val_tmp_tmp['accuracy'])[0] * 100, 1)

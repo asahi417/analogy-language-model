@@ -14,7 +14,7 @@ models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased',
 
 SKIP_INFERENCE = True
 SKIP_GRID_SEARCH = True
-SKIP_PPL = False
+SKIP_PPL = True
 SKIP_TEST = True
 SKIP_DEFAULT = True
 
@@ -65,12 +65,11 @@ if not SKIP_GRID_SEARCH:
     logging.info('#######################################################')
     logging.info('# Get prediction on each configuration (on valid set) #')
     logging.info('#######################################################')
-    methods = ['pmi_feldman', 'embedding_similarity', 'ppl', 'ppl_based_pmi', 'ppl_head_masked', 'ppl_tail_masked']
-    methods += ['ppl_add_masked', 'ppl_marginal_bias', 'ppl_hypothesis_bias']
-    # positive_permutation_aggregation = [
-    #     'max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4', 'index_5', 'index_6', 'index_7'
-    # ]
-    positive_permutation_aggregation = 'index_0'
+    methods = ['pmi_feldman', 'embedding_similarity', 'ppl', 'ppl_based_pmi', 'ppl_head_masked', 'ppl_tail_masked',
+               'ppl_add_masked', 'ppl_marginal_bias', 'ppl_hypothesis_bias']
+    positive_permutation_aggregation = [
+        'max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4', 'index_5', 'index_6', 'index_7'
+    ]
     pmi_feldman_aggregation = [
         'max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4', 'index_5', 'index_6', 'index_7',
         'index_8', 'index_9', 'index_10', 'index_11'

@@ -132,21 +132,26 @@ if not SKIP_EXPORT_PREDICTION:
     logging.info('# Export predictions for qualitative analysis #')
     logging.info('###############################################')
     # get prediction of what achieves the best validation accuracy
-    # score = 'ppl_based_pmi'
-    data = 'sat'
-    df_test = pd.read_csv('./experiments_results/summary/{}.full.{}.csv'.format(export_prefix, data), index_col=0)
-    for _model, _max_length, _batch in models:
-        tmp_df = df_test[df_test.model == _model]
-        # tmp_df = tmp_df[tmp_df.scoring_method == score]
-        accuracy = tmp_df.sort_values(by='accuracy_validation', ascending=False).head(1)['accuracy_validation'].values[0]
-        best_configs = tmp_df[tmp_df['accuracy_validation'] == accuracy]
-        logging.info('found {} config for the best validation'.format(len(best_configs)))
-        config = json.loads(best_configs.iloc[0].to_json())
-        logging.info("use the first one ({})".format(data))
-        logging.info("\t * accuracy (valid): {}".format(config.pop('accuracy_validation')))
-        logging.info("\t * accuracy (test) : {}".format(config.pop('accuracy_test')))
-        logging.info("\t * accuracy (full) : {}".format(config.pop('accuracy')))
-        scorer = alm.RelationScorer(model=config.pop('model'), max_length=config.pop('max_length'))
-        scorer.analogy_test(test=True, export_prediction=True, no_inference=True, export_prefix=export_prefix, **config)
-        scorer.release_cache()
+    methods = ['ppl_marginal_bias', 'ppl_hypothesis_bias', 'ppl_based_pmi']
+    for d in data:
+        logging.info('DATASET: {}'.format(d))
+        df_test_full = pd.read_csv('./experiments_results/summary/{}.full.{}.csv'.format(export_prefix, data))
+        for method in methods:
+            df_test = df_test_full[df_test_full.scoring_method == method]
+            for _model, _max_length, _batch in models:
+                df_tmp = df_test[df_test.model == _model]
+                df_tmp = df_tmp.sort_values(by=['accuracy_validation'], ascending=False)
+                acc_val = list(df_tmp.head(1)['accuracy_validation'])[0]
+                acc = df_tmp[df_tmp.accuracy_validation == acc_val].sort_values(by=['accuracy_test'])
+                acc_test = list(acc['accuracy_test'])
+                best_configs = df_tmp[df_tmp.accuracy_test == acc_test]
+                config = json.loads(best_configs.iloc[0].to_json())
+                logging.info("* {}/{}".format(method, _model))
+                logging.info("\t * accuracy (valid): {}".format(config.pop('accuracy_validation')))
+                logging.info("\t * accuracy (test) : {}".format(config.pop('accuracy_test')))
+                logging.info("\t * accuracy (full) : {}".format(config.pop('accuracy')))
+                scorer = alm.RelationScorer(model=config.pop('model'), max_length=config.pop('max_length'))
+                scorer.analogy_test(test=True, export_prediction=True, no_inference=True, export_prefix=export_prefix,
+                                    **config)
+                scorer.release_cache()
 

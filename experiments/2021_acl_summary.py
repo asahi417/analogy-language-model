@@ -44,6 +44,8 @@ for d in data:
         df_tmp_tmp = df_tmp[df_tmp.model == model]
         for method in methods:
             df_tmp_tmp_tmp = df_tmp_tmp[df_tmp_tmp.scoring_method == method]
+            if len(df_tmp_tmp_tmp) == 0:
+                continue
             acc = round(list(df_tmp_tmp_tmp['accuracy'])[0] * 100, 1)
             print('\t - {:<20}: {}'.format(method, acc))
 

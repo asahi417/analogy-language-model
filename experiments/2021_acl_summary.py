@@ -30,25 +30,6 @@ for d in data:
         else:
             print('- {:<20}: {} (validation {})'.format(model, acc_test, acc_val))
 
-print('\n##############')
-print('## HYP ONLY ##')
-print('##############')
-models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 256), ('bert-large-cased', 32, 1024)]
-methods = ['ppl_head_masked', 'ppl_tail_masked', 'ppl_add_masked']
-df = pd.read_csv('./experiments_results/summary/experiment.scoring_comparison.hyp_only.test.csv')
-for d in data:
-    df_tmp = df[df.data == d]
-    print('DATASET: {}'.format(d))
-    for model, _, _ in models:
-        print('- {}'.format(model))
-        df_tmp_tmp = df_tmp[df_tmp.model == model]
-        for method in methods:
-            df_tmp_tmp_tmp = df_tmp_tmp[df_tmp_tmp.scoring_method == method]
-            if len(df_tmp_tmp_tmp) == 0:
-                continue
-            acc = round(list(df_tmp_tmp_tmp['accuracy'])[0] * 100, 1)
-            print('\t - {:<20}: {}'.format(method, acc))
-
 print('\n#################################')
 print('## SCORING FUNCTION COMPARISON ##')
 print('#################################')

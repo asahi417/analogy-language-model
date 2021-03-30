@@ -318,7 +318,7 @@ class RelationScorer:
                      export_prefix: str = 'main0',
                      test: bool = False,
                      batch_size: int = 4,
-                     scoring_method: str = 'ppl',
+                     scoring_method: str = 'ppl_based_pmi',
                      export_dir: str = './experiments_results',
                      no_inference: bool = False,
                      skip_scoring_prediction: bool = False,

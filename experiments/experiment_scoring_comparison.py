@@ -108,6 +108,9 @@ if not SKIP_TEST:
     logging.info('# get test accuracy on each combination of model and scoring function #')
     logging.info('#######################################################################')
     no_inference = False
+    methods = ['pmi_feldman', 'embedding_similarity', 'ppl', 'ppl_based_pmi', 'ppl_marginal_bias',
+               'ppl_hypothesis_bias']
+    methods += ['ppl_head_masked', 'ppl_tail_masked', 'ppl_add_masked']
     export_prefix = 'experiment.scoring_comparison'
     df = alm.get_report(export_prefix=export_prefix)
     for i, m, s in product(data, models, methods):

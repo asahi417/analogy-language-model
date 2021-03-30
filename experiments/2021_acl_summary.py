@@ -30,7 +30,7 @@ for d in data:
         else:
             print('- {:<20}: {} (validation {})'.format(model, acc_test, acc_val))
 
-print('\n############')
+print('\n##############')
 print('## HYP ONLY ##')
 print('##############')
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 256), ('bert-large-cased', 32, 1024)]
@@ -54,6 +54,7 @@ print('## SCORING FUNCTION COMPARISON ##')
 print('#################################')
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 256), ('bert-large-cased', 32, 1024)]
 methods = ['pmi_feldman', 'embedding_similarity', 'ppl_based_pmi', 'ppl']
+methods += ['ppl_head_masked', 'ppl_tail_masked', 'ppl_add_masked']
 df = pd.read_csv('experiments_results/summary/experiment.scoring_comparison.test.csv')
 for d in data:
     df_tmp = df[df.data == d]

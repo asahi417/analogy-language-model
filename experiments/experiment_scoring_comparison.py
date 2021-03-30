@@ -6,23 +6,22 @@ logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logg
 methods_mlm = ['pmi_feldman', 'ppl_head_masked', 'ppl_tail_masked', 'ppl_add_masked', 'ppl_hypothesis_bias',
                'embedding_similarity']
 all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
-methods = ['pmi_feldman', 'embedding_similarity', 'ppl', 'ppl_based_pmi', 'ppl_head_masked', 'ppl_tail_masked']
 
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
 
 
 SKIP_INFERENCE = True
-SKIP_GRID_SEARCH = True
 SKIP_PPL = True
-SKIP_HYP = False
-SKIP_TEST = True
+SKIP_GRID_SEARCH = False
+SKIP_TEST = False
 SKIP_DEFAULT = True
 
 if not SKIP_INFERENCE:
     logging.info('################################################')
     logging.info('# Run LM inference to get logit (on valid set) #')
     logging.info('################################################')
+    methods = ['pmi_feldman', 'embedding_similarity', 'ppl', 'ppl_based_pmi', 'ppl_head_masked', 'ppl_tail_masked']
     no_inference = False
     for _model, _max_length, _batch in models:
         for scoring_method in methods:
@@ -62,37 +61,12 @@ if not SKIP_PPL:
     alm.export_report(export_prefix=export_prefix)
     alm.export_report(export_prefix=export_prefix, test=True)
 
-if not SKIP_HYP:
-    logging.info('#########################')
-    logging.info('# Get hyp-only baseline #')
-    logging.info('#########################')
-    export_prefix = 'experiment.scoring_comparison.hyp_only'
-    methods = ['ppl_head_masked', 'ppl_tail_masked', 'ppl_add_masked']
-    no_inference = False
-    for _model, _max_length, _batch in models:
-        if _model == 'gpt2-xl':
-            continue
-        scorer = alm.RelationScorer(model=_model, max_length=_max_length)
-        for method in methods:
-            for d in data:
-                scorer.analogy_test(data=d, template_type='is-to-as', scoring_method=method,
-                                    batch_size=_batch,
-                                    export_prefix=export_prefix,
-                                    no_inference=no_inference)
-                scorer.analogy_test(data=d, template_type='is-to-as', scoring_method=method,
-                                    batch_size=_batch,
-                                    export_prefix=export_prefix,
-                                    no_inference=no_inference, test=True)
-
-                scorer.release_cache()
-    alm.export_report(export_prefix=export_prefix)
-    alm.export_report(export_prefix=export_prefix, test=True)
-
 if not SKIP_GRID_SEARCH:
     logging.info('#######################################################')
     logging.info('# Get prediction on each configuration (on valid set) #')
     logging.info('#######################################################')
     methods = ['pmi_feldman', 'embedding_similarity', 'ppl', 'ppl_based_pmi', 'ppl_marginal_bias', 'ppl_hypothesis_bias']
+    methods += ['ppl_head_masked', 'ppl_tail_masked', 'ppl_add_masked']
     positive_permutation_aggregation = [
         'max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4', 'index_5', 'index_6', 'index_7'
     ]

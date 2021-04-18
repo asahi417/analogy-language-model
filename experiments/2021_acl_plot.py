@@ -6,7 +6,7 @@ import os
 import pandas as pd
 
 SKIP_BOX_PLOT = False
-SKIP_LINE_PLOT = True
+SKIP_LINE_PLOT = False
 
 plt.rcParams.update({"text.usetex": True, "font.family": "sans-serif", "font.sans-serif": ["Helvetica"]})
 os.makedirs('./experiments_results/summary/figure', exist_ok=True)

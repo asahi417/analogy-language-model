@@ -20,7 +20,7 @@ TEMPLATES = {
 
 def plot_box(df):
     df['template_type'] = df['template_type'].apply(lambda x: TEMPLATES[x])
-    data = ['sat', 'u2', 'u4', 'google', 'bats']
+    # data = ['sat', 'u2', 'u4', 'google', 'bats']
     model = ['bert-large-cased', 'gpt2-xl', 'roberta-large']
     df = df.sort_values(by=['model'])
     g = df.groupby(['data'])
@@ -48,15 +48,15 @@ def plot_box(df):
         plt.close()
 
     plot(df, 'all')
-    for data_ in data:
-        df_tmp = df[df.data == data_]
-        plot(df_tmp, data_)
+    # for data_ in data:
+    #     df_tmp = df[df.data == data_]
+    #     plot(df_tmp, data_)
 
 
 def plot_heatmap(df):
     data = ['sat', 'u2', 'u4', 'google', 'bats']
-    model = ['roberta-large', 'gpt2-xl']
-    big_group = df.groupby(['data', 'model', 'ppl_based_pmi_alpha', 'negative_permutation_weight']).accuracy.max()
+    # model = ['roberta-large', 'gpt2-xl']
+    # big_group = df.groupby(['data', 'model', 'ppl_based_pmi_alpha', 'negative_permutation_weight']).accuracy.max()
 
     def plot(d, m, accuracy):
         fig = plt.figure()
@@ -76,20 +76,21 @@ def plot_heatmap(df):
         fig.savefig('./experiments_results/summary/figure_sup/heatmap.alpha_beta.{}.{}.png'.format(d, m))
         plt.close()
 
-    plot('all', 'all', df.groupby(['ppl_based_pmi_alpha', 'negative_permutation_weight']).accuracy.mean())
-    for m_ in model:
-        plot('all', m_, df.groupby(['model', 'ppl_based_pmi_alpha', 'negative_permutation_weight']).accuracy.mean()[m_])
-
+    # plot('all', 'all', df.groupby(['ppl_based_pmi_alpha', 'negative_permutation_weight']).accuracy.mean())
+    # for m_ in model:
+    #     plot('all', m_, df.groupby(['model', 'ppl_based_pmi_alpha', 'negative_permutation_weight']).accuracy.mean()[m_])
+    #
     for d_ in data:
         plot(d_, 'all', df.groupby(['data', 'ppl_based_pmi_alpha', 'negative_permutation_weight']).accuracy.mean()[d_])
 
-    for d_, m_ in product(data, model):
-        plot(d_, m_, big_group[d_][m_])
+    # for d_, m_ in product(data, model):
+    #     plot(d_, m_, big_group[d_][m_])
 
 
 if __name__ == '__main__':
     dataframe = alm.get_report(export_prefix='experiment.ppl_variants')
     dataframe['accuracy'] = dataframe['accuracy'].round(3) * 100
 
-    plot_heatmap(dataframe)
+    # plot_heatmap(dataframe)
+    dataframe = dataframe[dataframe.scoring_method == 'ppl_marginal_bias']
     plot_box(dataframe)

@@ -6,14 +6,15 @@ import os
 import pandas as pd
 
 SKIP_BOX_PLOT = False
-SKIP_LINE_PLOT = False
+SKIP_LINE_PLOT = True
 
 plt.rcParams.update({"text.usetex": True, "font.family": "sans-serif", "font.sans-serif": ["Helvetica"]})
 os.makedirs('./experiments_results/summary/figure', exist_ok=True)
 sns.set_theme(style="darkgrid")
 
 
-def plot_box(df_, s, d):
+def plot_box(df_, _m, s, d):
+    df_ = df_[df_.scoring_method == _m]
     fig = plt.figure()
     fig.clear()
     if s == 'negative_permutation_aggregation':
@@ -40,7 +41,7 @@ def plot_box(df_, s, d):
     labels = [i.replace('bert-large-cased', 'BERT').replace('roberta-large', 'RoBERTa').replace('gpt2-xl', 'GPT2') for i
               in labels]
     ax.legend(handles=handles, labels=labels, loc='upper right')
-    fig.savefig('./experiments_results/summary/figure/box.{}.{}.png'.format(d, s))
+    fig.savefig('./experiments_results/summary/figure/box.{}.{}.{}.png'.format(d, _m, s))
     plt.close()
 
 
@@ -134,10 +135,7 @@ def plot_line():
 
 if not SKIP_BOX_PLOT:
     df = alm.get_report(export_prefix='experiment.ppl_variants')
-    df = df[df.scoring_method == 'ppl_based_pmi']
     df['accuracy'] = df['accuracy'].round(3) * 100
-    df['ppl_based_pmi_aggregation'] = df['ppl_based_pmi_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
-        '{', (int(x.replace('index_', '')) + 1), '}') if 'index' in x else x)
     df['negative_permutation_aggregation'] = df['negative_permutation_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
         '{', (int(x.replace('index_', '')) + 1), '}') if 'index' in x else x)
     df['positive_permutation_aggregation'] = df['positive_permutation_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
@@ -150,11 +148,12 @@ if not SKIP_BOX_PLOT:
     df['accuracy_mean'] = df['data'].apply(lambda x: mean_acc[x])
     df['accuracy'] = df['accuracy'] - df['accuracy_mean']
 
-    for s_tmp in ['positive_permutation_aggregation', 'negative_permutation_aggregation', 'ppl_based_pmi_aggregation']:
-        plot_box(df, s_tmp, 'all')
-        for data_ in data:
-            df_tmp = df[df.data == data_]
-            plot_box(df_tmp, s_tmp, data_)
+    for m in ['ppl_based_pmi', 'ppl_marginal_bias']:
+        for s_tmp in ['positive_permutation_aggregation', 'negative_permutation_aggregation']:
+            plot_box(df, m, s_tmp, 'all')
+            for data_ in data:
+                df_tmp = df[df.data == data_]
+                plot_box(df_tmp, m, s_tmp, data_)
 
 if not SKIP_LINE_PLOT:
     plot_line()

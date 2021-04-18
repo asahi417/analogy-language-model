@@ -325,7 +325,7 @@ class RelationScorer:
                      export_prediction: bool = False,
                      val_accuracy: float = None,
                      positive_permutation_aggregation: (str, List) = 'index_0',
-                     negative_permutation: bool = False,
+                     negative_permutation: bool = True,
                      negative_permutation_weight: (float, List) = 1.0,
                      negative_permutation_aggregation: (str, List) = 'mean',
                      pmi_feldman_aggregation: str = 'mean',

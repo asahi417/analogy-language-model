@@ -46,8 +46,8 @@ def plot_box(df_, _m, s, d):
 
 
 def plot_line():
-    we_model = 'glove'
-    model_order = ['PMI', 'GloVe', 'BERT', 'GPT2', 'RoBERTa']
+    we_model = 'fasttext'
+    model_order = ['PMI', 'FastText', 'BERT', 'GPT2', 'RoBERTa']
 
     for d in ['sat', 'u2', 'u4', 'google', 'bats']:
         we = pd.read_csv('./experiments_results/summary/prediction_file/experiment.word_embedding.test.prediction.{}.{}.csv'.format(d, we_model))
@@ -57,7 +57,7 @@ def plot_line():
             roberta = pd.read_csv('./experiments_results/summary/prediction_file/experiment.ppl_variants.test.prediction.{}.roberta-large.{}.csv'.format(d, m))
             gpt = pd.read_csv('./experiments_results/summary/prediction_file/experiment.ppl_variants.test.prediction.{}.gpt2-xl.{}.csv'.format(d, m))
             full = pd.concat([pmi, we, bert, gpt, roberta])
-            full['model'] = ['PMI'] * len(pmi) + ['GloVe'] * len(we) + ['BERT'] * len(bert) + ['GPT2'] * len(gpt) + ['RoBERTa'] * len(roberta)
+            full['model'] = ['PMI'] * len(pmi) + ['FastText'] * len(we) + ['BERT'] * len(bert) + ['GPT2'] * len(gpt) + ['RoBERTa'] * len(roberta)
             full['accuracy'] = full['prediction'] == full['answer']
             if d == 'sat':
                 full['prefix'] = full['prefix'].apply(lambda x: 'SAT' if 'FROM REAL SAT' in x else 'not SAT')

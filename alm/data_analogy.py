@@ -12,12 +12,13 @@ root_url_analogy = 'https://github.com/asahi417/AnalogyDataset/releases/download
 
 def get_dataset_raw(data_name: str, cache_dir: str = default_cache_dir_analogy):
     """ Get SAT-type dataset: a list of (answer: int, prompts: list, stem: list, choice: list)"""
+    url = 'https://github.com/asahi417/AnalogyTools/releases/download/0.0.0/analogy_test_dataset.tar.gz'
+    if not os.path.exists('{}/analogy_test_dataset'.format(cache_dir)):
+        open_compressed_file(url, cache_dir)
     assert data_name in ['sat', 'u2', 'u4', 'google', 'bats'], 'unknown data: {}'.format(data_name)
-    if not os.path.exists('{}/{}'.format(cache_dir, data_name)):
-        open_compressed_file('{}/{}.zip'.format(root_url_analogy, data_name), cache_dir)
-    with open('{}/{}/test.jsonl'.format(cache_dir, data_name), 'r') as f:
+    with open('{}/analogy_test_dataset/{}/test.jsonl'.format(cache_dir, data_name), 'r') as f:
         test = list(filter(None, map(lambda x: json.loads(x) if len(x) > 0 else None, f.read().split('\n'))))
-    with open('{}/{}/valid.jsonl'.format(cache_dir, data_name), 'r') as f:
+    with open('{}/analogy_test_dataset/{}/valid.jsonl'.format(cache_dir, data_name), 'r') as f:
         val = list(filter(None, map(lambda x: json.loads(x) if len(x) > 0 else None, f.read().split('\n'))))
     return val, test
 

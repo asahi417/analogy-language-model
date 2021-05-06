@@ -3,9 +3,9 @@ import json
 import alm
 import pandas as pd
 
-SKIP_INFERENCE = True  # skip inference step
-SKIP_GRID_SEARCH = True  # skip grid search
-SKIP_MERGE = True  # skip merging result
+SKIP_INFERENCE = False  # skip inference step
+SKIP_GRID_SEARCH = False  # skip grid search
+SKIP_MERGE = False  # skip merging result
 SKIP_EXPORT_PREDICTION = False  # skip export prediction
 
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')

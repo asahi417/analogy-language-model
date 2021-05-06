@@ -11,8 +11,8 @@ data = ['sat', 'u2', 'u4', 'google', 'bats']
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 128), ('bert-large-cased', 32, 1024)]
 
 
-SKIP_INFERENCE = True
-SKIP_PPL = True
+SKIP_INFERENCE = False
+SKIP_PPL = False
 SKIP_GRID_SEARCH = False
 SKIP_TEST = False
 SKIP_DEFAULT = True
@@ -140,23 +140,5 @@ if not SKIP_TEST:
                 **config
             )
             scorer.release_cache()
-    alm.export_report(export_prefix=export_prefix, test=True)
-
-if not SKIP_DEFAULT:
-    logging.info('############################################################')
-    logging.info('# get test accuracy on each default configuration of model #')
-    logging.info('############################################################')
-    no_inference = False
-    shared = {'template_type': 'is-to-as', 'scoring_method': 'ppl_based_pmi'}
-    export_prefix = 'experiment.scoring_comparison.default'
-    for i, m in product(data, models):
-        _model, _len, _batch = m
-        scorer = alm.RelationScorer(model=_model, max_length=_len)
-        scorer.analogy_test(
-            no_inference=no_inference, batch_size=_batch, data=i, export_prefix=export_prefix, test=False, **shared)
-        scorer.analogy_test(
-            no_inference=no_inference, batch_size=_batch, data=i, export_prefix=export_prefix, test=True, **shared)
-        scorer.release_cache()
-    alm.export_report(export_prefix=export_prefix, test=False)
     alm.export_report(export_prefix=export_prefix, test=True)
 

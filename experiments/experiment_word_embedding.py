@@ -2,13 +2,10 @@
 import os
 import logging
 from itertools import chain
-from random import randint
 
 import alm
 import pandas as pd
-from gensim.models import fasttext
 from gensim.models import KeyedVectors
-from gensim.scripts.glove2word2vec import glove2word2vec
 
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 alm.util.fix_seed(1234)

@@ -41,14 +41,13 @@ Here's the result summary that can be attained by running those scripts.
 Please cite our paper if you use our code or if you re-implement our method:
 ```
 @inproceedings{ushio-etal-2021-bert-is,
-    title = "BERT is to NLP what AlexNet is to CV: Can Pre-Trained Language Models Identify Analogies?",
-    author = "Ushio, Asahi and
+    title ={{BERT} is to {NLP} what {A}lex{N}et is to {CV}: {C}an {P}re-{T}rained {L}anguage {M}odels {I}dentify {A}nalogies?},
+    author={Ushio, Asahi and
             Espinosa-Anke, Luis and 
             Schockaert, Steven and
-            Camacho-Collados, Jose",
-    booktitle = "Proceedings of the {ACL}-{IJCNLP} 2021 Conference",
-    month = aug,
-    year = "2021",
-    publisher = "Association for Computational Linguistics"
+            Camacho-Collados, Jose},
+    booktitle={Proceedings of the {ACL}-{IJCNLP} 2021 Main Conference},
+    year={2021},
+    publisher={Association for Computational Linguistics}
 }
 ```

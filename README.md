@@ -1,6 +1,6 @@
 # BERT is to NLP what AlexNet is to CV
 This is the official implementation of [***BERT is to NLP what AlexNet is to CV: Can Pre-Trained Language Models Identify Analogies?***]()
-which has been accepted by ACL 2021 main conference. We evaluate pretrained language models on analogy test with new scoring function called,
+which has been accepted by **[ACL 2021 main conference]**(https://2021.aclweb.org/). We evaluate pretrained language models on analogy test with new scoring function called,
 *analogical proportion (AP)* scores and show 
 
 <p align="center">

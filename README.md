@@ -1,6 +1,6 @@
 # BERT is to NLP what AlexNet is to CV
 This is the official implementation of ***BERT is to NLP what AlexNet is to CV: Can Pre-Trained Language Models Identify Analogies?*** (link for camera-ready version will be available shortly)
-which has been accepted by **[ACL 2021 main conference](https://2021.aclweb.org/)**. We evaluate pretrained language models (LM) on analogy test that follows SAT-style format as below.
+which has been accepted by **[ACL 2021 main conference](https://2021.aclweb.org/)**. We evaluate pretrained language models (LM) on five analogy tests that follow SAT-style format as below.
 ```
 QUERY word:language
 OPTION
@@ -25,7 +25,7 @@ pip install -e .
 ```
 
 ## Run Experiment
-Following script allows to reproduce our result in the paper.
+Following scripts reproduce our results in the paper.
 ```bash
 # get result for our main AP score
 python experiments/experiment_ppl_variants.py 

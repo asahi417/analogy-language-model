@@ -74,7 +74,7 @@ def plot_heatmap(df):
 
 
 if __name__ == '__main__':
-    dataframe = alm.get_report(export_prefix='experiment.ppl_variants')
+    dataframe = alm.get_report(export_prefix='experiment.ppl_variants', test=True)
     dataframe['accuracy'] = dataframe['accuracy'].round(3) * 100
 
     # plot_heatmap(dataframe)

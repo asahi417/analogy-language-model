@@ -134,7 +134,7 @@ def plot_line():
 
 
 if not SKIP_BOX_PLOT:
-    df = alm.get_report(export_prefix='experiment.ppl_variants')
+    df = alm.get_report(export_prefix='experiment.ppl_variants', test=True)
     df['accuracy'] = df['accuracy'].round(3) * 100
     df['negative_permutation_aggregation'] = df['negative_permutation_aggregation'].apply(lambda x: r'val$_{0}{1}{2}$'.format(
         '{', (int(x.replace('index_', '')) + 1), '}') if 'index' in x else x)

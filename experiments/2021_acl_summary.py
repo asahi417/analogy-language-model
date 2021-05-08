@@ -4,7 +4,8 @@ import pandas as pd
 data = ['sat', 'u2', 'u4', 'google', 'bats']
 models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 256), ('bert-large-cased', 32, 1024)]
 # methods = ['ppl_marginal_bias', 'ppl_hypothesis_bias', 'ppl_based_pmi']
-methods = ['ppl_marginal_bias', 'ppl_based_pmi']
+methods = ['ppl_marginal_bias', 'ppl_based_pmi', 'ppl']
+methods = ['ppl']
 print('\n###############################')
 print('## TUNED AP BIASED PPL SCORE ##')
 print('###############################')
@@ -13,7 +14,12 @@ for d in data:
     df = pd.read_csv('./experiments_results/summary/experiment.ppl_variants.full.{}.csv'.format(d))
     print('DATASET: {}'.format(d))
     for method in methods:
-        df_m = df[df.scoring_method == method]
+        if method == 'ppl':
+            df_m = df[df.scoring_method == 'ppl_marginal_bias']
+            df_m = df_m[df_m['ppl_mar_weight_head'] == 0.0]
+            df_m = df_m[df_m['ppl_mar_weight_tail'] == 0.0]
+        else:
+            df_m = df[df.scoring_method == method]
         for model, _, _ in models:
             df_tmp = df_m[df_m.model == model]
             if len(df_tmp) == 0:
@@ -28,6 +34,7 @@ for d in data:
             acc_full = list(acc['accuracy'])[0]
             full_acc = round(acc_full * 100, 1)
             print('- {:<20} ({:<20}): {} (validation {}, full {})'.format(model, method, acc_test, acc_val, full_acc))
+
             # get default accuracy
             df_tmp = df_tmp[df_tmp.negative_permutation_aggregation == 'index_0']
             df_tmp = df_tmp[df_tmp.positive_permutation_aggregation == 'index_0']
@@ -36,7 +43,7 @@ for d in data:
             if method == 'ppl_based_pmi':
                 df_tmp = df_tmp[df_tmp.ppl_based_pmi_aggregation == 'index_0']
                 df_tmp = df_tmp[df_tmp.ppl_based_pmi_alpha == 0.0]
-            elif method == 'ppl_marginal_bias':
+            elif method in ['ppl_marginal_bias', 'ppl']:
                 df_tmp = df_tmp[df_tmp.ppl_mar_weight_tail == 0.0]
                 df_tmp = df_tmp[df_tmp.ppl_mar_weight_head == 0.0]
             else:
@@ -59,7 +66,13 @@ for d in data:
     df = pd.read_csv('./experiments_results/summary/experiment.ppl_variants.full.{}.csv'.format(d))
     print('DATASET: {}'.format(d))
     for method in methods:
-        df_m = df[df.scoring_method == method]
+        if method == 'ppl':
+            df_m = df[df.scoring_method == 'ppl_marginal_bias']
+            df_m = df_m[df_m['ppl_mar_weight_head'] == 0.0]
+            df_m = df_m[df_m['ppl_mar_weight_tail'] == 0.0]
+        else:
+            df_m = df[df.scoring_method == method]
+
         for model, _, _ in models:
             df_tmp = df_m[df_m.model == model]
             if len(df_tmp) == 0:

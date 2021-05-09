@@ -37,6 +37,8 @@ python experiments/experiment_scoring_comparison.py
 Here's the result summary that can be attained by running those scripts.
 - [experimental results](https://github.com/asahi417/alm/releases/download/0.0.0/experiments_results.tar.gz)
 
+Please see [the Analogy Tool](https://github.com/asahi417/AnalogyTools) to learn about the Analogy Test dataset used in our experiments.
+
 ## Citation
 Please cite our paper if you use our code or if you re-implement our method:
 ```

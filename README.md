@@ -10,7 +10,7 @@ OPTION
   (4) tale:story
   (5) week:year 
 ```
-We devise new class of scoring functions called, *analogical proportion (AP)* score to solve the analogy in unsurpervised setting and investigate the relational knowledge that LM learnt through pretraining.
+We devise a new class of scoring functions, referred to as *analogical proportion (AP)* scores, to solve word analogies in an unsurpervised fashion and investigate the relational knowledge that LM learnt through pretraining.
 <p align="center">
   <img src="asset/overview.png" width="500">
 </p>   
@@ -24,8 +24,8 @@ cd analogy-language-model
 pip install -e .
 ```
 
-## Run Experiment
-Following scripts reproduce our results in the paper.
+## Run Experiments
+The following scripts reproduce our results in the paper.
 ```bash
 # get result for our main AP score
 python experiments/experiment_ppl_variants.py 
@@ -37,7 +37,9 @@ python experiments/experiment_scoring_comparison.py
 Here's the result summary that can be attained by running those scripts.
 - [experimental results](https://github.com/asahi417/alm/releases/download/0.0.0/experiments_results.tar.gz)
 
-Please see [the Analogy Tool](https://github.com/asahi417/AnalogyTools) to learn about the Analogy Test dataset used in our experiments.
+## Analogy datasets
+
+Please see [the Analogy Tool](https://github.com/asahi417/AnalogyTools) to download and learn about the analogy datasets used in our experiments.
 
 ## Citation
 Please cite our paper if you use our code or if you re-implement our method:

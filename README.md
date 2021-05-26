@@ -37,9 +37,11 @@ python experiments/experiment_scoring_comparison.py
 Here's the result summary that can be attained by running those scripts.
 - [experimental results](https://github.com/asahi417/alm/releases/download/0.0.0/experiments_results.tar.gz)
 
-## Analogy datasets
-
-Please see [the Analogy Tool](https://github.com/asahi417/AnalogyTools) to download and learn about the analogy datasets used in our experiments.
+## Dataset
+The datasets used in our experiment can be donwlodead from the following links:
+- [Analogy Test](https://github.com/asahi417/AnalogyTools/releases/download/0.0.0/analogy_test_dataset_no_prediction.tar.gz)
+- [Lexical Relation Classification](https://github.com/asahi417/AnalogyTools/releases/download/0.0.0/lexical_relation_dataset.tar.gz)
+Please see [the Analogy Tool](https://github.com/asahi417/AnalogyTools) for more information about those dataset and word embedding baseline.
 
 ## Citation
 Please cite our paper if you use our code or if you re-implement our method:

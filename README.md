@@ -41,6 +41,7 @@ Here's the result summary that can be attained by running those scripts.
 The datasets used in our experiment can be donwlodead from the following links:
 - [Analogy Test](https://github.com/asahi417/AnalogyTools/releases/download/0.0.0/analogy_test_dataset_no_prediction.tar.gz)
 - [Lexical Relation Classification](https://github.com/asahi417/AnalogyTools/releases/download/0.0.0/lexical_relation_dataset.tar.gz)
+
 Please see [the Analogy Tool](https://github.com/asahi417/AnalogyTools) for more information about those dataset and word embedding baseline.
 
 ## Citation

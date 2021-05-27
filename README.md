@@ -39,7 +39,7 @@ Here's the result summary that can be attained by running those scripts.
 
 ## Dataset
 The datasets used in our experiments can be downloaded from the following link:
-- [Analogy Test](https://github.com/asahi417/AnalogyTools/releases/download/0.0.0/analogy_test_dataset_no_prediction.tar.gz)
+- [Analogy Datasets](https://github.com/asahi417/AnalogyTools/releases/download/0.0.0/analogy_test_dataset_no_prediction.tar.gz)
 
 Please see [the Analogy Tool](https://github.com/asahi417/AnalogyTools) for more information about the dataset and baselines.
 

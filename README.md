@@ -1,6 +1,6 @@
 # BERT is to NLP what AlexNet is to CV
-This is the official implementation of ***BERT is to NLP what AlexNet is to CV: Can Pre-Trained Language Models Identify Analogies?*** (the camera-ready version is [here](https://arxiv.org/abs/2105.04949))
-which has been accepted by **[ACL 2021 main conference](https://2021.aclweb.org/)**. We evaluate pretrained language models (LM) on five analogy tests that follow SAT-style format as below.
+This is the official implementation of ***BERT is to NLP what AlexNet is to CV: Can Pre-Trained Language Models Identify Analogies?*** (the camera-ready version of the paper is [here](https://arxiv.org/abs/2105.04949))
+which has been accepted by the **[ACL 2021 main conference](https://2021.aclweb.org/)**. We evaluate pretrained language models (LM) on five analogy tests that follow SAT-style format as below.
 ```
 QUERY word:language
 OPTION
@@ -38,14 +38,13 @@ Here's the result summary that can be attained by running those scripts.
 - [experimental results](https://github.com/asahi417/alm/releases/download/0.0.0/experiments_results.tar.gz)
 
 ## Dataset
-The datasets used in our experiment can be donwlodead from the following links:
+The datasets used in our experiments can be downloaded from the following link:
 - [Analogy Test](https://github.com/asahi417/AnalogyTools/releases/download/0.0.0/analogy_test_dataset_no_prediction.tar.gz)
-- [Lexical Relation Classification](https://github.com/asahi417/AnalogyTools/releases/download/0.0.0/lexical_relation_dataset.tar.gz)
 
-Please see [the Analogy Tool](https://github.com/asahi417/AnalogyTools) for more information about those dataset and word embedding baseline.
+Please see [the Analogy Tool](https://github.com/asahi417/AnalogyTools) for more information about the dataset and baselines.
 
 ## Citation
-Please cite our paper if you use our code or if you re-implement our method:
+Please cite our [reference paper](https://arxiv.org/abs/2105.04949) if you use our data or code:
 ```
 @inproceedings{ushio-etal-2021-bert-is,
     title ={{BERT} is to {NLP} what {A}lex{N}et is to {CV}: {C}an {P}re-{T}rained {L}anguage {M}odels {I}dentify {A}nalogies?},

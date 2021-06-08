@@ -57,3 +57,5 @@ Please cite our [reference paper](https://arxiv.org/abs/2105.04949) if you use o
     publisher={Association for Computational Linguistics}
 }
 ```
+
+Please also cite the relevant reference papers if using any of the analogy datasets.

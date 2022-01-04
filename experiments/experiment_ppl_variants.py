@@ -5,17 +5,18 @@ import pandas as pd
 
 SKIP_INFERENCE = False  # skip inference step
 SKIP_GRID_SEARCH = False  # skip grid search
-SKIP_MERGE = False  # skip merging result
+SKIP_MERGE = True  # skip merging result
 SKIP_EXPORT_PREDICTION = False  # skip export prediction
 
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 logging.info('')
 alm.util.fix_seed(1234)
-all_templates = ['is-to-what', 'is-to-as', 'rel-same', 'what-is-to', 'she-to-as', 'as-what-same']
-data = ['sat', 'u2', 'u4', 'google', 'bats']
-models = [('roberta-large', 32, 512), ('gpt2-xl', 32, 256), ('bert-large-cased', 32, 1024)]
-scoring_method = ['ppl_hypothesis_bias', 'ppl_marginal_bias', 'ppl_based_pmi']
+all_templates = ['what-is-to']
+data = ['sat']
+models = [('bert-large-cased', 32, 1024)]
+scoring_method = ['ppl_marginal_bias']
 export_prefix = 'experiment.ppl_variants'
+
 
 if not SKIP_INFERENCE:
     logging.info('###############################################################')
@@ -46,18 +47,13 @@ if not SKIP_GRID_SEARCH:
     logging.info('######################################################################')
     logging.info('# Get prediction on each configuration (both of valid and test sets) #')
     logging.info('######################################################################')
-    positive_permutation_aggregation = [
-        'max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4', 'index_5', 'index_6', 'index_7'
-    ]
-    negative_permutation_aggregation = [
-        'max', 'mean', 'min', 'index_0', 'index_1', 'index_2', 'index_3', 'index_4', 'index_5', 'index_6', 'index_7',
-        'index_8', 'index_9', 'index_10', 'index_11'
-    ]
-    negative_permutation_weight = [0, 0.2, 0.4, 0.6, 0.8, 1.0]
-    weight_head = [-0.4, -0.2, 0, 0.2, 0.4]
-    weight_tail = [-0.4, -0.2, 0, 0.2, 0.4]
-    ppl_based_pmi_aggregation = ['max', 'mean', 'min', 'index_0', 'index_1']
-    ppl_based_pmi_alpha = [-0.4, -0.2, 0, 0.2, 0.4]
+    positive_permutation_aggregation = ['index_4']
+    negative_permutation_aggregation = ['index_4']
+    negative_permutation_weight = [0.2]
+    weight_head = [-0.2]
+    weight_tail = [0.4]
+    ppl_based_pmi_aggregation = None
+    ppl_based_pmi_alpha = None
     no_inference = True
 
     for _model, _max_length, _batch in models:
@@ -132,7 +128,7 @@ if not SKIP_EXPORT_PREDICTION:
     logging.info('# Export predictions for qualitative analysis #')
     logging.info('###############################################')
     # get prediction of what achieves the best validation accuracy
-    methods = ['ppl_marginal_bias', 'ppl_hypothesis_bias', 'ppl_based_pmi']
+    methods = ['ppl_marginal_bias']
     for d in data:
         logging.info('DATASET: {}'.format(d))
         df_test_full = pd.read_csv('./experiments_results/summary/{}.full.{}.csv'.format(export_prefix, d),

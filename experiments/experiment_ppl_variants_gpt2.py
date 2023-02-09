@@ -18,7 +18,7 @@ batch = 32
 max_length = 256
 scoring_method = 'ppl_marginal_bias'
 export_prefix = 'experiment.ppl_variants'
-
+logging.info("")
 if not SKIP_INFERENCE:
     logging.info('###############################################################')
     logging.info('# Run LM inference to get logit (both of valid and test sets) #')

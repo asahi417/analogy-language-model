@@ -10,7 +10,7 @@ SKIP_LINE_PLOT = False
 
 plt.rcParams.update({"text.usetex": True, "font.family": "sans-serif", "font.sans-serif": ["Helvetica"]})
 os.makedirs('./experiments_results/summary/figure', exist_ok=True)
-sns.set_theme(style="darkgrid")
+# sns.set_theme(style="darkgrid")
 
 
 def plot_box(df_, _m, s, d):
@@ -41,13 +41,14 @@ def plot_box(df_, _m, s, d):
     labels = [i.replace('bert-large-cased', 'BERT').replace('roberta-large', 'RoBERTa').replace('gpt2-xl', 'GPT2') for i
               in labels]
     ax.legend(handles=handles, labels=labels, loc='upper right')
-    fig.savefig('./experiments_results/summary/figure/box.{}.{}.{}.png'.format(d, _m, s))
+    fig.savefig('./experiments_results/summary/figure/box.{}.{}.{}.png'.format(d, _m, s), dpi=600)
     plt.close()
 
 
 def plot_line():
     we_model = 'fasttext'
-    model_order = ['PMI', 'FastText', 'BERT', 'GPT2', 'RoBERTa']
+    # model_order = ['PMI', 'FastText', 'BERT', 'GPT2', 'RoBERTa']
+    model_order = ['FastText', 'BERT', 'GPT2', 'RoBERTa']
 
     for d in ['sat', 'u2', 'u4', 'google', 'bats']:
         we = pd.read_csv('./experiments_results/summary/prediction_file/experiment.word_embedding.test.prediction.{}.{}.csv'.format(d, we_model))
@@ -56,8 +57,10 @@ def plot_line():
             bert = pd.read_csv('./experiments_results/summary/prediction_file/experiment.ppl_variants.test.prediction.{}.bert-large-cased.{}.csv'.format(d, m))
             roberta = pd.read_csv('./experiments_results/summary/prediction_file/experiment.ppl_variants.test.prediction.{}.roberta-large.{}.csv'.format(d, m))
             gpt = pd.read_csv('./experiments_results/summary/prediction_file/experiment.ppl_variants.test.prediction.{}.gpt2-xl.{}.csv'.format(d, m))
-            full = pd.concat([pmi, we, bert, gpt, roberta])
-            full['model'] = ['PMI'] * len(pmi) + ['FastText'] * len(we) + ['BERT'] * len(bert) + ['GPT2'] * len(gpt) + ['RoBERTa'] * len(roberta)
+            # full = pd.concat([pmi, we, bert, gpt, roberta])
+            full = pd.concat([we, bert, gpt, roberta])
+            # full['model'] = ['PMI'] * len(pmi) + ['FastText'] * len(we) + ['BERT'] * len(bert) + ['GPT2'] * len(gpt) + ['RoBERTa'] * len(roberta)
+            full['model'] = ['FastText'] * len(we) + ['BERT'] * len(bert) + ['GPT2'] * len(gpt) + ['RoBERTa'] * len(roberta)
             full['accuracy'] = full['prediction'] == full['answer']
             if d == 'sat':
                 full['prefix'] = full['prefix'].apply(lambda x: 'SAT' if 'FROM REAL SAT' in x else 'not SAT')
@@ -107,7 +110,7 @@ def plot_line():
                 ax.tick_params(labelsize=15)
                 fig = ax.get_figure()
                 plt.tight_layout()
-                fig.savefig('./experiments_results/summary/figure/bar.{}.{}.png'.format(d, m))
+                fig.savefig('./experiments_results/summary/figure/bar.{}.{}.png'.format(d, m), dpi=600)
                 plt.close()
 
             if d in ['u4', 'u2']:
@@ -129,7 +132,7 @@ def plot_line():
                 ax.tick_params(labelsize=15)
                 fig = ax.get_figure()
                 plt.tight_layout()
-                fig.savefig('./experiments_results/summary/figure/line.{}.{}.png'.format(d, m))
+                fig.savefig('./experiments_results/summary/figure/line.{}.{}.png'.format(d, m), dpi=600)
                 plt.close()
 
 

@@ -6,7 +6,7 @@ import os
 
 plt.rcParams.update({"text.usetex": True, "font.family": "sans-serif", "font.sans-serif": ["Helvetica"]})
 os.makedirs('./experiments_results/summary/figure_sup', exist_ok=True)
-sns.set_theme(style="darkgrid")
+# sns.set_theme(style="darkgrid")
 TEMPLATES = {
         'is-to-as': "to-as",
         'is-to-what': "to-what",
@@ -66,7 +66,7 @@ def plot_heatmap(df):
         sns_plot.tick_params(labelsize=15)
         fig = sns_plot.get_figure()
         plt.tight_layout()
-        fig.savefig('./experiments_results/summary/figure_sup/heatmap.alpha_beta.{}.{}.png'.format(d, m))
+        fig.savefig('./experiments_results/summary/figure_sup/heatmap.alpha_beta.{}.{}.png'.format(d, m), dpi=600)
         plt.close()
 
     for d_ in data:
